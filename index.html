@@ -1944,6 +1944,29 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
 .nda-box .nda-x{display:grid;place-items:center}
 :root[data-theme="light"] .nda-box .nda-row{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.08)}
 :root[data-theme="light"] .nda-box .nda-copy{background:rgba(0,0,0,.06)}
+
+/* NDA dialog: password unlock */
+.nda-box .nda-pass{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+.nda-box .nda-pass label{display:block;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.55;margin-bottom:9px}
+.nda-box .nda-field{display:flex;gap:8px}
+.nda-box .nda-field input{flex:1 1 auto;min-width:0;height:42px;padding:0 14px;border-radius:11px;font:inherit;font-size:15px;
+  color:inherit;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);outline:none;transition:border-color .2s ease,box-shadow .2s ease}
+.nda-box .nda-field input:focus{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(0,148,198,.25)}
+.nda-box .nda-go{flex:0 0 auto;width:42px;height:42px;border-radius:11px;border:0;cursor:pointer;display:grid;place-items:center;
+  background:var(--yellow);color:#fff;transition:background .2s ease,opacity .2s ease}
+.nda-box .nda-go:hover{background:#00a6dd}
+.nda-box .nda-go svg{width:18px;height:18px}
+.nda-box .nda-pass.busy .nda-go{opacity:.6;pointer-events:none}
+.nda-box .nda-msg{display:block;min-height:18px;margin-top:8px;font-size:13px;opacity:.7}
+.nda-box .nda-msg a{color:#40b2e6;font-weight:800}
+.nda-box .nda-pass.bad .nda-field input{border-color:#e5484d;box-shadow:0 0 0 3px rgba(229,72,77,.2)}
+.nda-box .nda-pass.bad .nda-msg{color:#ff7a7f;opacity:1}
+.nda-box .nda-pass.bad .nda-field{animation:nda-shake .4s cubic-bezier(.36,.07,.19,.97)}
+.nda-box .nda-pass.ok .nda-msg{color:#40b2e6;opacity:1}
+@keyframes nda-shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+:root[data-theme="light"] .nda-box .nda-pass{border-top-color:rgba(0,0,0,.08)}
+:root[data-theme="light"] .nda-box .nda-field input{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.12)}
+@media (prefers-reduced-motion:reduce){.nda-box .nda-pass.bad .nda-field{animation:none}}
 </style>
 </head>
 <body class="revealed">
@@ -3728,6 +3751,16 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
       </button>
       <span class="nda-toast" role="status" aria-live="polite"></span>
     </div>
+    <form class="nda-pass" autocomplete="off" novalidate>
+      <label for="ndaPw">Have a password? Unlock the prototype</label>
+      <div class="nda-field">
+        <input id="ndaPw" type="password" placeholder="Enter password" spellcheck="false" autocapitalize="off" aria-describedby="ndaPwMsg">
+        <button type="submit" class="nda-go" aria-label="Unlock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+      <span class="nda-msg" id="ndaPwMsg" role="status" aria-live="polite"></span>
+    </form>
   </div>
 </div>
 <script>
@@ -3759,6 +3792,36 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
       else if(!e.shiftKey && document.activeElement===z){ e.preventDefault(); a.focus(); }
     }
   });
+  /* the prototype link is stored only in encrypted form; the password is the key */
+  var VAULT={s:'cVEkZEEBlzedSNFsdEYNhA==',i:'DFu+6orK7uIlBOTO',
+    c:'YtoJAxCrswcVwls5dakKeNeVo01ca7j7RDZ2tbAklO0QJJdDUjdXWxNU0cq3llihbyMaKJ5vv/cEFuSHYp5r+sUVM0A4LTtYYVVHea8u3SmN+3N+5xYXtYrHbXuMFv/XbGXALzmIfBRzgOg+Ux1gukw8RmiXoZ0lmNNuuLyeF76tkqgFDWu+8dtRCZ6P2IvquphfFlTBUwPp9vvJlwXWlRLi3U5OPwjnh1/bCoLa3wiN6WyyRiDCcuDZclORS4oa5Wi3Hsy8w+SrpjKNYghyDlIQWZAX'};
+  var form=veil.querySelector('.nda-pass'), pw=form.querySelector('input'), msg=form.querySelector('.nda-msg');
+  function bytes(b64){ return Uint8Array.from(atob(b64),function(c){ return c.charCodeAt(0); }); }
+  function unlock(pass){
+    var enc=new TextEncoder();
+    return crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']).then(function(base){
+      return crypto.subtle.deriveKey({name:'PBKDF2',salt:bytes(VAULT.s),iterations:250000,hash:'SHA-256'},
+        base,{name:'AES-GCM',length:256},false,['decrypt']);
+    }).then(function(key){
+      return crypto.subtle.decrypt({name:'AES-GCM',iv:bytes(VAULT.i)},key,bytes(VAULT.c));
+    }).then(function(buf){ return new TextDecoder().decode(buf); });
+  }
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=pw.value.trim(); if(!v){ pw.focus(); return; }
+    form.classList.remove('bad'); form.classList.add('busy'); msg.textContent='Checking…';
+    if(!window.crypto || !crypto.subtle){ msg.textContent='Please open this site over https to unlock.'; form.classList.remove('busy'); return; }
+    unlock(v).then(function(url){
+      form.classList.remove('busy'); form.classList.add('ok'); msg.textContent='Unlocked. Opening the prototype…';
+      var w=window.open(url,'_blank','noopener');
+      if(!w){ msg.innerHTML='Unlocked. <a href="'+url.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener">Open the prototype ↗</a>'; }
+      else setTimeout(function(){ form.classList.remove('ok'); pw.value=''; msg.textContent=''; close(); },900);
+    }).catch(function(){
+      form.classList.remove('busy'); void form.offsetWidth; form.classList.add('bad');
+      msg.textContent='Incorrect password. Email me if you need access.'; pw.select();
+    });
+  });
+
   copyBtn.addEventListener('click',function(){
     var toast=veil.querySelector('.nda-toast');
     var done=function(){ copyBtn.classList.add('done'); toast.textContent='Copied';
