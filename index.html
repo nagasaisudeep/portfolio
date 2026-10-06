@@ -3972,7 +3972,14 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
 .nd-cards{grid-auto-rows:1fr}
 .nd-fc{height:100%}
 /* top-bar links only appear once a prototype is open */
-.nd-main:not(.proto) .nd-tab{display:none}
+.nd-main:not(.proto) .nd-tab,.nd-main:not(.proto) .nd-figma{display:none}
+/* single-prototype projects (NeuroBrowser) skip the overview */
+.nd-main.single .nd-tab{display:none}
+.nd-figma{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 15px 0 13px;border-radius:999px;background:#fff;color:#111;
+  font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 6px 18px -8px rgba(0,0,0,.6);transition:background .15s,transform .15s}
+.nd-figma:hover{background:#e8f8ff;transform:translateY(-1px)}
+.nd-figma .fg{flex:none}
+@media (max-width:560px){ .nd-figma span{display:none} .nd-figma{padding:0 11px} }
 .nd-fc .ar{top:16px;right:16px}
 
 .nd-proto{position:absolute;inset:68px 0 0;display:none;background:#1e1e1e}
@@ -3995,7 +4002,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
 </style>
 
 <div class="nd-veil" id="ndVeil" aria-hidden="true">
-  <div class="nd-sheet" role="dialog" aria-modal="true" aria-label="Neurology Dashboards" tabindex="-1">
+  <div class="nd-sheet" role="dialog" aria-modal="true" aria-label="Project prototypes" tabindex="-1">
 
     <section class="nd-main" id="ndMain">
       <header class="nd-top">
@@ -4003,15 +4010,15 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
         <nav class="nd-tabs">
           <button class="nd-tab on" type="button" data-nd-home>Overview</button>
           <button class="nd-tab" type="button" data-nd-open>Prototype</button>
-          <a class="nd-tab nd-figma" href="#" target="_blank" rel="noopener">Open in Figma ↗</a>
+          <a class="nd-figma" href="#" target="_blank" rel="noopener"><svg class="fg" width="11" height="16" viewBox="0 0 38 57" aria-hidden="true"><path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/><path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z"/><path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z"/><path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/><path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg><span>Open in Figma</span></a>
           <button class="nd-x" type="button" aria-label="Close">×</button>
         </nav>
       </header>
 
       <div class="nd-home">
         <div class="nd-orb" aria-hidden="true"></div>
-        <p class="nd-kick">WELCOME TO SAVANNAH</p>
-        <h2 class="nd-h">Neurology dashboards, made clear</h2>
+        <p class="nd-kick" id="ndKick">WELCOME TO SAVANNAH</p>
+        <h2 class="nd-h" id="ndH">Neurology dashboards, made clear</h2>
         <div class="nd-cards" id="ndCards"></div>
       </div>
 
@@ -4020,74 +4027,86 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   </div>
 </div>
 <script>
-/* Neurology Dashboards opens in its own viewer; each card shows one dashboard section from the Figma file */
+/* Project viewer: Neurology Dashboards (cards → prototypes) and NeuroBrowser (straight to its prototype) share one interface */
 (function(){
   var veil=document.getElementById('ndVeil'); if(!veil) return;
-  var card=[].find.call(document.querySelectorAll('a.proj'),function(a){ var h=a.querySelector('h3'); return h&&/neurology dashboards/i.test(h.textContent); });
-  if(!card) return;
-  var main=document.getElementById('ndMain'), stage=document.getElementById('ndProto'), cardsEl=document.getElementById('ndCards'), verTxt=document.getElementById('ndVerTxt');
-  var embed=card.getAttribute('data-embed'), href=card.getAttribute('href'), last=null, frames={}, current=null;
-  var figmaLinks=veil.querySelectorAll('.nd-figma');
-
-  // Dashboards in this project — each card opens its own Figma prototype
+  var main=document.getElementById('ndMain'), stage=document.getElementById('ndProto'), cardsEl=document.getElementById('ndCards'),
+      verTxt=document.getElementById('ndVerTxt'), kickEl=document.getElementById('ndKick'), hEl=document.getElementById('ndH');
+  var figmaLinks=veil.querySelectorAll('.nd-figma'), last=null, frames={}, current=null, P=null;
   var I=function(p){ return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'; };
-  var DASHBOARDS=[
-    {n:'Cohort Dashboard', d:'The whole patient population: demographics, diagnoses and AI insights.',
-     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=207%3A159394&node-id=208-2&p=f&viewport=25%2C263%2C0.07&t=db1aYTjYyJLkKAVb-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=208%3A2',
-     i:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>'},
-    {n:'Patient Journey', d:'Follow an individual patient through visits, diagnoses and treatment over time.',
-     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=365%3A18370&node-id=368-2&viewport=402%2C25%2C0.09&t=LiabfTKUnqgCfcp0-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=368%3A2',
-     i:'<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>'},
-    {n:'Patient Registration', d:'Registration volume and new patient intake at a glance.',
-     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=618%3A2&node-id=666-172067&viewport=118%2C305%2C0.22&t=Ou1ZmTr74eo8nmSM-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=666%3A172067',
-     i:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3"/><circle cx="12" cy="11" r="2.5"/><path d="M8 17a4 4 0 0 1 8 0"/>'},
-    {n:'Appointment Flow', d:'Booking, scheduling and check-in, step by step.',
-     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=680%3A1655&node-id=712-36810&viewport=25%2C131%2C0.08&t=qDCvTTpfZFeB3Qnl-1&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=712%3A36810',
-     i:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/>'},
-    {n:'Referral Analytics', d:'Intake, conversion and catchment of incoming referrals.',
-     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=727%3A1050&node-id=730-2&viewport=25%2C243%2C0.29&t=X4vIqmDPrJnkoqCL-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=730%3A2',
-     i:'<path d="M3 4h18l-7 8v6l-4 2v-8z"/>'},
-    {n:'Bug Tracker (Service)', d:'Track, triage and resolve service issues.',
-     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=758%3A2930&node-id=778-11876&viewport=263%2C277%2C0.37&t=KNRHk2VV3DaGkijg-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=778%3A11876',
-     i:'<rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 7V4M9 4l1.5 3M15 4l-1.5 3M3 12h4M17 12h4M4 18l3-1.5M20 18l-3-1.5M4 7l3 2M20 7l-3 2"/>'},
-    {n:'Claims & Bug Reports', d:'Patient claims history alongside client bug reports.',
-     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=805%3A23860&node-id=812-12100&viewport=25%2C270%2C0.14&t=ldjRlOuTLpeKcZdN-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=812%3A12100',
-     i:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>'}
-  ];
   var embedUrl=function(u){ return 'https://www.figma.com/embed?embed_host=share&url='+encodeURIComponent(u); };
-  var ARROW='<svg class="ar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
-  DASHBOARDS.forEach(function(v){
-    var b=document.createElement('button'); b.type='button'; b.className='nd-fc';
-    b.innerHTML='<span class="ic">'+I(v.i)+'</span>'+ARROW+'<h5></h5><p></p>';
-    b.querySelector('h5').textContent=v.n; b.querySelector('p').textContent=v.d;
-    b.setAttribute('aria-label','Open the '+v.n+' prototype');
-    b.addEventListener('click',function(){ show(embedUrl(v.u),v.n+' prototype',v.u,'Neurology · '+v.n,true); });
-    cardsEl.appendChild(b);
-  });
-  href=DASHBOARDS[0].u; embed=embedUrl(href);
+  var findCard=function(re){ return [].find.call(document.querySelectorAll('a.proj'),function(a){ var h=a.querySelector('h3'); return h&&re.test(h.textContent); }); };
 
-  function setLinks(u){ figmaLinks.forEach(function(a){ a.href=u; }); }
-  function tabs(isProto){
-    veil.querySelectorAll('.nd-tab[data-nd-home]').forEach(function(b){ b.classList.toggle('on',!main.classList.contains('proto')); });
-    veil.querySelectorAll('.nd-tab[data-nd-open]').forEach(function(b){ b.classList.toggle('on',!!isProto); });
+  var PROJECTS=[
+    {card:findCard(/neurology dashboards/i), ver:'Neurology v1.0', kick:'WELCOME TO SAVANNAH', h:'Neurology dashboards, made clear', items:[
+      {n:'Cohort Dashboard', d:'The whole patient population: demographics, diagnoses and AI insights.',
+       u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=207%3A159394&node-id=208-2&p=f&viewport=25%2C263%2C0.07&t=db1aYTjYyJLkKAVb-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=208%3A2',
+       i:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>'},
+      {n:'Patient Journey', d:'Follow an individual patient through visits, diagnoses and treatment over time.',
+       u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=365%3A18370&node-id=368-2&viewport=402%2C25%2C0.09&t=LiabfTKUnqgCfcp0-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=368%3A2',
+       i:'<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>'},
+      {n:'Patient Registration', d:'Registration volume and new patient intake at a glance.',
+       u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=618%3A2&node-id=666-172067&viewport=118%2C305%2C0.22&t=Ou1ZmTr74eo8nmSM-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=666%3A172067',
+       i:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3"/><circle cx="12" cy="11" r="2.5"/><path d="M8 17a4 4 0 0 1 8 0"/>'},
+      {n:'Appointment Flow', d:'Booking, scheduling and check-in, step by step.',
+       u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=680%3A1655&node-id=712-36810&viewport=25%2C131%2C0.08&t=qDCvTTpfZFeB3Qnl-1&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=712%3A36810',
+       i:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/>'},
+      {n:'Referral Analytics', d:'Intake, conversion and catchment of incoming referrals.',
+       u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=727%3A1050&node-id=730-2&viewport=25%2C243%2C0.29&t=X4vIqmDPrJnkoqCL-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=730%3A2',
+       i:'<path d="M3 4h18l-7 8v6l-4 2v-8z"/>'},
+      {n:'Bug Tracker (Service)', d:'Track, triage and resolve service issues.',
+       u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=758%3A2930&node-id=778-11876&viewport=263%2C277%2C0.37&t=KNRHk2VV3DaGkijg-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=778%3A11876',
+       i:'<rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 7V4M9 4l1.5 3M15 4l-1.5 3M3 12h4M17 12h4M4 18l3-1.5M20 18l-3-1.5M4 7l3 2M20 7l-3 2"/>'},
+      {n:'Claims & Bug Reports', d:'Patient claims history alongside client bug reports.',
+       u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=805%3A23860&node-id=812-12100&viewport=25%2C270%2C0.14&t=ldjRlOuTLpeKcZdN-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=812%3A12100',
+       i:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>'}
+    ]},
+    {card:findCard(/neurobrowser/i), ver:'NeuroBrowser', single:true}
+  ].filter(function(p){ return p.card; });
+  PROJECTS.forEach(function(p){
+    if(p.single) p.items=[{n:p.ver, u:p.card.getAttribute('href'), e:p.card.getAttribute('data-embed')}];
+    p.items.forEach(function(it){ it.e=it.e||embedUrl(it.u); });
+  });
+  if(!PROJECTS.length) return;
+
+  var ARROW='<svg class="ar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+  function renderCards(){
+    cardsEl.innerHTML='';
+    P.items.forEach(function(v){
+      var b=document.createElement('button'); b.type='button'; b.className='nd-fc';
+      b.innerHTML='<span class="ic">'+I(v.i||'')+'</span>'+ARROW+'<h5></h5><p></p>';
+      b.querySelector('h5').textContent=v.n; b.querySelector('p').textContent=v.d||'';
+      b.setAttribute('aria-label','Open the '+v.n+' prototype');
+      b.addEventListener('click',function(){ show(v); });
+      cardsEl.appendChild(b);
+    });
   }
-  function show(src,title,figmaHref,label,isProto){
-    current=src; stage.classList.remove('ready');
+  function setLinks(u){ figmaLinks.forEach(function(a){ a.href=u; }); }
+  function tabs(onProto){
+    veil.querySelectorAll('.nd-tab[data-nd-home]').forEach(function(b){ b.classList.toggle('on',!onProto); });
+    veil.querySelectorAll('.nd-tab[data-nd-open]').forEach(function(b){ b.classList.toggle('on',onProto); });
+  }
+  function show(v){
+    var src=v.e; current=src; stage.classList.remove('ready');
     Object.keys(frames).forEach(function(k){ frames[k].hidden=(k!==src); });
     var f=frames[src];
     if(!f){
-      f=document.createElement('iframe'); f.src=src; f.title=title; f.allow='fullscreen'; f.setAttribute('allowfullscreen','');
+      f=document.createElement('iframe'); f.src=src; f.title=v.n+' prototype'; f.allow='fullscreen'; f.setAttribute('allowfullscreen','');
       f.addEventListener('load',function(){ f.loaded=true; if(current===src) stage.classList.add('ready'); });
       frames[src]=f; stage.appendChild(f);
     } else if(f.loaded) stage.classList.add('ready');
-    main.classList.add('proto'); verTxt.textContent=label; setLinks(figmaHref); tabs(isProto);
+    main.classList.add('proto'); verTxt.textContent=P.single?P.ver:(P.ver.split(' ')[0]+' · '+v.n); setLinks(v.u); tabs(true);
   }
-  function home(){ main.classList.remove('proto'); verTxt.textContent='Neurology v1.0'; setLinks(href); tabs(false); }
+  function home(){ main.classList.remove('proto'); verTxt.textContent=P.ver; setLinks(P.items[0].u); tabs(false); }
 
-  function open(e){
+  function open(e,p){
     if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    last=document.activeElement; home();
+    last=document.activeElement; P=p;
+    main.classList.toggle('single',!!p.single);
+    if(!p.single){ kickEl.textContent=p.kick; hEl.textContent=p.h; renderCards(); home(); }
+    else show(p.items[0]);
+    veil.querySelector('.nd-sheet').setAttribute('aria-label',p.single?p.ver:'Neurology Dashboards');
     veil.classList.add('open'); veil.setAttribute('aria-hidden','false');
     document.documentElement.style.overflow='hidden';
     setTimeout(function(){ veil.querySelector('.nd-sheet').focus({preventScroll:true}); },60);
@@ -4097,9 +4116,11 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
     document.documentElement.style.overflow='';
     if(last&&last.focus) last.focus();
   }
-  // capture phase so it runs before the generic prototype panel handler on the card
-  document.addEventListener('click',function(e){ if(card.contains(e.target)) open(e); },true);
-  veil.querySelectorAll('[data-nd-open]').forEach(function(b){ b.addEventListener('click',function(){ show(embed,'Cohort Dashboard prototype',href,'Neurology · Cohort Dashboard',true); }); });
+  // capture phase so it runs before the generic prototype panel handler on the cards
+  document.addEventListener('click',function(e){
+    for(var k=0;k<PROJECTS.length;k++) if(PROJECTS[k].card.contains(e.target)){ open(e,PROJECTS[k]); return; }
+  },true);
+  veil.querySelectorAll('[data-nd-open]').forEach(function(b){ b.addEventListener('click',function(){ show(P.items[0]); }); });
   veil.querySelectorAll('[data-nd-home]').forEach(function(b){ b.addEventListener('click',home); });
   veil.querySelector('.nd-x').addEventListener('click',close);
   veil.addEventListener('click',function(e){ if(e.target===veil) close(); });
