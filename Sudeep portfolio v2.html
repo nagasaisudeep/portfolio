@@ -3871,4 +3871,730 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   document.addEventListener('keydown',function(e){ if(e.key==='Escape' && veil.classList.contains('open')) close(); });
 })();
 </script>
+
+<!-- ===== Neurology Dashboards viewer (app-shell style) ===== -->
+<style>
+.nd-veil{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:28px;
+  background:rgba(6,7,9,.62);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s;font-family:var(--f,inherit);color:#E9EEF2}
+.nd-veil.open{opacity:1;visibility:visible}
+.nd-sheet{position:relative;display:flex;width:min(1280px,100%);height:min(860px,100%);padding:10px;gap:10px;
+  border-radius:28px;background:#14161b;border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 50px 100px -30px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);
+  transform:translateY(24px) scale(.98);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.nd-veil.open .nd-sheet{transform:none}
+
+/* sidebar */
+.nd-side{flex:0 0 232px;display:flex;flex-direction:column;padding:14px 8px 8px;min-height:0;overflow-y:auto;scrollbar-width:none}
+.nd-side::-webkit-scrollbar{display:none}
+.nd-card{flex:none}
+.nd-sheet:focus{outline:none}
+.nd-brand{display:flex;align-items:center;gap:10px;padding:2px 8px 16px}
+.nd-brand b{font-size:15px;font-weight:800;font-style:italic;letter-spacing:-.01em;color:#dff6ff}
+.nd-brand svg{margin-left:auto;opacity:.6}
+.nd-new{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.07);
+  background:linear-gradient(90deg,rgba(0,148,198,.22),rgba(255,255,255,.04));color:#bfeeff;font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  transition:background .2s,border-color .2s}
+.nd-new:hover{border-color:rgba(0,148,198,.55);background:linear-gradient(90deg,rgba(0,148,198,.32),rgba(255,255,255,.06))}
+.nd-sec{font-size:10.5px;font-weight:700;letter-spacing:.18em;color:rgba(233,238,242,.45);padding:18px 10px 6px}
+.nd-nav{display:flex;flex-direction:column;gap:2px}
+.nd-item{display:flex;align-items:center;gap:10px;padding:6.5px 10px;border-radius:10px;border:0;background:none;color:rgba(233,238,242,.82);
+  font:inherit;font-size:13px;font-weight:500;text-align:left;cursor:pointer;transition:background .15s,color .15s}
+.nd-item svg{flex:none;opacity:.75}
+.nd-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.nd-item.on{background:rgba(0,148,198,.14);color:#dff6ff}
+.nd-rule{height:1px;background:rgba(255,255,255,.07);margin:14px 10px 0}
+.nd-steps{display:flex;flex-direction:column;gap:1px;padding:0 10px 14px}
+.nd-steps span{font-size:12.5px;color:rgba(233,238,242,.6);padding:6px 0;display:flex;align-items:center;gap:8px}
+.nd-steps span::before{content:"";width:5px;height:5px;border-radius:50%;background:rgba(0,148,198,.7);flex:none}
+.nd-card{margin-top:auto;padding:14px;border-radius:16px;background:linear-gradient(160deg,#1d2a33,#171a20 70%);border:1px solid rgba(255,255,255,.07);position:relative;overflow:hidden}
+.nd-card::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(0,148,198,.35),transparent 65%)}
+.nd-card i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(0,148,198,.25);font-style:normal;font-size:13px}
+.nd-card h4{margin:10px 0 4px;font-size:14px;font-weight:700}
+.nd-card p{margin:0 0 12px;font-size:11.5px;line-height:1.45;color:rgba(233,238,242,.6)}
+.nd-card a{display:flex;align-items:center;justify-content:center;gap:6px;height:36px;border-radius:10px;background:#fff;color:#111;
+  font-size:12.5px;font-weight:700;text-decoration:none;position:relative;z-index:1}
+.nd-card a:hover{background:#e8f8ff}
+
+/* main */
+.nd-main{position:relative;flex:1 1 auto;min-width:0;display:flex;flex-direction:column;border-radius:20px;overflow:hidden;
+  background:radial-gradient(120% 70% at 40% -10%,rgba(0,148,198,.38),rgba(0,148,198,.08) 40%,transparent 65%),
+             radial-gradient(60% 50% at 20% 0%,rgba(255,255,255,.08),transparent 60%),#1a1d23;border:1px solid rgba(255,255,255,.06)}
+.nd-top{display:flex;align-items:center;gap:22px;padding:16px 18px;position:relative;z-index:2}
+.nd-ver{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;font-size:12.5px;font-weight:600;
+  color:rgba(233,238,242,.85);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12)}
+.nd-tabs{margin-left:auto;display:flex;align-items:center;gap:20px}
+.nd-tab{position:relative;border:0;background:none;color:rgba(233,238,242,.6);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:6px 0;text-decoration:none}
+.nd-tab:hover{color:#fff}
+.nd-tab.on{color:#fff}
+.nd-tab.on::after{content:"";position:absolute;left:15%;right:15%;bottom:-2px;height:2px;border-radius:2px;background:var(--yellow,#0094C6)}
+.nd-x{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center}
+.nd-x:hover{background:rgba(255,255,255,.14)}
+
+.nd-home{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:safe center;padding:0 46px 40px;overflow:auto}
+.nd-orb{position:relative;width:84px;height:84px;border-radius:50%;margin-bottom:22px;animation:ndFloat 5s ease-in-out infinite;
+  background:radial-gradient(circle at 30% 26%,#f2fdff 0 5%,rgba(170,236,255,.85) 11%,transparent 28%),
+             radial-gradient(circle at 72% 78%,rgba(120,220,255,.7),transparent 40%),
+             radial-gradient(circle at 45% 45%,#3cc7f0 0%,#0094C6 38%,#04506f 72%,#021b28 100%);
+  box-shadow:0 0 50px rgba(0,148,198,.55),0 18px 30px -10px rgba(0,0,0,.6),inset -10px -12px 22px rgba(0,0,0,.45),inset 6px 8px 16px rgba(255,255,255,.22)}
+.nd-orb::after{content:"";position:absolute;inset:6px;border-radius:50%;mix-blend-mode:screen;opacity:.55;animation:ndSpin 9s linear infinite;
+  background:conic-gradient(from 0deg,transparent 0 20%,rgba(160,240,255,.55) 28%,transparent 40% 62%,rgba(0,200,255,.4) 72%,transparent 82%)}
+@keyframes ndFloat{50%{transform:translateY(-6px)}}
+@keyframes ndSpin{to{transform:rotate(360deg)}}
+.nd-kick{font-size:15px;font-weight:600;letter-spacing:.32em;color:rgba(233,238,242,.9);margin:0}
+.nd-h{margin:10px 0 0;font-size:clamp(22px,2.6vw,30px);font-weight:600;letter-spacing:-.01em;text-align:center;color:#fff}
+.nd-ask{width:min(780px,100%);margin-top:56px;padding:18px 18px 14px;border-radius:16px;background:rgba(40,44,52,.75);
+  border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.nd-q{display:flex;align-items:center;gap:12px;min-height:44px;font-size:15.5px;color:rgba(233,238,242,.75)}
+.nd-q svg{flex:none;color:#7fdcff}
+.nd-q span::after{content:"";display:inline-block;width:2px;height:1.05em;margin-left:2px;vertical-align:-2px;background:#7fdcff;animation:ndBlink 1s steps(1) infinite}
+@keyframes ndBlink{50%{opacity:0}}
+.nd-row{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.nd-pill{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;font-size:12.5px;font-weight:600;
+  color:rgba(233,238,242,.8);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.12)}
+.nd-go{margin-left:auto;display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 6px 0 14px;border-radius:999px;border:0;cursor:pointer;
+  font:inherit;font-size:13px;font-weight:700;color:#111;background:#fff}
+.nd-go b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--yellow,#0094C6);color:#fff;font-size:14px}
+.nd-go:hover{background:#e8f8ff}
+.nd-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:min(1040px,100%);margin-top:40px}
+@media (max-width:1100px){ .nd-cards{grid-template-columns:repeat(3,1fr)} }
+@media (max-width:900px){ .nd-cards{grid-template-columns:repeat(2,1fr)} }
+.nd-fc{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;padding:16px 16px 18px;border-radius:16px;border:1px solid rgba(255,255,255,.08);cursor:pointer;color:inherit;font:inherit;
+  background:linear-gradient(180deg,rgba(44,48,56,.9),rgba(34,37,44,.9));box-shadow:0 14px 30px -18px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.05);
+  transition:transform .25s cubic-bezier(.2,.9,.3,1.2),border-color .2s}
+.nd-fc:hover{transform:translateY(-4px);border-color:rgba(0,148,198,.5)}
+.nd-fc .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07)}
+.nd-fc .ar{position:absolute;top:16px;right:16px;opacity:.7;transition:transform .2s}
+.nd-fc:hover .ar{transform:translate(2px,-2px);opacity:1}
+.nd-fc h5{margin:14px 0 5px;font-size:14px;font-weight:700;color:#fff}
+.nd-fc p{margin:0;font-size:12px;line-height:1.45;color:rgba(233,238,242,.6);
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-height:2.9em}
+.nd-cards{grid-auto-rows:1fr}
+.nd-fc{height:100%}
+/* top-bar links only appear once a prototype is open */
+.nd-main:not(.proto) .nd-tab{display:none}
+.nd-fc .ar{top:16px;right:16px}
+
+.nd-proto{position:absolute;inset:68px 0 0;display:none;background:#1e1e1e}
+.nd-proto iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.nd-main.proto .nd-home{visibility:hidden}
+.nd-main.proto .nd-proto{display:block}
+.nd-load{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:12px;font-size:12px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(233,238,242,.55);pointer-events:none;transition:opacity .4s}
+.nd-load::before{content:"";width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--yellow,#0094C6);animation:ndSpin .8s linear infinite}
+.nd-proto.ready .nd-load{opacity:0}
+
+@media (max-width:1000px){ .nd-side{display:none} }
+@media (max-height:860px){ .nd-proc,.nd-steps,.nd-rule{display:none} }
+@media (max-width:760px){
+  .nd-veil{padding:0} .nd-sheet{border-radius:0;padding:0} .nd-main{border-radius:0}
+  .nd-cards{grid-template-columns:1fr} .nd-home{justify-content:flex-start;padding:10px 18px 30px} .nd-cards{margin-top:30px}
+  .nd-ver{display:none} .nd-tabs{gap:14px}
+}
+@media (prefers-reduced-motion:reduce){ .nd-orb,.nd-orb::after,.nd-q span::after{animation:none} .nd-veil,.nd-sheet{transition:none} }
+</style>
+
+<div class="nd-veil" id="ndVeil" aria-hidden="true">
+  <div class="nd-sheet" role="dialog" aria-modal="true" aria-label="Neurology Dashboards" tabindex="-1">
+
+    <section class="nd-main" id="ndMain">
+      <header class="nd-top">
+        <span class="nd-ver" id="ndVer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span id="ndVerTxt">Neurology v1.0</span></span>
+        <nav class="nd-tabs">
+          <button class="nd-tab on" type="button" data-nd-home>Overview</button>
+          <button class="nd-tab" type="button" data-nd-open>Prototype</button>
+          <a class="nd-tab nd-figma" href="#" target="_blank" rel="noopener">Open in Figma ↗</a>
+          <button class="nd-x" type="button" aria-label="Close">×</button>
+        </nav>
+      </header>
+
+      <div class="nd-home">
+        <div class="nd-orb" aria-hidden="true"></div>
+        <p class="nd-kick">WELCOME TO SAVANNAH</p>
+        <h2 class="nd-h">Neurology dashboards, made clear</h2>
+        <div class="nd-cards" id="ndCards"></div>
+      </div>
+
+      <div class="nd-proto" id="ndProto"><div class="nd-load">Loading prototype</div></div>
+    </section>
+  </div>
+</div>
+<script>
+/* Neurology Dashboards opens in its own viewer; each card shows one dashboard section from the Figma file */
+(function(){
+  var veil=document.getElementById('ndVeil'); if(!veil) return;
+  var card=[].find.call(document.querySelectorAll('a.proj'),function(a){ var h=a.querySelector('h3'); return h&&/neurology dashboards/i.test(h.textContent); });
+  if(!card) return;
+  var main=document.getElementById('ndMain'), stage=document.getElementById('ndProto'), cardsEl=document.getElementById('ndCards'), verTxt=document.getElementById('ndVerTxt');
+  var embed=card.getAttribute('data-embed'), href=card.getAttribute('href'), last=null, frames={}, current=null;
+  var figmaLinks=veil.querySelectorAll('.nd-figma');
+
+  // Dashboards in this project — each card opens its own Figma prototype
+  var I=function(p){ return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'; };
+  var DASHBOARDS=[
+    {n:'Cohort Dashboard', d:'The whole patient population: demographics, diagnoses and AI insights.',
+     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=207%3A159394&node-id=208-2&p=f&viewport=25%2C263%2C0.07&t=db1aYTjYyJLkKAVb-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=208%3A2',
+     i:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>'},
+    {n:'Patient Journey', d:'Follow an individual patient through visits, diagnoses and treatment over time.',
+     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=365%3A18370&node-id=368-2&viewport=402%2C25%2C0.09&t=LiabfTKUnqgCfcp0-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=368%3A2',
+     i:'<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>'},
+    {n:'Patient Registration', d:'Registration volume and new patient intake at a glance.',
+     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=618%3A2&node-id=666-172067&viewport=118%2C305%2C0.22&t=Ou1ZmTr74eo8nmSM-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=666%3A172067',
+     i:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3"/><circle cx="12" cy="11" r="2.5"/><path d="M8 17a4 4 0 0 1 8 0"/>'},
+    {n:'Appointment Flow', d:'Booking, scheduling and check-in, step by step.',
+     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=680%3A1655&node-id=712-36810&viewport=25%2C131%2C0.08&t=qDCvTTpfZFeB3Qnl-1&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=712%3A36810',
+     i:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/>'},
+    {n:'Referral Analytics', d:'Intake, conversion and catchment of incoming referrals.',
+     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=727%3A1050&node-id=730-2&viewport=25%2C243%2C0.29&t=X4vIqmDPrJnkoqCL-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=730%3A2',
+     i:'<path d="M3 4h18l-7 8v6l-4 2v-8z"/>'},
+    {n:'Bug Tracker (Service)', d:'Track, triage and resolve service issues.',
+     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=758%3A2930&node-id=778-11876&viewport=263%2C277%2C0.37&t=KNRHk2VV3DaGkijg-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=778%3A11876',
+     i:'<rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 7V4M9 4l1.5 3M15 4l-1.5 3M3 12h4M17 12h4M4 18l3-1.5M20 18l-3-1.5M4 7l3 2M20 7l-3 2"/>'},
+    {n:'Claims & Bug Reports', d:'Patient claims history alongside client bug reports.',
+     u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=805%3A23860&node-id=812-12100&viewport=25%2C270%2C0.14&t=ldjRlOuTLpeKcZdN-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=812%3A12100',
+     i:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>'}
+  ];
+  var embedUrl=function(u){ return 'https://www.figma.com/embed?embed_host=share&url='+encodeURIComponent(u); };
+  var ARROW='<svg class="ar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+  DASHBOARDS.forEach(function(v){
+    var b=document.createElement('button'); b.type='button'; b.className='nd-fc';
+    b.innerHTML='<span class="ic">'+I(v.i)+'</span>'+ARROW+'<h5></h5><p></p>';
+    b.querySelector('h5').textContent=v.n; b.querySelector('p').textContent=v.d;
+    b.setAttribute('aria-label','Open the '+v.n+' prototype');
+    b.addEventListener('click',function(){ show(embedUrl(v.u),v.n+' prototype',v.u,'Neurology · '+v.n,true); });
+    cardsEl.appendChild(b);
+  });
+  href=DASHBOARDS[0].u; embed=embedUrl(href);
+
+  function setLinks(u){ figmaLinks.forEach(function(a){ a.href=u; }); }
+  function tabs(isProto){
+    veil.querySelectorAll('.nd-tab[data-nd-home]').forEach(function(b){ b.classList.toggle('on',!main.classList.contains('proto')); });
+    veil.querySelectorAll('.nd-tab[data-nd-open]').forEach(function(b){ b.classList.toggle('on',!!isProto); });
+  }
+  function show(src,title,figmaHref,label,isProto){
+    current=src; stage.classList.remove('ready');
+    Object.keys(frames).forEach(function(k){ frames[k].hidden=(k!==src); });
+    var f=frames[src];
+    if(!f){
+      f=document.createElement('iframe'); f.src=src; f.title=title; f.allow='fullscreen'; f.setAttribute('allowfullscreen','');
+      f.addEventListener('load',function(){ f.loaded=true; if(current===src) stage.classList.add('ready'); });
+      frames[src]=f; stage.appendChild(f);
+    } else if(f.loaded) stage.classList.add('ready');
+    main.classList.add('proto'); verTxt.textContent=label; setLinks(figmaHref); tabs(isProto);
+  }
+  function home(){ main.classList.remove('proto'); verTxt.textContent='Neurology v1.0'; setLinks(href); tabs(false); }
+
+  function open(e){
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    last=document.activeElement; home();
+    veil.classList.add('open'); veil.setAttribute('aria-hidden','false');
+    document.documentElement.style.overflow='hidden';
+    setTimeout(function(){ veil.querySelector('.nd-sheet').focus({preventScroll:true}); },60);
+  }
+  function close(){
+    veil.classList.remove('open'); veil.setAttribute('aria-hidden','true');
+    document.documentElement.style.overflow='';
+    if(last&&last.focus) last.focus();
+  }
+  // capture phase so it runs before the generic prototype panel handler on the card
+  document.addEventListener('click',function(e){ if(card.contains(e.target)) open(e); },true);
+  veil.querySelectorAll('[data-nd-open]').forEach(function(b){ b.addEventListener('click',function(){ show(embed,'Cohort Dashboard prototype',href,'Neurology · Cohort Dashboard',true); }); });
+  veil.querySelectorAll('[data-nd-home]').forEach(function(b){ b.addEventListener('click',home); });
+  veil.querySelector('.nd-x').addEventListener('click',close);
+  veil.addEventListener('click',function(e){ if(e.target===veil) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&veil.classList.contains('open')) close(); });
+})();
+</script>
+<!-- ===== /Neurology Dashboards viewer ===== -->
+
+<!-- ===== Voice bot (looping orb assistant + chat) ===== -->
+<style>
+.sbot{position:fixed;right:20px;bottom:26px;z-index:110;width:210px;height:140px;pointer-events:none;
+  font-family:var(--f, inherit);transform-origin:100% 100%}
+.sbot canvas{position:absolute;left:50%;bottom:0;width:90px;height:96px;transform:translateX(-50%)}
+.sbot .sb-bub{position:absolute;top:14px;white-space:pre;font-size:11px;font-weight:500;line-height:1.35;
+  padding:6px 11px;border-radius:14px;color:rgba(255,255,255,.86);background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0}
+.sbot .sb-bot,.sbot .sb-user{left:50%;text-align:left;box-sizing:border-box}
+.sbot .sb-launch{position:absolute;left:50%;bottom:12px;width:58px;height:58px;margin-left:-29px;border-radius:50%;
+  border:0;padding:0;background:transparent;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.sbot .sb-launch:focus-visible{outline:2px solid var(--yellow,#0094C6);outline-offset:3px}
+:root[data-theme="light"] .sbot .sb-bub{color:#1A1726;background:rgba(20,20,40,.06);border-color:rgba(20,20,40,.08)}
+
+.sbchat{position:fixed;right:24px;bottom:144px;z-index:111;width:340px;height:470px;
+  max-width:calc(100vw - 24px);max-height:calc(100vh - 160px);display:flex;flex-direction:column;
+  border-radius:20px;overflow:hidden;font-family:var(--f, inherit);color:rgba(255,255,255,.92);
+  background:rgba(13,13,24,.86);border:1px solid rgba(255,255,255,.09);
+  backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
+  box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 0 1px rgba(0,148,198,.08) inset;
+  transform-origin:calc(100% - 80px) 100%;opacity:0;transform:translateY(14px) scale(.92);visibility:hidden;
+  transition:opacity .22s ease,transform .32s cubic-bezier(.2,.9,.3,1.2),visibility 0s linear .32s}
+.sbchat.open{opacity:1;transform:none;visibility:visible;transition:opacity .22s ease,transform .32s cubic-bezier(.2,.9,.3,1.2),visibility 0s}
+.sbc-head{display:flex;align-items:center;gap:10px;padding:14px 14px 12px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sbc-dot{width:10px;height:10px;border-radius:50%;background:var(--yellow,#0094C6);
+  box-shadow:0 0 10px rgba(0,148,198,.8)}
+.sbc-title{font-size:14px;font-weight:700;line-height:1.2}
+.sbc-sub{font-size:11px;opacity:.55;font-weight:500}
+.sbc-ver{font-size:10px;font-weight:600;letter-spacing:.02em;margin-left:6px;padding:2px 6px;border-radius:999px;vertical-align:2px;
+  color:var(--yellow,#0094C6);background:rgba(0,148,198,.12);border:1px solid rgba(0,148,198,.3)}
+.sbc-x{margin-left:auto;width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;font-size:18px;line-height:1;
+  color:inherit;background:rgba(255,255,255,.07);display:grid;place-items:center;font-family:inherit}
+.sbc-x:hover{background:rgba(255,255,255,.14)}
+.sbc-new+.sbc-x{margin-left:6px}
+.sbc-x[data-tip]{position:relative}
+.sbc-x[data-tip]::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;
+  font-size:11px;font-weight:600;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.75);color:#fff;opacity:0;pointer-events:none;transition:opacity .15s}
+.sbc-x[data-tip]:hover::after,.sbc-x[data-tip]:focus-visible::after{opacity:1}
+.sbc-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;overscroll-behavior:contain;scrollbar-width:thin}
+.sbc-m{max-width:84%;padding:9px 12px;border-radius:16px;font-size:13px;line-height:1.45;font-weight:500;white-space:pre-wrap;word-wrap:break-word;
+  animation:sbcIn .28s cubic-bezier(.2,.9,.3,1.15) both}
+.sbc-m a{color:#5cc6ea;text-decoration:underline;text-underline-offset:2px}
+.sbc-m.bot{align-self:flex-start;background:rgba(255,255,255,.07);border-bottom-left-radius:6px}
+.sbc-m.user{align-self:flex-end;color:#fff;background:var(--yellow,#0094C6);border-bottom-right-radius:6px}
+.sbc-typing{display:flex;gap:4px;align-items:center;padding:12px 14px}
+.sbc-typing i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.4;animation:sbcDot 1s infinite}
+.sbc-typing i:nth-child(2){animation-delay:.15s}.sbc-typing i:nth-child(3){animation-delay:.3s}
+.sbc-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 0;border-top:1px solid rgba(255,255,255,.07)}
+.sbc-chips:empty{display:none}
+.sbc-chips:not(:empty)+.sbc-form{border-top:0;padding-top:8px}
+.sbc-chip[hidden]{display:none}
+:root[data-theme="light"] .sbc-chips{border-color:rgba(20,20,40,.07)}
+.sbc-chip{border:1px solid rgba(0,148,198,.35);background:rgba(0,148,198,.08);color:inherit;font:inherit;font-size:12px;font-weight:500;white-space:nowrap;
+  padding:6px 10px;border-radius:999px;cursor:pointer;transition:background .15s,border-color .15s}
+.sbc-chip:hover{background:rgba(0,148,198,.18);border-color:rgba(0,148,198,.6)}
+.sbc-form{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid rgba(255,255,255,.07)}
+.sbc-in{flex:1;min-width:0;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:inherit;
+  font:inherit;font-size:13px;font-weight:500;padding:10px 14px;border-radius:999px;outline:none}
+.sbc-in:focus{border-color:rgba(0,148,198,.7)}
+.sbc-in::placeholder{color:currentColor;opacity:.4}
+.sbc-send{width:40px;height:40px;flex:none;border-radius:50%;border:0;cursor:pointer;color:#fff;
+  background:var(--yellow,#0094C6);display:grid;place-items:center}
+.sbc-send:disabled{opacity:.4;cursor:default}
+@keyframes sbcIn{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes sbcDot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-3px);opacity:.9}}
+:root[data-theme="light"] .sbchat{color:#1A1726;background:rgba(250,250,253,.9);border-color:rgba(20,20,40,.08);box-shadow:0 24px 60px rgba(0,40,60,.18)}
+:root[data-theme="light"] .sbc-head,:root[data-theme="light"] .sbc-form{border-color:rgba(20,20,40,.07)}
+:root[data-theme="light"] .sbc-x{background:rgba(20,20,40,.06)}
+:root[data-theme="light"] .sbc-m.bot{background:rgba(20,20,40,.06)}
+:root[data-theme="light"] .sbc-m a{color:#007aa6}
+:root[data-theme="light"] .sbc-in{background:rgba(20,20,40,.04);border-color:rgba(20,20,40,.1)}
+@media (max-width:900px){
+  .sbot{right:6px;bottom:18px;transform:scale(.85)}
+  .sbchat{right:12px;left:12px;width:auto;bottom:130px;height:min(470px,calc(100vh - 152px))}
+}
+</style>
+<div class="sbot" id="sbot">
+  <div class="sb-bub sb-bot" id="sbBot" aria-hidden="true"></div>
+  <div class="sb-bub sb-user" id="sbUser" aria-hidden="true"></div>
+  <canvas id="sbCanvas" width="90" height="96" aria-hidden="true"></canvas>
+  <button class="sb-launch" id="sbLaunch" type="button" aria-label="Chat with Orbit, Sudeep's personal assistant" aria-expanded="false" aria-controls="sbChat"></button>
+</div>
+<div class="sbchat" id="sbChat" role="dialog" aria-label="Chat with Orbit, Sudeep's personal assistant">
+  <div class="sbc-head">
+    <div class="sbc-title">Orbit <span class="sbc-ver">v20.03</span></div>
+    <button class="sbc-x sbc-new" id="sbNew" type="button" aria-label="Start a new chat" data-tip="New chat">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+    </button>
+    <button class="sbc-x" id="sbClose" type="button" aria-label="Close chat">×</button>
+  </div>
+  <div class="sbc-msgs" id="sbMsgs" aria-live="polite"></div>
+  <div class="sbc-chips" id="sbChips" aria-label="Suggested questions"></div>
+  <form class="sbc-form" id="sbForm" autocomplete="off">
+    <input class="sbc-in" id="sbIn" type="text" maxlength="500" placeholder="Ask Orbit anything about Sudeep…" aria-label="Your message">
+    <button class="sbc-send" id="sbSend" type="submit" aria-label="Send" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </form>
+</div>
+<script>
+(function(){
+  // Paste your deployed Cloudflare Worker URL here to switch on real AI replies.
+  // Leave empty to use the built-in answers below.
+  const SBOT_ENDPOINT='';
+
+  const root=document.getElementById('sbot'); if(!root) return;
+  const cv=document.getElementById('sbCanvas'), ctx=cv.getContext('2d');
+  const botEl=document.getElementById('sbBot'), userEl=document.getElementById('sbUser');
+  const chat=document.getElementById('sbChat'), launch=document.getElementById('sbLaunch'), closeBtn=document.getElementById('sbClose');
+  const msgsEl=document.getElementById('sbMsgs'), form=document.getElementById('sbForm'), input=document.getElementById('sbIn'), sendBtn=document.getElementById('sbSend');
+  const W=150,H=160,SCALE=.6,DPR=Math.min(window.devicePixelRatio||1,2);
+  cv.width=Math.round(W*SCALE*DPR); cv.height=Math.round(H*SCALE*DPR);
+
+  // Loop script — edit the lines here
+  const HELLO="Hi, I'm Orbit ✦\nI serve Sudeep Mannava";
+  const ASK='Um… what does Sudeep design?';
+  const ANSWER='AI products, apps & motion ✦';
+  const LOOP=11.6;   // includes a 1.6s pause so Orbit's intro can be read
+
+  const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const lin=(a,b,t)=>clamp((t-a)/(b-a));
+  const eio=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const eout=t=>1-Math.pow(1-t,3);
+  const ein=t=>t*t*t;
+  const back=t=>{const c1=1.9,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)};
+  const typed=(s,T,t0,cps)=>s.slice(0,Math.max(0,Math.floor((T-t0)*cps)));
+  const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+  const rgb=(c,a=1)=>`rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  const CY=[110,212,245], BL=[0,148,198], VI=[0,104,150]; // tints/shades of primary #0094C6
+
+  const mctx=document.createElement('canvas').getContext('2d'), widths={};
+  function fullWidth(el,str){
+    if(widths[str]) return widths[str];
+    const cs=getComputedStyle(el); mctx.font=`${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    return widths[str]=Math.ceil(Math.max(...str.split('\n').map(l=>mctx.measureText(l).width))+parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight)+2);
+  }
+  function bubble(el,text,T,show,hide,t0,cps,rise,force0,full){
+    const a=force0?0:eout(lin(show,show+.15,T))*(1-lin(hide,hide+.2,T));
+    el.style.opacity=a;
+    el.style.width=fullWidth(el,full||text)+'px';
+    el.style.transform=`translateX(-50%) translateY(${(1-eout(lin(show,show+.15,T)))*6 - lin(hide,hide+.2,T)*(rise||8)}px)`;
+    const s=typeof text==='function'?text(T):typed(text,T,t0,cps);
+    if(el.textContent!==s) el.textContent=s;
+    el.style.visibility=s&&a>0.01?'visible':'hidden';
+  }
+
+  const parts=[];
+  function emit(n,cx,cy,R){
+    for(let i=0;i<n;i++){
+      const ang=-Math.PI/2+(Math.random()-.5)*1.9, r=R*(.35+Math.random()*.55);
+      parts.push({x:cx+Math.cos(ang)*r,y:cy+Math.sin(ang)*r*.9,vx:(Math.random()-.5)*8,vy:-(10+Math.random()*26),
+        life:0,max:.7+Math.random()*.8,s:.9+Math.random()*1.5,c:[CY,BL,VI][Math.floor(Math.random()*3)]});
+    }
+  }
+
+  function drawFace(cx,cy,t,m,eyeOpen,chev,emo,ek,eyeScale){
+    const fw=27,fh=12.5,N=56;
+    const Lw=Math.max(.12,1+.75*Math.sin(t*4.1)), Rw=Math.max(.12,1+.75*Math.sin(t*4.1+2.3));
+    const pinch=clamp(.5+.45*Math.sin(t*3.3),0,.92), pc=.32*Math.sin(t*2.7), wave=.55*Math.sin(t*3.7);
+    const top=[],bot=[];
+    for(let i=0;i<=N;i++){
+      const x=-1+2*i/N;
+      const pill=fh*Math.pow(Math.max(0,1-Math.pow(Math.abs(x),5)),1/5);
+      const blob=fh*1.25*Math.sqrt(Math.max(0,1-x*x))*((Lw*(1-x)+Rw*(1+x))/2)*(1-pinch*Math.exp(-Math.pow((x-pc)/.24,2)));
+      const hh=pill+(blob-pill)*m, off=m*wave*Math.sin(x*2.4+t*5)*fh*.55;
+      const px=cx+x*fw*(1+.12*m);
+      top.push([px,cy+off-hh]); bot.push([px,cy+off+hh]);
+    }
+    const a=.5+.5*Math.sin(t*.8);
+    const g=ctx.createLinearGradient(cx-fw,cy,cx+fw,cy);
+    g.addColorStop(0,rgb(mix(CY,VI,a*.6)));
+    g.addColorStop(.5,rgb(mix(BL,CY,.25+.25*Math.sin(t*1.3))));
+    g.addColorStop(1,rgb(mix(VI,CY,1-a)));
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(top[0][0],top[0][1]);
+    top.forEach(p=>ctx.lineTo(p[0],p[1]));
+    for(let i=bot.length-1;i>=0;i--) ctx.lineTo(bot[i][0],bot[i][1]);
+    ctx.closePath();
+    ctx.shadowColor='rgba(0,148,198,.85)'; ctx.shadowBlur=16*SCALE*DPR;
+    ctx.fillStyle=g; ctx.globalAlpha*=.95; ctx.fill();
+    ctx.shadowBlur=6*SCALE*DPR; ctx.globalAlpha*=.6; ctx.fill();
+    ctx.restore();
+
+    const ea=clamp(1-m*2);
+    if(ea<=0) return;
+    ctx.save(); ctx.globalAlpha*=ea;
+    drawEyes(cx,cy,t,eyeOpen,chev,ek>.5?emo:'normal',ek,eyeScale||1);
+    ctx.restore();
+  }
+
+  // Eye shapes for each emotion (white, drawn on the glowing face)
+  function pill(x,y,w,h){ ctx.beginPath(); ctx.roundRect?ctx.roundRect(x-w/2,y-h/2,w,h,Math.min(w,h)/2):ctx.rect(x-w/2,y-h/2,w,h); ctx.fill(); }
+  function heart(r){ ctx.beginPath(); ctx.moveTo(0,r*.85);
+    ctx.bezierCurveTo(-r*1.35,-r*.05,-r*.65,-r*1.15,0,-r*.35); ctx.bezierCurveTo(r*.65,-r*1.15,r*1.35,-r*.05,0,r*.85); ctx.fill(); }
+  function sparkle(r,rot){ ctx.save(); ctx.rotate(rot); ctx.beginPath();
+    for(let i=0;i<8;i++){ const a=i*Math.PI/4, rr=i%2?r*.32:r; ctx[i?'lineTo':'moveTo'](Math.cos(a)*rr,Math.sin(a)*rr); }
+    ctx.closePath(); ctx.fill(); ctx.restore(); }
+  function drawEyes(cx,cy,t,eyeOpen,chev,type,ek,eyeScale){
+    ctx.fillStyle='#fff'; ctx.strokeStyle='#fff'; ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.shadowColor='rgba(255,255,255,.75)'; ctx.shadowBlur=4*SCALE*DPR;
+    const pop=type==='normal'?1:.55+.45*clamp((ek-.5)*2.2);
+    const eh=Math.max(1.6,9*eyeOpen*eyeScale);
+    [-1,1].forEach(s=>{
+      ctx.save(); ctx.translate(cx+7.5*s,cy); ctx.scale(pop,pop); ctx.lineWidth=2.6;
+      switch(type){
+        case 'happy': ctx.beginPath(); ctx.arc(0,3,4.2,Math.PI*1.15,Math.PI*1.85); ctx.stroke(); break;
+        case 'sad':   ctx.beginPath(); ctx.arc(0,-3.2,4.2,Math.PI*.15,Math.PI*.85); ctx.stroke();
+                      if(s>0){ ctx.globalAlpha*=.8; ctx.beginPath(); ctx.ellipse(2.5,4.5+((t*14)%6),1.1,1.6,0,0,Math.PI*2); ctx.fill(); } break;
+        case 'wow':   ctx.lineWidth=2.1; ctx.beginPath(); ctx.arc(0,0,3.8,0,Math.PI*2); ctx.stroke(); break;
+        case 'love':  ctx.scale(1+.12*Math.sin(t*9),1+.12*Math.sin(t*9)); heart(4.6); break;
+        case 'star':  sparkle(5.4,t*1.8*s); break;
+        case 'wink':  if(s<0) pill(0,0,3.4,9); else { ctx.beginPath(); ctx.arc(0,3,4.2,Math.PI*1.15,Math.PI*1.85); ctx.stroke(); } break;
+        case 'curious': if(s<0) pill(0,-.5,3.8,11); else pill(0,1,3.6,4.2); break;
+        case 'confused':
+          if(s<0) pill(0,0,3.2,6.5);
+          else { ctx.lineWidth=2.3; ctx.beginPath(); ctx.moveTo(2.5,-4); ctx.lineTo(-1.8,0); ctx.lineTo(2.5,4); ctx.stroke(); } break;
+        default:
+          if(chev&&s>0){ ctx.lineWidth=2.4; ctx.beginPath(); ctx.moveTo(2.5,-4); ctx.lineTo(-1.8,0); ctx.lineTo(2.5,4); ctx.stroke(); }
+          else pill(0,0,3.4,eh);
+      }
+      ctx.restore();
+    });
+  }
+
+  function drawOrb(cx,cy,R){
+    ctx.save();
+    ctx.shadowColor='rgba(0,148,198,.35)'; ctx.shadowBlur=22*SCALE*DPR;
+    const g=ctx.createRadialGradient(cx-R*.25,cy-R*.3,R*.1,cx,cy,R);
+    g.addColorStop(0,'rgba(10,34,46,.92)'); g.addColorStop(.75,'rgba(6,18,26,.95)'); g.addColorStop(1,'rgba(8,52,72,.95)');
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+    ctx.restore();
+    const rim=ctx.createLinearGradient(cx-R,cy-R,cx+R,cy+R);
+    rim.addColorStop(0,'rgba(110,212,245,.8)'); rim.addColorStop(.5,'rgba(0,148,198,.35)'); rim.addColorStop(1,'rgba(0,148,198,.8)');
+    ctx.beginPath(); ctx.arc(cx,cy,R-1,0,Math.PI*2); ctx.lineWidth=2; ctx.strokeStyle=rim; ctx.stroke();
+    const hl=ctx.createRadialGradient(cx,cy+R*.55,0,cx,cy+R*.55,R*.7);
+    hl.addColorStop(0,'rgba(0,148,198,.2)'); hl.addColorStop(1,'rgba(0,148,198,0)');
+    ctx.fillStyle=hl; ctx.beginPath(); ctx.arc(cx,cy,R-1,0,Math.PI*2); ctx.fill();
+  }
+
+  // Chat-driven state
+  let chatOpen=false, thinking=false, lastKey=0, hover=false;
+  const cur={think:0,hov:0,type:0};
+  const emo={type:'normal',k:0,until:0,start:0};
+  let keyPulse=0; const rings=[];
+  function setEmotion(type,dur){
+    emo.type=type; emo.start=performance.now(); emo.until=emo.start+(dur||3.4)*1000;
+    if(type==='star'||type==='love') burst=true;
+  }
+  let burst=false;
+
+  // Face follows the mouse
+  const look={x:0,y:0,tx:0,ty:0};
+  addEventListener('pointermove',e=>{
+    const r=cv.getBoundingClientRect();
+    look.tx=clamp((e.clientX-(r.left+r.width/2))/380,-1,1);
+    look.ty=clamp((e.clientY-(r.top+r.height*.65))/380,-1,1);
+  },{passive:true});
+  document.documentElement.addEventListener('pointerleave',()=>{look.tx=0;look.ty=0;});
+
+  let last=performance.now(), start=last, emitAcc=0;
+  function frame(now,staticT){
+    const dt=Math.min(.05,(now-last)/1000); last=now;
+    const t=(now-start)/1000;
+    const tl=.85+t%(LOOP-.85), T=staticT!=null?staticT:(chatOpen?7.0:(tl<2.05?tl:tl<3.65?2.05:tl-1.6));
+    const k=1-Math.exp(-dt*10);
+    look.x+=(look.tx-look.x)*k; look.y+=(look.ty-look.y)*k;
+    cur.think+=((thinking?1:0)-cur.think)*k;
+    cur.hov+=((hover||chatOpen?1:0)-cur.hov)*k;
+    const typing=chatOpen&&!thinking&&(now-lastKey<750);
+    cur.type+=((typing?1:0)-cur.type)*k;
+    emo.k+=(((now<emo.until)?1:0)-emo.k)*(1-Math.exp(-dt*9));
+    if(emo.k<.02&&now>=emo.until) emo.type='normal';
+    keyPulse*=Math.exp(-dt*9);
+
+    bubble(botEl,HELLO,T,1.0,2.3,1.05,45,0,chatOpen);
+    if(T>=5.7) bubble(botEl,ANSWER,T,5.8,9.15,5.85,30,0,chatOpen);
+    bubble(userEl,T2=>T2<3.2?typed(ASK,T2,2.4,9).slice(0,3):ASK.slice(0,3)+typed(ASK.slice(3),T2,3.2,28),T,2.4,5.6,0,0,10,chatOpen,ASK);
+
+    const ein_=lin(.95,1.45,T), ex=ein(lin(9.2,9.6,T));
+    const sc=(.25+.75*back(ein_))*(1-.15*ex)*(1+.07*cur.hov);
+    const alpha=lin(.95,1.12,T)*(1-ex);
+    const R=46, cx=W/2, cy=H-R-10 + (1-eout(ein_))*70 + ex*55 + Math.sin(t*1.6)*1.6;
+
+    const loopM=chatOpen?0:eio(lin(4.25,4.5,T))*(1-eio(lin(5.1,5.4,T)));
+    const m=Math.max(loopM,eio(cur.think));
+    let eye=1, chev=false;
+    if(!chatOpen){
+      if((T>2.25&&T<2.38)||(T>5.36&&T<5.5)) chev=true;
+      if(T>2.38&&T<2.5) eye=.22;
+    }
+    const blink=(b,TT)=>{const d=Math.abs(TT-b);return d<.07?.15+d/.07*.85:1};
+    eye=Math.min(eye,blink(1.9,T),blink(7.4,T),blink(8.6,T),chatOpen?blink(1.5,t%4.2):1);
+
+    const emitting=!chatOpen&&((T>2.75&&T<4.05)||(T>5.45&&T<6.25));
+    if(emitting&&alpha>.5&&staticT==null){ emitAcc+=dt*90; const n=Math.floor(emitAcc); emitAcc-=n; emit(n,cx,cy,R*sc); }
+    if(burst&&alpha>.5){ burst=false; emit(22,cx,cy,R*sc); }
+
+    // Emotion body language
+    const es=(now-emo.start)/1000, E=emo.k, et=emo.type;
+    let eDy=0, eTilt=0, eScale=1;
+    if(et==='happy'||et==='wink') eDy=-3*Math.abs(Math.sin(es*9))*Math.exp(-es*1.6)*E;
+    if(et==='love') eScale=1+.05*Math.sin(es*9)*E;
+    if(et==='wow') eScale=1+.14*Math.exp(-es*5)*E;
+    if(et==='star') eScale=1+.06*Math.exp(-es*3)*E;
+    if(et==='sad') { eDy=4*E; eScale=1-.03*E; }
+    if(et==='curious') eTilt=.2*E;
+    if(et==='confused') eTilt=.16*Math.sin(es*7)*E;
+
+    // Typing: look up at the input box, eyes travel along as the text grows, pulse per keystroke
+    const len=Math.min(1,(input.value||'').length/36);
+    const lx=lerp(look.x*(1-.5*E),-.55+len*.8,cur.type), ly=lerp(look.y*(1-.5*E),-.85,cur.type);
+    const eyeScale=1+.15*cur.type+.25*keyPulse;
+
+    ctx.setTransform(DPR*SCALE,0,0,DPR*SCALE,0,0);
+    ctx.clearRect(0,0,W,H);
+    if(alpha>0){
+      ctx.save(); ctx.globalAlpha=alpha;
+      ctx.translate(cx,cy); ctx.scale(sc,sc); ctx.translate(-cx,-cy);
+      drawOrb(cx,cy,R);
+      for(let i=rings.length-1;i>=0;i--){
+        const r=rings[i]; r.life+=dt*2.2; if(r.life>=1){rings.splice(i,1);continue;}
+        ctx.save(); ctx.globalAlpha*=(1-r.life)*.7; ctx.strokeStyle='rgba(0,148,198,1)'; ctx.lineWidth=2*(1-r.life)+.6;
+        ctx.beginPath(); ctx.arc(cx,cy,R+1+r.life*11,0,Math.PI*2); ctx.stroke(); ctx.restore();
+      }
+      const fx=cx+lx*9, fy=cy+ly*7+eDy, fs=eScale*(1+.07*keyPulse);
+      ctx.save(); ctx.translate(fx,fy); ctx.rotate(eTilt); ctx.scale(fs,fs); ctx.translate(-fx,-fy);
+      drawFace(fx,fy,t,m,eye,chev,et,E,eyeScale);
+      ctx.restore();
+      ctx.restore();
+    }
+    for(let i=parts.length-1;i>=0;i--){
+      const p=parts[i]; p.life+=dt; if(p.life>p.max){parts.splice(i,1);continue;}
+      p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy-=6*dt;
+      const kk=p.life/p.max, pa=(kk<.2?kk/.2:1-(kk-.2)/.8)*alpha;
+      ctx.fillStyle=rgb(p.c,pa*.9); ctx.beginPath(); ctx.arc(p.x,p.y,p.s,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  const reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){ frame(performance.now(),7.5); }
+  else (function loop(now){ frame(now); requestAnimationFrame(loop); })(performance.now());
+  const redraw=()=>{ if(reduced) frame(performance.now(),7.5); };
+
+  /* ---------- Chat ---------- */
+  const KB=[
+    {k:['hi','hello','hey','yo','hola','namaste'],a:"Hey! \u{1F44B} I'm Sudeep's assistant. Ask me about his work, skills, experience, or how to work with him."},
+    {k:['who','sudeep','yourself','introduce','summary','do'],a:"Sudeep Mannava is a UI/UX & product designer. He blends user research, UI and motion to design products that feel effortless to use, taking ideas from research and problem framing all the way to polished, developer-ready interfaces. He's currently a Product Designer (since Mar 2026)."},
+    {k:['work','project','projects','portfolio','case','studies','study','show','built','designed'],a:"Highlights from his work:\n• Neurology Dashboards: 12 connected analytics views for a neurology patient cohort, with AI insights and predictive risk\n• NeuroBrowser: a clinical side panel with NeuroGPT answers right inside the EHR\n• InsureOne: an AI insurance app that turns policy jargon into clear decisions\n• Lexicon: an AI learning app that unifies courses, progress and doubt-solving\n\nScroll to the Work section to open the prototypes and case studies."},
+    {k:['insureone','insurance'],a:"InsureOne is an AI insurance application design case study. It turns policy jargon into decisions people can actually make, from research and prototyping through to final UI.\nCase study: https://www.behance.net/gallery/239948009/InsureOne-AI-Application-Design-(UIUX-Case-Study)"},
+    {k:['lexicon','education','edtech','learning'],a:"Lexicon is an AI learning app. Learning is fragmented and switching apps breaks focus, so Lexicon pulls discovery, lessons, progress and teacher support into one place.\nCase study: https://www.behance.net/gallery/240862895/Lexicon-Education-UIUX-Case-study"},
+    {k:['neuro','neurobrowser','neurology','dashboard','dashboards','health','healthtech','clinical'],a:"In healthtech, Sudeep designed Neurology Dashboards (12 connected views of a patient population, from demographics to AI insights and predictive risk) and NeuroBrowser, a clinical side panel that surfaces patient scores, therapy insights and NeuroGPT answers inside the EHR. Both prototypes are in the Work section."},
+    {k:['skill','skills','tool','tools','software','figma','framer','stack','use','blender','after','effects'],a:"Core tools: Figma and Framer for product design and prototyping, Illustrator and Photoshop for visuals, After Effects and Premiere Pro for motion, and Spline and Blender for 3D. He also prototypes fast with AI tools like Figma Make, Bolt, Lovable, Cursor and Claude Code."},
+    {k:['ai','artificial','claude','gpt','agent','vibe','generative'],a:"AI is a big part of Sudeep's practice: he designs AI experiences and agent UX, and uses tools like Claude Code, Figma Make, Bolt, Lovable and Cursor to build working prototypes in hours instead of weeks."},
+    {k:['experience','background','career','journey','years','job','history','worked','previous'],a:"His journey so far:\n• Mar 2026 to present: Product Designer\n• Feb 2025 to Feb 2026: Graphic Designer (marketing UI/UX, branding, and the InsureOne & Lexicon case studies)\n• Aug 2024 to Nov 2024: Graphic Designer\n• Apr 2024 to Jul 2024: Motion Graphic Design Intern\n\nThat's 2+ years across 4 design disciplines."},
+    {k:['process','approach','method','workflow','how'],a:"His process is research-led and iterative: discovery (stakeholders, user research, competitive analysis) → user journeys & information architecture → wireframes → high-fidelity UI on a scalable design system → prototypes & usability testing → a documented handoff to engineering."},
+    {k:['freelance','hire','available','availability','project','rate','rates','price','cost','budget','engagement'],a:"Yes, Sudeep takes on a limited number of freelance projects: product UI, UX audits, design systems and motion design. Send him a short brief and he'll set up a 30-minute discovery call, then follow up with a proposal covering scope, timeline and next steps.\n\nEmail: nagasaisudeep@gmail.com\nPhone: +91 79891 93704"},
+    {k:['remote','global','relocate','timezone','international'],a:"Yes, he's open to remote and global roles and is used to working with distributed teams across time zones through async updates and shared documentation."},
+    {k:['contact','email','mail','reach','linkedin','connect','call','talk','phone','number','mobile','whatsapp'],a:"You can reach Sudeep here:\nEmail: nagasaisudeep@gmail.com\nPhone: +91 79891 93704\nLinkedIn: https://www.linkedin.com/in/sudeep-mannava-49bb0a256/"},
+    {k:['resume','cv'],a:"You can open his resume from the document button at the top right of this page, or ask him directly:\nEmail: nagasaisudeep@gmail.com\nPhone: +91 79891 93704"},
+    {k:['behance','dribbble','case','writeup'],a:"Full write-ups live on Behance: https://www.behance.net/sudeepsaim"},
+    {k:['developer','developers','engineer','engineers','team','collaborate','collaboration'],a:"Cross-functional work is central for him. He partners with PMs and engineers from discovery through delivery, checks technical feasibility early, and hands off documented components, states and edge cases so what ships matches the design."},
+    {k:['testimonial','review','reviews','feedback','praise','recommend','say','people'],a:"From Harshini Thota, Product Manager at Zotok: his designs are simple, user-friendly and focused on user needs, and he collaborates well, communicates effectively, delivers on time and is open to feedback."}
+  ];
+  const FALLBACK="I'm not sure about that one. For anything specific, Sudeep is happy to answer directly:\nEmail: nagasaisudeep@gmail.com\nPhone: +91 79891 93704";
+  function localAnswer(q){
+    if(/\b(who|what) are you\b|\byour name\b|\borbit\b|\bare you (a )?(bot|ai|human|real)\b/i.test(q))
+      return "I'm Orbit ✦ I serve Sudeep Mannava as his personal assistant. I can tell you about his work, skills, experience, or how to get in touch with him.";
+    const words=q.toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(Boolean);
+    let best=null,score=0;
+    KB.forEach((e,i)=>{
+      let s=0; e.k.forEach(k=>{ if(words.includes(k)) s+=k.length>3?2:1; else if(k.length>4&&words.some(w=>w.startsWith(k.slice(0,5)))) s+=1; });
+      if(s>score||(s===score&&s>0&&i>0&&best===KB[0])){score=s;best=e;}
+    });
+    return score>0?best.a:FALLBACK;
+  }
+
+  const history=[];
+  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const linkify=s=>esc(s).replace(/(https?:\/\/[^\s)]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>')
+    .replace(/([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g,'<a href="mailto:$1">$1</a>')
+    .replace(/(\+\d{2} \d{5} \d{5})/g,m=>'<a href="tel:'+m.replace(/\s/g,'')+'">'+m+'</a>');
+  function addMsg(role,text){
+    const d=document.createElement('div'); d.className='sbc-m '+(role==='user'?'user':'bot');
+    d.innerHTML=linkify(text); msgsEl.appendChild(d); msgsEl.scrollTop=msgsEl.scrollHeight; return d;
+  }
+  // Suggested questions: pinned above the input, never more than two rows
+  const chipsEl=document.getElementById('sbChips');
+  const SUGGEST=['What does Sudeep do?','Show me his work','Which tools does he use?','Is he available for freelance?','How can I contact him?','What is his experience?','What is his design process?','Is he open to remote roles?','Tell me about InsureOne','Tell me about Lexicon','What is NeuroBrowser?','Can I see his resume?','What do people say about him?'];
+  const SHOW=3, PIN='How can I contact him?';
+  let asked=[];   // asked suggestions, oldest first
+  const rows=()=>new Set([...chipsEl.children].map(b=>b.offsetTop)).size;
+  function makeChip(q){ const b=document.createElement('button'); b.type='button'; b.className='sbc-chip'; b.textContent=q; b.onclick=()=>send(q);
+    if(q===PIN) b.style.order='1';   // …and always shown last
+    return b; }
+  // Always show 3: unasked ones first, then recycle the oldest asked (never the one just asked), keeping to two rows
+  function renderChips(){
+    chipsEl.innerHTML='';
+    const fresh=SUGGEST.filter(q=>!asked.includes(q.toLowerCase()));
+    const recycled=asked.slice(0,-1).map(a=>SUGGEST.find(q=>q.toLowerCase()===a)).filter(Boolean);
+    const order=[PIN].concat(fresh.concat(recycled).filter(q=>q!==PIN));   // contact info is always included…
+    const fill=list=>{ chipsEl.innerHTML='';
+      for(const q of list){ if(chipsEl.children.length>=SHOW) break; const b=makeChip(q); chipsEl.appendChild(b); if(rows()>2) b.remove(); }
+      return chipsEl.children.length; };
+    // if two long questions hog both rows, skip one of them so a third fits
+    if(fill(order)<SHOW) for(let i=1;i<order.length&&fill(order.filter((_,j)=>j!==i))<SHOW;i++);
+  }
+  const fitChips=renderChips;
+  addEventListener('resize',()=>{ if(chatOpen) fitChips(); });
+  let greeted=false;
+  function greet(){
+    if(greeted) return; greeted=true;
+    addMsg('bot',"Hi! I'm Orbit ✦ I serve Sudeep Mannava as his personal assistant.\nAsk me about his work, skills, experience or how to work with him.");
+    renderChips();
+  }
+
+  async function getReply(q){
+    if(SBOT_ENDPOINT){
+      try{
+        const r=await fetch(SBOT_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history.slice(-10)})});
+        if(r.ok){ const d=await r.json(); if(d.reply) return d.reply; }
+      }catch(e){}
+    }
+    await new Promise(r=>setTimeout(r,650+Math.random()*500));
+    return localAnswer(q);
+  }
+
+  // Pick an emotion from what the visitor asked
+  function emotionFor(q,fellBack){
+    const s=' '+q.toLowerCase()+' ', has=re=>re.test(s);
+    if(has(/\bwow\b|omg|whoa|!!/)) return 'wow';
+    if(has(/\b(love|loved|amazing|awesome|beautiful|stunning|fantastic|brilliant|impressive|great|cool|nice)\b/)) return 'love';
+    if(has(/\b(bad|hate|boring|ugly|worst|sad|terrible|disappoint\w*|not good|sucks)\b/)) return 'sad';
+    if(has(/\b(thanks|thank you|thx|ty|cheers)\b/)) return 'happy';
+    if(has(/\b(hi|hello|hey|hola|namaste|yo|good (morning|afternoon|evening))\b/)) return 'happy';
+    if(fellBack) return 'confused';
+    if(has(/\b(hire|hiring|freelance|available|availability|collaborate|work with|join)\b/)) return 'happy';
+    if(has(/\b(contact|email|mail|reach|linkedin|call|resume|cv|phone)\b/)) return 'wink';
+    if(has(/\b(work|works|project|projects|portfolio|case|studies|study|ai|dashboard|dashboards|insureone|lexicon|neuro\w*|built|designed|show)\b/)) return 'star';
+    if(has(/\b(how|why|process|approach|tool|tools|skill|skills|which|what|who|experience)\b/)) return 'curious';
+    return 'happy';
+  }
+
+  let busy=false, epoch=0;
+  async function send(q){
+    q=(q||'').trim(); if(!q||busy) return;
+    const my=epoch;
+    busy=true; sendBtn.disabled=true;
+    { const lq=q.toLowerCase(); asked=asked.filter(a=>a!==lq); asked.push(lq); } renderChips();
+    addMsg('user',q); history.push({role:'user',content:q});
+    input.value='';
+    const ty=document.createElement('div'); ty.className='sbc-m bot sbc-typing'; ty.innerHTML='<i></i><i></i><i></i>';
+    msgsEl.appendChild(ty); msgsEl.scrollTop=msgsEl.scrollHeight;
+    const pre=emotionFor(q,localAnswer(q)===FALLBACK);
+    if(!reduced&&['wow','love','sad','happy'].includes(pre)){ setEmotion(pre,.9); await new Promise(r=>setTimeout(r,650)); }  // react to the question first
+    thinking=true; redraw();
+    const a=await getReply(q);
+    if(my!==epoch) return;   // chat was reset while waiting
+    thinking=false; redraw(); ty.remove();
+    setEmotion(emotionFor(q,a===FALLBACK),3.6); redraw();
+    addMsg('bot',a); history.push({role:'assistant',content:a});
+    busy=false; sendBtn.disabled=!input.value.trim();
+  }
+
+  function openChat(){
+    chatOpen=true; chat.classList.add('open'); launch.setAttribute('aria-expanded','true');
+    greet(); redraw(); setTimeout(()=>input.focus({preventScroll:true}),120);
+  }
+  function closeChat(){
+    chatOpen=false; thinking=false; chat.classList.remove('open'); launch.setAttribute('aria-expanded','false');
+    start=performance.now()-1600; redraw();
+  }
+  launch.addEventListener('click',()=>chatOpen?closeChat():openChat());
+  launch.addEventListener('pointerenter',()=>hover=true);
+  launch.addEventListener('pointerleave',()=>hover=false);
+  closeBtn.addEventListener('click',()=>{closeChat(); launch.focus({preventScroll:true});});
+  // New chat: clear the conversation and start fresh
+  document.getElementById('sbNew').addEventListener('click',()=>{
+    epoch++; busy=false; thinking=false; emo.until=0;
+    history.length=0; asked=[]; msgsEl.innerHTML=''; input.value=''; sendBtn.disabled=true;
+    greeted=false; greet(); setEmotion('happy',1.6); redraw();
+    input.focus({preventScroll:true});
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&chatOpen){ closeChat(); launch.focus({preventScroll:true}); } });
+  input.addEventListener('input',()=>{ lastKey=performance.now(); keyPulse=1; if(rings.length<4) rings.push({life:0}); sendBtn.disabled=busy||!input.value.trim(); });
+  form.addEventListener('submit',e=>{ e.preventDefault(); send(input.value); });
+})();
+</script>
+<!-- ===== /Voice bot ===== -->
 </body></html>
