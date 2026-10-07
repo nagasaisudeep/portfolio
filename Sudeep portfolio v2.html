@@ -4020,13 +4020,28 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
 .nd-x:hover{background:rgba(255,255,255,.14)}
 
 .nd-home{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:safe center;padding:0 46px 40px;overflow:auto}
-.nd-orb{position:relative;width:84px;height:84px;border-radius:50%;margin-bottom:22px;animation:ndFloat 5s ease-in-out infinite;
-  background:radial-gradient(circle at 30% 26%,#f2fdff 0 5%,rgba(170,236,255,.85) 11%,transparent 28%),
-             radial-gradient(circle at 72% 78%,rgba(120,220,255,.7),transparent 40%),
-             radial-gradient(circle at 45% 45%,#3cc7f0 0%,#0094C6 38%,#04506f 72%,#021b28 100%);
-  box-shadow:0 0 50px rgba(0,148,198,.55),0 18px 30px -10px rgba(0,0,0,.6),inset -10px -12px 22px rgba(0,0,0,.45),inset 6px 8px 16px rgba(255,255,255,.22)}
-.nd-orb::after{content:"";position:absolute;inset:6px;border-radius:50%;mix-blend-mode:screen;opacity:.55;animation:ndSpin 9s linear infinite;
-  background:conic-gradient(from 0deg,transparent 0 20%,rgba(160,240,255,.55) 28%,transparent 40% 62%,rgba(0,200,255,.4) 72%,transparent 82%)}
+.nd-orbw{position:relative;flex:none;width:92px;height:92px;margin-bottom:26px;animation:ndFloat 5s ease-in-out infinite}
+.nd-orbw::after{content:"";position:absolute;left:8%;right:8%;bottom:-22px;height:18px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,170,230,.55),transparent);filter:blur(6px)}
+.nd-orb{position:absolute;inset:0;border-radius:50%;overflow:hidden;isolation:isolate;
+  background:radial-gradient(circle at 50% 78%,#0aa4d8 0%,#05587e 32%,#022233 66%,#000b12 100%);
+  box-shadow:0 0 30px rgba(0,160,215,.6),0 0 80px rgba(0,148,198,.25)}
+.nd-orb i{position:absolute;border-radius:50%;pointer-events:none}
+/* liquid swirls inside the glass */
+.nd-orb .s1{inset:-30%;mix-blend-mode:screen;filter:blur(4px);animation:ndSpin 8s linear infinite;
+  background:conic-gradient(from 30deg,transparent 0 10%,rgba(0,215,255,1) 17%,rgba(0,110,190,.5) 27%,transparent 36% 50%,
+    rgba(45,235,215,.85) 60%,rgba(0,150,210,.45) 70%,transparent 80%)}
+.nd-orb .s2{inset:12%;mix-blend-mode:screen;filter:blur(3px);animation:ndSpin 12s linear infinite reverse;
+  background:radial-gradient(ellipse 58% 18% at 44% 60%,rgba(80,225,255,.9),transparent 70%),
+             radial-gradient(ellipse 34% 14% at 64% 38%,rgba(0,190,255,.85),transparent 72%),
+             radial-gradient(ellipse 22% 30% at 30% 40%,rgba(30,200,230,.55),transparent 70%)}
+/* glass surface: dark rim, crisp top-left specular, bright caustic on the bottom edge */
+.nd-orb .gl{inset:0;z-index:2;
+  background:radial-gradient(ellipse 20% 12% at 32% 20%,rgba(255,255,255,.98),rgba(255,255,255,.4) 40%,transparent 70%),
+             radial-gradient(ellipse 7% 4% at 68% 26%,rgba(255,255,255,.6),transparent 80%),
+             radial-gradient(ellipse 46% 12% at 50% 93%,rgba(120,235,255,.7),transparent 75%),
+             radial-gradient(circle at 50% 46%,transparent 56%,rgba(0,6,12,.6) 100%);
+  box-shadow:inset 0 0 0 1px rgba(150,230,255,.18),inset 0 -5px 10px rgba(80,220,255,.4),inset 0 6px 12px rgba(255,255,255,.08)}
 @keyframes ndFloat{50%{transform:translateY(-6px)}}
 @keyframes ndSpin{to{transform:rotate(360deg)}}
 .nd-kick{font-size:15px;font-weight:600;letter-spacing:.32em;color:rgba(233,238,242,.9);margin:0}
@@ -4066,6 +4081,12 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   transition:transform .2s cubic-bezier(.2,.9,.3,1.2),background .2s,border-color .2s}
 .nd-ds:hover{transform:translateY(-2px);background:linear-gradient(180deg,rgba(0,148,198,.4),rgba(0,148,198,.18));border-color:rgba(0,148,198,.85)}
 .nd-ds .ar{opacity:.8}
+/* never squash the welcome screen: if it doesn't fit, it scrolls */
+.nd-home{padding-top:24px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
+.nd-home::-webkit-scrollbar{width:8px}.nd-home::-webkit-scrollbar-track{background:transparent}
+.nd-home::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:8px}
+.nd-home>*{flex-shrink:0}
+.nd-orbw{flex:none}
 /* flat: no shadows on the cards or buttons */
 .nd-fc,.nd-ds,.nd-figma,.nd-x,.nd-ver{box-shadow:none!important}
 /* top-bar links only appear once a prototype is open */
@@ -4095,7 +4116,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   .nd-cards{grid-template-columns:1fr} .nd-home{justify-content:flex-start;padding:10px 18px 30px} .nd-cards{margin-top:30px}
   .nd-ver{display:none} .nd-tabs{gap:14px}
 }
-@media (prefers-reduced-motion:reduce){ .nd-orb,.nd-orb::after,.nd-q span::after{animation:none} .nd-veil,.nd-sheet{transition:none} }
+@media (prefers-reduced-motion:reduce){ .nd-orbw,.nd-orb i,.nd-q span::after{animation:none} .nd-veil,.nd-sheet{transition:none} }
 </style>
 
 <div class="nd-veil" id="ndVeil" aria-hidden="true">
@@ -4113,7 +4134,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
       </header>
 
       <div class="nd-home">
-        <div class="nd-orb" aria-hidden="true"></div>
+        <div class="nd-orbw" aria-hidden="true"><div class="nd-orb"><i class="s1"></i><i class="s2"></i><i class="gl"></i></div></div>
         <p class="nd-kick" id="ndKick">WELCOME TO SAVANNAH</p>
         <h2 class="nd-h" id="ndH">Neurology dashboards, made clear</h2>
         <div class="nd-cards" id="ndCards"></div>
