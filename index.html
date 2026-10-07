@@ -3872,6 +3872,94 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
 })();
 </script>
 
+<!-- ===== Work section gestures: swipe, drag and arrow keys move the cards ===== -->
+<style>
+@media (min-width:941px){
+  #work .rail-x{cursor:grab;touch-action:pan-y}
+  #work .rail-x.dragging{cursor:grabbing}
+  #work .rail-x.dragging *{user-select:none;-webkit-user-select:none}
+}
+</style>
+<script>
+(function(){
+  var outer=document.getElementById('work'); if(!outer) return;
+  var vp=outer.querySelector('.rail-x'), track=outer.querySelector('.track'); if(!vp||!track) return;
+  var desktop=function(){ return window.innerWidth>940 && !matchMedia('(prefers-reduced-motion: reduce)').matches; };
+  // The cards' sideways position follows the page scroll while the section is pinned,
+  // so every gesture is turned into page scroll inside that pinned range.
+  var shift=function(){ return Math.max(0,outer.offsetHeight-window.innerHeight); };
+  var pinned=function(){ var top=outer.getBoundingClientRect().top; return top<=1 && -top<shift()-1; };
+  var jump=function(d){ window.scrollBy({top:d,left:0,behavior:'instant'}); };
+  // move the cards by d px but never past either end of the run (so momentum can't fling the page away)
+  var glideTo=function(d){ var y=-outer.getBoundingClientRect().top, s=shift(), t=Math.min(s,Math.max(0,y+d)); if(t!==y) jump(t-y); return t>0&&t<s; };
+  var inView=function(){ var r=outer.getBoundingClientRect(); return r.top<window.innerHeight*.5 && r.bottom>window.innerHeight*.5; };
+
+  // 1) Trackpad / mouse horizontal swipe
+  outer.addEventListener('wheel',function(e){
+    if(!desktop()) return;
+    var dx=e.deltaX||(e.shiftKey?e.deltaY:0);
+    if(!dx||Math.abs(dx)<=Math.abs(e.deltaY)*(e.shiftKey?0:1)) return;   // mostly vertical: leave it alone
+    var top=outer.getBoundingClientRect().top;
+    if(top>1 && dx>0){ jump(top); }                          // swiping in from above: snap to the start of the run
+    var y=-outer.getBoundingClientRect().top, s=shift();
+    if((dx<0 && y<=0) || (dx>0 && y>=s)) return;                          // already at an end: let the browser handle it
+    e.preventDefault();
+    glideTo(dx);
+  },{passive:false});
+
+  // 2) Click-and-drag / touch-drag with a little momentum
+  var drag=null, moved=false, raf=0, noClickUntil=0;
+  vp.addEventListener('dragstart',function(e){ e.preventDefault(); });
+  vp.addEventListener('pointerdown',function(e){
+    if(!desktop()||e.button!==0) return;
+    cancelAnimationFrame(raf);
+    drag={x:e.clientX,y:e.clientY,lastX:e.clientX,t:performance.now(),v:0,id:e.pointerId,axis:null}; moved=false;
+  });
+  window.addEventListener('pointermove',function(e){
+    if(!drag||e.pointerId!==drag.id) return;
+    var dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+    if(!drag.axis){ if(Math.abs(dx)<6&&Math.abs(dy)<6) return; drag.axis=Math.abs(dx)>Math.abs(dy)?'x':'y'; }
+    if(drag.axis!=='x'){ drag=null; return; }
+    if(!moved){ moved=true; vp.classList.add('dragging'); try{ vp.setPointerCapture(e.pointerId); }catch(_){}
+      if(!pinned()){ var top=outer.getBoundingClientRect().top; if(top>0) jump(top); } }
+    var step=e.clientX-drag.lastX, now=performance.now(), dt=Math.max(1,now-drag.t);
+    drag.v=.8*(-step/dt)+.2*drag.v; drag.lastX=e.clientX; drag.t=now;
+    glideTo(-step);
+  });
+  function endDrag(e){
+    if(!drag||(e&&e.pointerId!==drag.id)) return;
+    // released far from where it was pressed without any move events in between: still a drag, not a click
+    if(!moved&&e&&e.type==='pointerup'){
+      var tx=e.clientX-drag.x, ty=e.clientY-drag.y;
+      if(Math.abs(tx)>6&&Math.abs(tx)>Math.abs(ty)){ glideTo(-tx); drag=null; noClickUntil=performance.now()+450; return; }
+    }
+    var v=Math.max(-22,Math.min(22,drag.v*16)); drag=null; vp.classList.remove('dragging');
+    if(!moved) return;
+    moved=false; noClickUntil=performance.now()+450;
+    (function glide(){ if(Math.abs(v)<.4) return; if(!glideTo(v)) return; v*=.86; raf=requestAnimationFrame(glide); })();
+  }
+  window.addEventListener('pointerup',endDrag); window.addEventListener('pointercancel',endDrag);
+  // a drag must not count as a click on a project card
+  window.addEventListener('click',function(e){
+    if(performance.now()<noClickUntil){ e.preventDefault(); e.stopImmediatePropagation(); noClickUntil=0; }
+  },true);
+
+  // 3) Arrow keys move one card at a time while the section is on screen
+  document.addEventListener('keydown',function(e){
+    if(!desktop()||(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')||e.altKey||e.metaKey||e.ctrlKey) return;
+    var t=e.target; if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if(document.querySelector('.nd-veil.open,.pv-veil.open,.sbchat.open')||!inView()) return;
+    var card=track.querySelector('.proj'); if(!card) return;
+    var gap=parseFloat(getComputedStyle(track).columnGap)||22, w=card.getBoundingClientRect().width+gap;
+    var top=outer.getBoundingClientRect().top; if(top>0) jump(top);
+    e.preventDefault();
+    var y=-outer.getBoundingClientRect().top, t=Math.min(shift(),Math.max(0,y+(e.key==='ArrowRight'?w:-w)));
+    window.scrollBy({top:t-y,behavior:'smooth'});
+  });
+})();
+</script>
+<!-- ===== /Work section gestures ===== -->
+
 <!-- ===== Neurology Dashboards viewer (app-shell style) ===== -->
 <style>
 .nd-veil{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:28px;
@@ -3971,6 +4059,15 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-height:2.9em}
 .nd-cards{grid-auto-rows:1fr}
 .nd-fc{height:100%}
+.nd-foot{display:flex;justify-content:center;margin-top:26px}
+.nd-foot:empty{display:none}
+.nd-ds{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 20px 0 16px;border-radius:999px;cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;color:#fff;
+  background:linear-gradient(180deg,rgba(0,148,198,.28),rgba(0,148,198,.12));border:1px solid rgba(0,148,198,.55);box-shadow:0 10px 26px -14px rgba(0,148,198,.8);
+  transition:transform .2s cubic-bezier(.2,.9,.3,1.2),background .2s,border-color .2s}
+.nd-ds:hover{transform:translateY(-2px);background:linear-gradient(180deg,rgba(0,148,198,.4),rgba(0,148,198,.18));border-color:rgba(0,148,198,.85)}
+.nd-ds .ar{opacity:.8}
+/* flat: no shadows on the cards or buttons */
+.nd-fc,.nd-ds,.nd-figma,.nd-x,.nd-ver{box-shadow:none!important}
 /* top-bar links only appear once a prototype is open */
 .nd-main:not(.proto) .nd-tab,.nd-main:not(.proto) .nd-figma{display:none}
 /* single-prototype projects (NeuroBrowser) skip the overview */
@@ -4020,6 +4117,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
         <p class="nd-kick" id="ndKick">WELCOME TO SAVANNAH</p>
         <h2 class="nd-h" id="ndH">Neurology dashboards, made clear</h2>
         <div class="nd-cards" id="ndCards"></div>
+        <div class="nd-foot" id="ndFoot"></div>
       </div>
 
       <div class="nd-proto" id="ndProto"><div class="nd-load">Loading prototype</div></div>
@@ -4060,18 +4158,27 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
       {n:'Claims & Bug Reports', d:'Patient claims history alongside client bug reports.',
        u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?page-id=805%3A23860&node-id=812-12100&viewport=25%2C270%2C0.14&t=ldjRlOuTLpeKcZdN-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=812%3A12100',
        i:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>'}
-    ]},
+    ], footer:{n:'Design System',
+       u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?node-id=1045-11838&viewport=113%2C166%2C0.51&t=biKuRhjci5kVOSBY-1&scaling=scale-down-width&content-scaling=fixed&page-id=984%3A32389'}},
     {card:findCard(/neurobrowser/i), ver:'NeuroBrowser', single:true}
   ].filter(function(p){ return p.card; });
   PROJECTS.forEach(function(p){
     if(p.single) p.items=[{n:p.ver, u:p.card.getAttribute('href'), e:p.card.getAttribute('data-embed')}];
     p.items.forEach(function(it){ it.e=it.e||embedUrl(it.u); });
+    if(p.footer) p.footer.e=embedUrl(p.footer.u);
   });
   if(!PROJECTS.length) return;
 
   var ARROW='<svg class="ar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+  var footEl=document.getElementById('ndFoot');
   function renderCards(){
-    cardsEl.innerHTML='';
+    cardsEl.innerHTML=''; footEl.innerHTML='';
+    if(P.footer){
+      var d=document.createElement('button'); d.type='button'; d.className='nd-ds';
+      d.innerHTML=I('<rect x="3" y="3" width="8" height="8" rx="2"/><circle cx="17" cy="7" r="4"/><path d="M7 13l4 8H3z"/><rect x="13" y="13" width="8" height="8" rx="4" transform="rotate(45 17 17)"/>')+'<span></span>'+ARROW;
+      d.querySelector('span').textContent=P.footer.n; d.setAttribute('aria-label','Open the '+P.footer.n+' prototype');
+      d.addEventListener('click',function(){ show(P.footer); }); footEl.appendChild(d);
+    }
     P.items.forEach(function(v){
       var b=document.createElement('button'); b.type='button'; b.className='nd-fc';
       b.innerHTML='<span class="ic">'+I(v.i||'')+'</span>'+ARROW+'<h5></h5><p></p>';
