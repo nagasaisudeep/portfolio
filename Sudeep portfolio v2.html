@@ -4746,4 +4746,257 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
 })();
 </script>
 <!-- ===== /Voice bot ===== -->
+<!-- ===== Reel loader (formation → expansion: the loader IS the hero ring) ===== -->
+<style>
+#reelLoader{position:fixed;inset:0;z-index:10000;color:var(--ink,#f4f1ea);font-family:var(--f,"Manrope",sans-serif);overflow:hidden}
+#reelLoader .rl-bg{position:absolute;inset:0;background:var(--bg,#0c0c0b);transition:opacity .9s ease}
+#reelLoader.rl-out{pointer-events:none}
+#reelLoader.rl-out .rl-bg{opacity:0}
+#reelLoader .rl-stage{position:absolute;inset:0;perspective:var(--p);perspective-origin:var(--ox) var(--oy)}
+#reelLoader .rl-ring{position:absolute;left:var(--ox);top:var(--oy);width:0;height:0;transform-style:preserve-3d;
+  transform:translateZ(var(--cz)) rotateZ(var(--roll)) rotateX(var(--tilt))}
+#reelLoader .rl-card{position:absolute;display:block;border-radius:4px;overflow:hidden;opacity:0;will-change:transform,opacity;
+  box-shadow:0 30px 60px -20px rgba(0,0,0,.45)}
+#reelLoader .rl-card img{width:100%;height:100%;object-fit:cover;display:block}
+#reelLoader .rl-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#reelLoader .rl-mark{position:absolute;left:34px;top:28px;font-weight:800;font-size:clamp(28px,4vw,52px);
+  letter-spacing:-.03em;display:flex;overflow:hidden;z-index:4;will-change:transform;transition:color 1s ease}
+#reelLoader .rl-mark span{display:inline-block;transform:translateY(110%);animation:rlUp .7s cubic-bezier(.2,.8,.2,1) forwards}
+#reelLoader .rl-mark .dot{color:var(--yellow,#0094C6)}
+@keyframes rlUp{to{transform:none}}
+#reelLoader .rl-lbl{position:absolute;right:34px;bottom:clamp(110px,16vw,190px);font-family:"JetBrains Mono",ui-monospace,monospace;
+  font-size:11px;letter-spacing:.28em;opacity:.55;transition:opacity .4s;z-index:4;white-space:pre}
+#reelLoader .rl-num{position:absolute;right:34px;bottom:18px;display:flex;align-items:flex-start;z-index:4;
+  font:500 clamp(80px,15vw,200px)/1 "JetBrains Mono",ui-monospace,monospace;letter-spacing:-.04em;font-variant-numeric:tabular-nums;transition:opacity .4s}
+#reelLoader .rl-num .d{display:inline-block;height:1em;overflow:hidden}
+#reelLoader .rl-num .d i{display:block;font-style:normal;transition:transform .35s cubic-bezier(.3,.9,.3,1)}
+#reelLoader .rl-num sup{font-size:.14em;margin:.35em 0 0 .3em;color:var(--yellow,#0094C6)}
+#reelLoader .rl-skip{position:absolute;left:34px;bottom:30px;z-index:5;background:none;border:1px solid currentColor;
+  color:inherit;font:500 11px "JetBrains Mono",monospace;letter-spacing:.2em;padding:9px 14px;border-radius:99px;cursor:pointer;transition:opacity .4s}
+#reelLoader.rl-out .rl-lbl,#reelLoader.rl-out .rl-num,#reelLoader.rl-out .rl-skip{opacity:0}
+@media (prefers-reduced-motion:reduce){#reelLoader{display:none}}
+</style>
+<div id="reelLoader">
+  <div class="rl-bg"></div>
+  <div class="rl-stage" aria-hidden="false"><div class="rl-ring"></div></div>
+  <div class="rl-mark" aria-label="Sudeep Mannava"></div>
+  <div class="rl-lbl" aria-hidden="true"></div>
+  <div class="rl-num" role="progressbar" aria-label="Loading reels" aria-valuemin="0" aria-valuemax="100"><span class="d"></span><span class="d"></span><span class="d"></span><sup>%</sup></div>
+  <button class="rl-skip" type="button">SKIP INTRO</button>
+</div>
+<script>
+/* REEL_POSE_START */
+function wrapDeg(a){return((a+180)%360+360)%360-180}
+/* Pose of one card on the ring. Pure: same inputs, same output, nothing mutated.
+   angle      card's angle in degrees, ring spin included. 0 = far centre, ±180 = nearest the camera.
+   formation  0..1 loader deal progress.
+   scene      {radius, scale, camZ, perspective} the shared ring values at this instant.
+   order      0..1 this card's place in the deal (default 0). */
+function reelPose(angle,formation,scene,order){
+  var o=order||0,SPAN=.3;
+  var p=Math.min(1,Math.max(0,(formation-o*(1-SPAN))/SPAN)),e=1-Math.pow(1-p,3);
+  var home=wrapDeg(angle),from=home>=0?180:-180;       /* swing out from the stack on the card's own side */
+  var a=from+(home-from)*e,r=a*Math.PI/180,R=scene.radius;
+  var x=-Math.sin(r)*R,z=-Math.cos(r)*R;
+  return{x:x,y:0,z:z,yaw:a,scale:scene.scale,appear:p>0?Math.min(1,p*4):0,
+    behindCamera:z+(scene.camZ||0)>scene.perspective-40};
+}
+/* REEL_POSE_END */
+(function(){
+  var L=document.getElementById('reelLoader');
+  if(!L||matchMedia('(prefers-reduced-motion: reduce)').matches){L&&L.remove();return}
+  var root=document.documentElement;root.style.overflow='hidden';
+  function block(e){if(!ended)e.preventDefault()}
+  addEventListener('wheel',block,{passive:false});addEventListener('touchmove',block,{passive:false});
+
+  /* wordmark */
+  var mark=L.querySelector('.rl-mark');
+  'Sudeep Mannava.'.split('').forEach(function(c,i){
+    var s=document.createElement('span');s.textContent=c===' '?' ':c;if(c==='.')s.className='dot';
+    s.setAttribute('aria-hidden','true');s.style.animationDelay=(.05+i*.04)+'s';mark.appendChild(s);
+  });
+
+  /* rolling counter: each digit is its own column */
+  var numEl=L.querySelector('.rl-num'),slots=[].slice.call(numEl.querySelectorAll('.d'));
+  slots.forEach(function(d){var col=document.createElement('i');col.innerHTML='0<br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9';d.appendChild(col)});
+  var lastNum=-1;
+  function setNum(n){
+    if(n===lastNum)return;lastNum=n;numEl.setAttribute('aria-valuenow',n);
+    var s=String(n).padStart(3,' ');
+    slots.forEach(function(d,i){var ch=s[i];d.style.visibility=ch===' '?'hidden':'visible';
+      d.firstChild.style.transform='translateY(-'+(ch===' '?0:+ch)+'em)'});
+  }
+  setNum(0);
+
+  /* scrambled caption */
+  var lbl=L.querySelector('.rl-lbl'),CAP='LOADING REELS',GLY='01#%&*+=<>/\\ABCDEFGHJKLMNPRSTUVXYZ',sc=0;
+  var scT=setInterval(function(){
+    sc=(sc+1)%60;var lock=Math.min(CAP.length,Math.floor(sc/2));
+    lbl.textContent=CAP.split('').map(function(c,i){return c===' '||i<lock?c:GLY[Math.random()*GLY.length|0]}).join('');
+  },55);
+
+  /* ---- the ring: one DOM card per hero tile, so the loader lands exactly on the real ring ---- */
+  var rail=document.getElementById('rail'),clip=document.querySelector('#v3-top .rail-clip');
+  var tiles=[].slice.call(document.querySelectorAll('#rail .tile'));
+  var N=tiles.length||14,STEP=360/N,CW=tiles[0]&&tiles[0].offsetWidth||400,CH=tiles[0]&&tiles[0].offsetHeight||266;
+  if(rail)rail.style.animationPlayState='paused';
+  if(clip)clip.style.visibility='hidden';
+  var slot=document.querySelector('.hero-photo-slot');if(slot)slot.style.visibility='hidden';
+
+  var cs=rail?getComputedStyle(rail):null;
+  var R1=cs&&parseFloat(cs.getPropertyValue('--r'))||900,P1=clip&&parseFloat(getComputedStyle(clip).perspective)||900;
+  function railM(){return new DOMMatrix(rail?getComputedStyle(rail).transform:'none')}
+  var CZ1=railM().m43||0;
+  function railAngle(){var m=railM();return Math.atan2(-m.m13,m.m11)*180/Math.PI}
+  var S={r0:R1*460/1800,r1:R1,s0:.52/2.3,s1:1,t0:-22,t1:0,z0:-20,z1:0,p0:1000,p1:P1,c0:0,c1:CZ1};
+
+  var ring=L.querySelector('.rl-ring'),stage=L.querySelector('.rl-stage'),cards=[],cache=[];
+  tiles.forEach(function(t,k){
+    var im=t.querySelector('img'),a=document.createElement('a');
+    a.className='rl-card';a.href='#work';a.tabIndex=-1;
+    a.style.cssText='width:'+CW+'px;height:'+CH+'px;left:'+(-CW/2)+'px;top:'+(-CH/2)+'px';
+    a.innerHTML='<img alt=""><span class="rl-sr"></span>';
+    a.firstChild.src=im?im.src:'';a.lastChild.textContent=(im&&im.alt)||('Project '+(k+1));
+    ring.appendChild(a);cards.push(a);
+    var home=k*STEP;cache.push({t:'',o:'',order:(((180-home)%360)+360)%360/360});
+  });
+
+  /* real progress: front-facing covers actually decoded */
+  var loaded=0,ready=false;
+  Promise.all(tiles.map(function(t){var im=t.querySelector('img');
+    var p=!im?Promise.resolve():im.decode?im.decode():new Promise(function(r){im.complete?r():im.onload=im.onerror=r});
+    return p.catch(function(){}).then(function(){loaded++})})).then(function(){ready=true});
+
+  /* cubic-bezier(.5,0,.15,1) */
+  function bez(x1,y1,x2,y2){
+    function B(a,b,t){return 3*a*(1-t)*(1-t)*t+3*b*(1-t)*t*t+t*t*t}
+    return function(x){if(x<=0)return 0;if(x>=1)return 1;var lo=0,hi=1,t=x;
+      for(var i=0;i<24;i++){t=(lo+hi)/2;if(B(x1,x2,t)<x)lo=t;else hi=t}return B(y1,y2,t)};
+  }
+  var EASE=bez(.5,0,.15,1),lerp=function(a,b,t){return a+(b-a)*t};
+  var FORM=2600,EXP=1900,SPIN=-360/78/1000;    /* same speed as the hero ring */
+  var t0=0,last=0,spin=railAngle(),expAt=0,D=0,ended=false,outed=false,photoed=false,raf,vars={};
+  function setVar(el,k,v){if(vars[k]!==v){vars[k]=v;el.style.setProperty(k,v)}}
+
+  function frame(now){
+    if(ended)return;
+    if(!t0)t0=last=now;
+    var dt=now-last;last=now;
+    var F=Math.min(1,(now-t0)/FORM);
+    setNum(Math.round(Math.min(F,loaded/Math.max(1,tiles.length))*100));
+    if(!expAt&&F>=1&&ready)startExpansion(now);
+    var E=expAt?Math.min(1,(now-expAt)/EXP):0,e=EASE(E),base;
+    if(!expAt){spin+=SPIN*dt;base=spin}
+    else base=railAngle()+D*(1-e);              /* converge onto the live hero ring */
+
+    var cr=clip?clip.getBoundingClientRect():{left:0,top:0,width:innerWidth,height:innerHeight};
+    var sc={radius:lerp(S.r0,S.r1,e),scale:lerp(S.s0,S.s1,e),camZ:lerp(S.c0,S.c1,e),perspective:lerp(S.p0,S.p1,e)};
+    setVar(stage,'--p',sc.perspective.toFixed(1)+'px');
+    setVar(stage,'--ox',lerp(innerWidth/2,cr.left+cr.width/2,e).toFixed(1)+'px');
+    setVar(stage,'--oy',lerp(innerHeight/2,cr.top+cr.height/2,e).toFixed(1)+'px');
+    setVar(ring,'--cz',sc.camZ.toFixed(1)+'px');
+    setVar(ring,'--tilt',lerp(S.t0,S.t1,e).toFixed(2)+'deg');
+    setVar(ring,'--roll',lerp(S.z0,S.z1,e).toFixed(2)+'deg');
+
+    for(var k=0;k<N;k++){
+      var c=cache[k],ps=reelPose(k*STEP+base,F,sc,c.order);
+      var o=ps.behindCamera?'0':ps.appear.toFixed(3);
+      var t='translate3d('+ps.x.toFixed(1)+'px,0px,'+ps.z.toFixed(1)+'px) rotateY('+ps.yaw.toFixed(2)+'deg) scale('+ps.scale.toFixed(4)+')';
+      if(o!==c.o)cards[k].style.opacity=c.o=o;
+      if(o!=='0'&&t!==c.t)cards[k].style.transform=c.t=t;
+    }
+    /* overlapping hand-off: backdrop fades and the photo starts while the cards still settle */
+    if(expAt&&!outed&&e>.45){outed=true;L.classList.add('rl-out')}
+    if(expAt&&!photoed&&e>.8){photoed=true;pixelIn()}
+    if(E>=1)return land();
+    raf=requestAnimationFrame(frame);
+  }
+  raf=requestAnimationFrame(frame);
+
+  function startExpansion(now){
+    expAt=now;setNum(100);
+    if(rail)rail.style.animationPlayState='';
+    D=wrapDeg(spin-railAngle());
+    /* brand word flies into the header wordmark's exact spot */
+    var logo=document.querySelector('#v3-top .v3logo'),m=mark.getBoundingClientRect(),lr=logo&&logo.getBoundingClientRect();
+    if(logo)logo.style.opacity=0;
+    if(lr){mark.style.transformOrigin='0 0';mark.style.transition='transform '+EXP+'ms cubic-bezier(.5,0,.15,1),color 1s ease';
+      requestAnimationFrame(function(){mark.style.transform='translate('+(lr.left-m.left)+'px,'+(lr.top-m.top)+'px) scale('+(lr.height/m.height)+')'})}
+  }
+  function land(){
+    /* every card now sits on its tile: show the real ring, drop the copies */
+    if(clip)clip.style.visibility='';
+    var logo=document.querySelector('#v3-top .v3logo');
+    if(logo){logo.style.transition='opacity .3s ease';logo.style.opacity=1}
+    requestAnimationFrame(function(){requestAnimationFrame(function(){finish(true)})});
+  }
+  function finish(smooth){
+    ended=true;cancelAnimationFrame(raf);clearInterval(scT);root.style.overflow='';
+    removeEventListener('wheel',block);removeEventListener('touchmove',block);
+    if(clip)clip.style.visibility='';if(rail)rail.style.animationPlayState='';
+    var logo=document.querySelector('#v3-top .v3logo');if(logo&&!smooth)logo.style.opacity='';
+    if(!photoed){photoed=true;if(slot)slot.style.visibility=''}
+    L.remove();removeEventListener('keydown',onKey);
+  }
+  function onKey(e){if(e.key==='Escape'||e.key==='Tab')finish(false)}
+  addEventListener('keydown',onKey);
+  L.querySelector('.rl-skip').addEventListener('click',function(){finish(false)});
+
+  function pixelIn(){
+    var img=document.getElementById('heroChar');
+    if(!slot)return;
+    if(!img||!img.naturalWidth){slot.style.visibility='';return}
+    var r=img.getBoundingClientRect(),W=Math.round(r.width),H=Math.round(r.height);
+    if(!W||!H){slot.style.visibility='';return}
+    /* map object-fit onto a source rect so the pixels line up with the real photo */
+    var nw=img.naturalWidth,nh=img.naturalHeight,fit=getComputedStyle(img).objectFit,dx=0,dy=0,dw=W,dh=H;
+    if(fit==='contain'||fit==='cover'){
+      var sc=(fit==='cover'?Math.max:Math.min)(W/nw,H/nh);dw=nw*sc;dh=nh*sc;dx=(W-dw)/2;dy=(H-dh)/2;
+    }
+    var cv=document.createElement('canvas'),dpr=Math.min(2,devicePixelRatio||1);
+    cv.width=W*dpr;cv.height=H*dpr;
+    var par=img.parentNode,pr=par.getBoundingClientRect();
+    if(getComputedStyle(par).position==='static')par.style.position='relative';
+    cv.style.cssText='position:absolute;pointer-events:none;margin:0;left:'+(r.left-pr.left)+'px;top:'+(r.top-pr.top)+'px;width:'+W+'px;height:'+H+'px';
+    par.insertBefore(cv,img.nextSibling);
+    /* binary rise: a band of 0/1 digits, coloured from the photo, climbs bottom→top; the photo resolves beneath it */
+    var ctx=cv.getContext('2d'),CELL=11,cw=Math.ceil(W/CELL),ch=Math.ceil(H/CELL);
+    var sm=document.createElement('canvas');sm.width=cw;sm.height=ch;
+    var sx=sm.getContext('2d');sx.drawImage(img,dx*cw/W,dy*ch/H,dw*cw/W,dh*ch/H);
+    var px=sx.getImageData(0,0,cw,ch).data,bits=new Uint8Array(cw*ch).map(function(){return Math.random()<.5?1:0});
+    var DUR=2600,BAND=H*.32,t0=performance.now();
+    slot.style.visibility='';img.style.visibility='hidden';
+    ctx.scale(dpr,dpr);ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.font='600 '+(CELL-1)+'px "JetBrains Mono",ui-monospace,monospace';
+    (function tick(now){
+      var t=Math.min(1,(now-t0)/DUR),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      var front=H-(H+BAND)*e;            /* top edge of the digit band */
+      ctx.clearRect(0,0,W,H);
+      var solid=front+BAND;              /* below this the real photo shows */
+      if(solid<H){ctx.save();ctx.beginPath();ctx.rect(0,solid,W,H-solid);ctx.clip();
+        ctx.drawImage(img,dx,dy,dw,dh);ctx.restore()}
+      var r0=Math.max(0,Math.floor(front/CELL)),r1=Math.min(ch-1,Math.ceil(solid/CELL));
+      for(var r=r0;r<=r1;r++){
+        var y=r*CELL+CELL/2,d=(y-front)/BAND;if(d<0||d>1)continue;
+        for(var c=0;c<cw;c++){
+          var k=r*cw+c,a=px[k*4+3];if(a<60)continue;
+          if(Math.random()<.12)bits[k]^=1;
+          var mix=d*d;                   /* fresh digits glow blue, settle into the photo colour */
+          var R=px[k*4]*mix+0*(1-mix),G=px[k*4+1]*mix+170*(1-mix),B=px[k*4+2]*mix+230*(1-mix);
+          ctx.globalAlpha=(a/255)*Math.min(1,d*3);
+          ctx.fillStyle='rgb('+(R|0)+','+(G|0)+','+(B|0)+')';
+          ctx.fillText(bits[k],c*CELL+CELL/2,y);
+        }
+      }
+      ctx.globalAlpha=1;
+      if(t<1)requestAnimationFrame(tick);
+      else{img.style.visibility='';cv.remove()}
+    })(t0);
+  }
+  function onKey(e){if(e.key==='Escape'||e.key==='Tab')finish()}
+  addEventListener('keydown',onKey);
+  L.querySelector('.rl-skip').addEventListener('click',finish);
+})();
+</script>
+<!-- ===== /Reel loader ===== -->
 </body></html>
