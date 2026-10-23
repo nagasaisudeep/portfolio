@@ -4829,7 +4829,7 @@ function reelPose(angle,formation,scene,order){
   setNum(0);
 
   /* scrambled caption */
-  var lbl=L.querySelector('.rl-lbl'),CAP='LOADING REELS',GLY='01#%&*+=<>/\\ABCDEFGHJKLMNPRSTUVXYZ',sc=0;
+  var lbl=L.querySelector('.rl-lbl'),CAP='LOADING',GLY='01#%&*+=<>/\\ABCDEFGHJKLMNPRSTUVXYZ',sc=0;
   var scT=setInterval(function(){
     sc=(sc+1)%60;var lock=Math.min(CAP.length,Math.floor(sc/2));
     lbl.textContent=CAP.split('').map(function(c,i){return c===' '||i<lock?c:GLY[Math.random()*GLY.length|0]}).join('');
