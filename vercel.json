@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    { "source": "/motiongraphics", "destination": "/motiongraphics/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/motiongraphics/", "destination": "https://motiongraphics-cyan.vercel.app/" },
+    { "source": "/motiongraphics/:path*", "destination": "https://motiongraphics-cyan.vercel.app/:path*" }
+  ]
+}
