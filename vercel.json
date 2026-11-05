@@ -1,9 +1,35 @@
 {
   "redirects": [
-    { "source": "/motiongraphics", "destination": "/motiongraphics/", "permanent": true }
+    {
+      "source": "/motiongraphics",
+      "destination": "/motiongraphics/",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/motiongraphics/", "destination": "https://motiongraphics-cyan.vercel.app/" },
-    { "source": "/motiongraphics/:path*", "destination": "https://motiongraphics-cyan.vercel.app/:path*" }
+    {
+      "source": "/motiongraphics/",
+      "destination": "https://motiongraphics-cyan.vercel.app/"
+    },
+    {
+      "source": "/motiongraphics/:path*",
+      "destination": "https://motiongraphics-cyan.vercel.app/:path*"
+    },
+    {
+      "source": "/neurology-dashboards",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/neurology-dashboards/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/neurobrowser",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/neurobrowser/:path*",
+      "destination": "/index.html"
+    }
   ]
 }
