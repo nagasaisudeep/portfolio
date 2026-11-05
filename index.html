@@ -4101,6 +4101,42 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
 .nd-main.case .nd-case{display:block}
 .nd-main.case .nd-home{visibility:hidden}
 .nd-case img{display:block;width:100%;max-width:1120px;height:auto;aspect-ratio:720/404.88;margin:0 auto 14px;border-radius:10px;background:rgba(255,255,255,.04)}
+#ndVeil{padding:0;background:#14181e;backdrop-filter:none;-webkit-backdrop-filter:none}
+#ndVeil .nd-sheet{width:100%;height:100%;padding:0;gap:0;border:0;border-radius:0;box-shadow:none;background:none;transform:none}
+#ndVeil .nd-main{border-radius:0;box-shadow:none;border:0}
+.nd-nb{position:absolute;left:50%;bottom:20px;z-index:10;width:min(520px,calc(100% - 32px));height:50px;display:none;align-items:center;gap:10px;padding:0 8px 0 18px;box-sizing:border-box;transform:translateX(-50%);border:1px solid rgba(0,212,168,.5);border-radius:999px;background:rgba(23,28,35,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 12px 36px rgba(0,0,0,.5),0 0 24px rgba(0,212,168,.2);color:#fff;font:inherit;text-align:left;cursor:text;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.nd-nb:hover{transform:translateX(-50%) translateY(-2px);border-color:#00d4a8;box-shadow:0 16px 42px rgba(0,0,0,.55),0 0 34px rgba(0,212,168,.35)}
+.nd-nb:focus-visible{outline:2px solid #00d4a8;outline-offset:3px}
+.nd-nb b{font-size:13px;font-weight:700;white-space:nowrap}
+.nd-nb small{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:500;color:rgba(233,238,242,.62)}
+.nd-nb>svg:first-child{flex:none;color:#00d4a8}
+.nd-nb .ar{flex:none;margin-left:auto;width:34px;height:34px;padding:9px;box-sizing:border-box;border-radius:50%;background:#00d4a8;color:#0b1512}
+.nd-main.proto.hasgpt:not(.single) .nd-nb{display:flex}
+.nd-gpt{position:absolute;inset:68px 0 0;z-index:15;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;box-sizing:border-box;overflow:auto;color:#fff;background:radial-gradient(90% 75% at 50% 110%,rgba(0,212,168,.55),transparent 70%),radial-gradient(60% 55% at 12% 90%,rgba(116,72,240,.6),transparent 72%),radial-gradient(60% 55% at 88% 88%,rgba(47,201,160,.42),transparent 72%),rgba(9,12,18,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.nd-gpt.open{display:flex;animation:ndMailIn .26s cubic-bezier(.2,.9,.3,1)}
+.nd-gpt-x{position:absolute;top:14px;right:18px;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font:inherit;font-size:20px;line-height:1;cursor:pointer}
+.nd-gpt-x:hover{background:rgba(255,255,255,.2)}
+.nd-gpt h4{margin:0 0 22px;font-size:clamp(24px,4vw,38px);font-weight:700;letter-spacing:-.02em;text-align:center;color:#fff}
+.nd-gpt form{display:flex;align-items:center;gap:8px;width:min(680px,100%);height:60px;padding:0 8px 0 22px;box-sizing:border-box;border-radius:999px;background:rgba(14,18,24,.82);border:1px solid rgba(255,255,255,.22)}
+.nd-gpt form:focus-within{border-color:#00d4a8}
+.nd-gpt input{flex:1 1 auto;min-width:0;border:0;outline:0;background:none;color:#fff;font:inherit;font-size:16px}
+.nd-gpt input::placeholder{color:rgba(233,238,242,.55)}
+.nd-gpt form button{flex:none;width:44px;height:44px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:#00d4a8;color:#0b1512;cursor:pointer}
+.nd-gpt-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;width:min(680px,100%);margin-top:16px}
+.nd-gpt-chips button{padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:13px;font-weight:500;cursor:pointer}
+.nd-gpt-chips button:hover{background:rgba(255,255,255,.18)}
+.nd-gpt-res{display:none;flex-direction:column;gap:12px;width:min(680px,100%);padding:44px 2px 18px;box-sizing:border-box;overflow:auto;font-size:15px;line-height:1.55;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent}
+.nd-gpt.chat{justify-content:flex-end}
+.nd-gpt.chat h4,.nd-gpt.chat .nd-gpt-chips{display:none}
+.nd-gpt.chat .nd-gpt-res{display:flex;order:-1;flex:0 1 auto;min-height:0}
+.nd-gpt form{flex:none}
+.nd-gm{max-width:85%;padding:10px 15px;border-radius:18px;white-space:pre-wrap;overflow-wrap:anywhere}
+.nd-gm.u{align-self:flex-end;border-bottom-right-radius:6px;background:#00d4a8;color:#0b1512;font-weight:600}
+.nd-gm.b{align-self:flex-start;border-bottom-left-radius:6px;background:rgba(14,18,24,.82);border:1px solid rgba(255,255,255,.14);color:#fff}
+.nd-gdots{display:inline-flex;gap:4px;padding:5px 2px}
+.nd-gdots i{width:7px;height:7px;border-radius:50%;background:#00d4a8;animation:ndDot 1s infinite ease-in-out}
+.nd-gdots i:nth-child(2){animation-delay:.15s}.nd-gdots i:nth-child(3){animation-delay:.3s}
+@keyframes ndDot{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-4px)}}
 .nd-rail{position:absolute;inset:68px auto 0 0;width:172px;display:none;overflow:auto;padding:2px 12px 28px 18px;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
 .nd-main.case .nd-rail{display:block}
 .nd-main.case .nd-case{left:172px;padding-left:12px}
@@ -4180,6 +4216,14 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
         <div class="nd-foot" id="ndFoot"></div>
       </div>
 
+      <button class="nd-nb" type="button" id="ndNb" aria-label="Ask NeuroGPT"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><b>NeuroGPT</b><small>Ask anything about this dashboard</small><svg class="ar" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+      <div class="nd-gpt" id="ndGpt" role="dialog" aria-modal="true" aria-labelledby="ndGptT">
+        <button class="nd-gpt-x" type="button" id="ndGptX" aria-label="Close NeuroGPT">&times;</button>
+        <h4 id="ndGptT">What would you like to know?</h4>
+        <form id="ndGptF"><input id="ndGptI" type="text" autocomplete="off" aria-label="Ask NeuroGPT"><button type="submit" aria-label="Ask"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></form>
+        <div class="nd-gpt-chips" id="ndGptC"></div>
+        <div class="nd-gpt-res" id="ndGptR" aria-live="polite"></div>
+      </div>
       <div class="nd-rail" id="ndRail" role="navigation" aria-label="Slides"></div>
       <div class="nd-case" id="ndCase" tabindex="0"></div>
       <div class="nd-proto" id="ndProto"><div class="nd-load">Loading prototype</div></div>
@@ -4266,6 +4310,36 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
     veil.querySelectorAll('.nd-tab[data-nd-open]').forEach(function(b){ b.classList.toggle('on',mode==='figma'); });
     veil.querySelectorAll('.nd-tab[data-nd-code]').forEach(function(b){ b.classList.toggle('on',mode==='code'); b.hidden=!!P.single||!!(cur&&!cur.c); });
   }
+  var gptEl=document.getElementById('ndGpt'), gptI=document.getElementById('ndGptI'), gptC=document.getElementById('ndGptC'), gptR=document.getElementById('ndGptR');
+  var gptRun=0;
+  function resetGpt(){ gptRun++; gptR.innerHTML=''; gptEl.classList.remove('chat'); }
+  function closeGpt(){ gptEl.classList.remove('open'); resetGpt(); }
+  function gptMsg(cls){ var m=document.createElement('div'); m.className='nd-gm '+cls; gptR.appendChild(m); return m; }
+  function gptReply(q){
+    var t=q.toLowerCase(), n=cur?cur.n:'this dashboard', d=cur&&cur.d?cur.d:'';
+    if(/^(hi+|hey+|hello+|hola|namaste|yo)\b/.test(t)) return 'Hi there! I\'m NeuroGPT. You\'re looking at '+n+'. What would you like to explore?';
+    if(/thank/.test(t)) return 'You\'re welcome! Ask me anything else about '+n+'.';
+    if(/(who|what) are you|your name/.test(t)) return 'I\'m NeuroGPT, the assistant concept designed for these neurology dashboards. In this portfolio demo, my replies are scripted.';
+    if(/summar|about|what is this|overview/.test(t)) return n+' at a glance: '+d;
+    if(/stand|insight|look at|first|important/.test(t)) return 'I\'d start with the summary cards at the top of '+n+', then open the sections below for detail. In the full product, I\'d point you to the exact chart.';
+    return 'Good question! In the full product I\'d answer that from the data in '+n+' and cite my sources. This portfolio demo uses scripted replies, so I can\'t look that up yet.';
+  }
+  function gptSend(q){
+    var run=++gptRun, still=function(){ return run===gptRun; }, down=function(){ gptR.scrollTop=gptR.scrollHeight; };
+    gptEl.classList.add('chat'); gptMsg('u').textContent=q;
+    var b=gptMsg('b'); b.innerHTML='<span class="nd-gdots" aria-label="NeuroGPT is typing"><i></i><i></i><i></i></span>'; down(); gptI.focus();
+    var text=gptReply(q);
+    setTimeout(function(){
+      if(!still()){ b.textContent=text; return; }
+      if(matchMedia('(prefers-reduced-motion:reduce)').matches){ b.textContent=text; down(); return; }
+      var words=text.split(' '), i=0; b.textContent='';
+      (function tick(){
+        if(!still()){ b.textContent=text; return; }
+        b.textContent+=(i?' ':'')+words[i++]; down();
+        if(i<words.length) setTimeout(tick,45);
+      })();
+    },750);
+  }
   function show(v,code){
     var src=code?v.c:v.e; cur=v; current=src; stage.classList.remove('ready');
     Object.keys(frames).forEach(function(k){ frames[k].hidden=(k!==src); });
@@ -4275,7 +4349,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
       f.addEventListener('load',function(){ f.loaded=true; if(current===src) stage.classList.add('ready'); });
       frames[src]=f; stage.appendChild(f);
     } else if(f.loaded) stage.classList.add('ready');
-    main.classList.remove('case'); main.classList.add('proto'); verTxt.textContent=P.single?P.ver:(P.ver.split(' ')[0]+' · '+v.n); setLinks(code?v.c:v.u,code); tabs(code?'code':'figma');
+    closeGpt(); main.classList.toggle('hasgpt',!!v.c); main.classList.remove('case'); main.classList.add('proto'); verTxt.textContent=P.single?P.ver:(P.ver.split(' ')[0]+' · '+v.n); setLinks(code?v.c:v.u,code); tabs(code?'code':'figma');
   }
   function list(code){ cur=null; wantCode=code; main.classList.remove('proto','case'); verTxt.textContent=P.ver; setLinks(P.items[0].u); tabs(code?'code':'figma'); }
   function addThumb(n){
@@ -4295,6 +4369,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
     for(var i=0;i<kids.length;i++){ if(kids[i].offsetTop+kids[i].offsetHeight>mid){ railMark(i); return; } }
   },{passive:true});
   function overview(){
+    closeGpt();
     if(caseFor!==P){
       caseEl.innerHTML=''; railEl.innerHTML=''; caseFor=P; railOn=-1;
       for(var n=1;n<=P.casePages;n++){ var im=document.createElement('img'); im.src='case-studies/'+P.caseDir+'/p'+(n<10?'0':'')+n+'.jpg'; im.alt=P.ver+' case study, page '+n+' of '+P.casePages; im.decoding='async'; if(n>2) im.loading='lazy'; caseEl.appendChild(im); addThumb(n); }
@@ -4303,6 +4378,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
     main.classList.remove('proto'); main.classList.add('case'); verTxt.textContent=P.ver; tabs('case');
   }
   function back(){
+    if(gptEl.classList.contains('open')){ closeGpt(); return; }
     if(main.classList.contains('case')) close();
     else if(P.single||!main.classList.contains('proto')) overview();
     else list(wantCode);
@@ -4311,7 +4387,8 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   function open(e,p){
     if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    last=document.activeElement; P=p; cur=null;
+    if(!veil.classList.contains('open')){ last=document.activeElement; history.pushState({nd:1},''); }
+    P=p; cur=null;
     main.classList.toggle('single',!!p.single);
     if(!p.single){ kickEl.textContent=p.kick; hEl.textContent=p.h; renderCards(); }
     wantCode=true; overview(); caseEl.scrollTop=0; railEl.scrollTop=0; railMark(0);
@@ -4320,7 +4397,9 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
     document.documentElement.style.overflow='hidden';
     setTimeout(function(){ veil.querySelector('.nd-sheet').focus({preventScroll:true}); },60);
   }
-  function close(){
+  function close(){ if(history.state&&history.state.nd) history.back(); else hide(); }
+  window.addEventListener('popstate',function(){ if(veil.classList.contains('open')) hide(); });
+  function hide(){
     veil.classList.remove('open'); veil.setAttribute('aria-hidden','true');
     document.documentElement.style.overflow='';
     if(last&&last.focus) last.focus();
@@ -4332,7 +4411,22 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   veil.querySelectorAll('[data-nd-open]').forEach(function(b){ b.addEventListener('click',function(){ if(P.single) show(P.items[0]); else if(cur){ wantCode=false; show(cur); } else list(false); }); });
   veil.querySelectorAll('[data-nd-code]').forEach(function(b){ b.addEventListener('click',function(){ if(cur&&cur.c){ wantCode=true; show(cur,true); } else list(true); }); });
   document.getElementById('ndBack').addEventListener('click',back);
-  veil.querySelectorAll('[data-nd-home]').forEach(function(b){ b.addEventListener('click',overview); });
+  document.getElementById('ndNb').addEventListener('click',function(){
+    gptI.value=''; resetGpt(); gptI.placeholder='Ask NeuroGPT about '+cur.n+'…';
+    gptC.innerHTML='';
+    ['Summarise this dashboard','What stands out here?','What should I look at first?'].forEach(function(q){
+      var c=document.createElement('button'); c.type='button'; c.textContent=q;
+      c.addEventListener('click',function(){ gptSend(q); });
+      gptC.appendChild(c);
+    });
+    gptEl.classList.add('open'); gptI.focus();
+  });
+  document.getElementById('ndGptX').addEventListener('click',function(){ closeGpt(); document.getElementById('ndNb').focus(); });
+  gptEl.addEventListener('click',function(e){ if(e.target===gptEl) closeGpt(); });
+  document.getElementById('ndGptF').addEventListener('submit',function(e){
+    e.preventDefault(); var q=gptI.value.trim(); if(!q) return;
+    gptI.value=''; gptSend(q);
+  }); veil.querySelectorAll('[data-nd-home]').forEach(function(b){ b.addEventListener('click',overview); });
   var mailDlg=document.getElementById('ndMail'), mailX=document.getElementById('ndMailX'), mailFrom=null;
   function closeMail(){ mailDlg.classList.remove('open'); if(mailFrom) mailFrom.focus(); }
   figmaLinks.forEach(function(a){ a.addEventListener('click',function(e){ if(!a.classList.contains('code')) return; e.preventDefault(); mailFrom=a; mailDlg.classList.add('open'); mailCopy.focus(); }); });
@@ -4350,7 +4444,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   mailDlg.addEventListener('click',function(e){ if(e.target===mailDlg) closeMail(); });
   veil.querySelector('.nd-x').addEventListener('click',close);
   veil.addEventListener('click',function(e){ if(e.target===veil) close(); });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&veil.classList.contains('open')){ if(mailDlg.classList.contains('open')) closeMail(); else close(); } });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&veil.classList.contains('open')){ if(mailDlg.classList.contains('open')) closeMail(); else if(gptEl.classList.contains('open')) closeGpt(); else close(); } });
 })();
 </script>
 <!-- ===== /Neurology Dashboards viewer ===== -->
