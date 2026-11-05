@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en" data-fs="md" style="--topbar-h: 109px;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noran Neurology · Patient Registration Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+
+<style>
+/* ── THEME ── */
+:root{
+  --bg:#0D0E12;--bg1:#0D0E12;--bg2:#141519;--bg3:#1C1E24;--bg4:#22252E;--bg5:#2A2E3A;
+  --fp-bg:#191C23;--fp-card:#1F2229;--hdr-bg:#242830;--hdr-row2:#1E2128;
+  --bd:#252830;--bd2:#2E323C;
+  --t1:#CDD2E0;--t2:#8A95AF;--t3:#6B7591;
+  --teal:#00d4a8;--blue:#6C63FF;--amber:#F6B73C;--coral:#ff6b6b;
+  --purple:#A78BFA;--green:#68B684;--pink:#3ECFBC;--orange:#FF7A59;--red:#ef4444;--cyan:#4DA8DA;
+  --fs:1;
+}
+[data-theme="light"]{
+  --bg:#F5F7FA;--bg1:#F5F7FA;--bg2:#FFFFFF;--bg3:#F8FAFC;--bg4:#F0F4F8;--bg5:#E2E8F0;
+  --fp-bg:#F8FAFC;--fp-card:#FFFFFF;--hdr-bg:#FFFFFF;--hdr-row2:#007A63;
+  --bd:#E2E8F0;--bd2:#CBD5E1;
+  --t1:#1E293B;--t2:#64748B;--t3:#94A3B8;
+  --teal:#007A63;--blue:#4DA8DA;--amber:#F6B32D;--coral:#F7933A;
+}
+[data-fs="sm"]{--fs:.9}[data-fs="md"]{--fs:1}[data-fs="lg"]{--fs:1.18}[data-fs="xl"]{--fs:1.36}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;font-size:calc(11px * var(--fs));line-height:1.5;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px}
+
+/* ── TOPBAR ── */
+#topbar{position:sticky;top:0;z-index:200;background:var(--hdr-bg);border-bottom:1px solid var(--bd);box-shadow:0 2px 8px rgba(0,0,0,.18);backdrop-filter:blur(8px)}
+#topbar-row1{display:flex;align-items:center;height:58px;padding:0 22px;gap:10px;border-bottom:1px solid rgba(255,255,255,.05);overflow-x:auto;scrollbar-width:none}
+#topbar-row1::-webkit-scrollbar{display:none}
+#topbar-row2{display:flex;align-items:center;height:50px;padding:0 22px;gap:6px;background:var(--hdr-row2)}
+#topbar::after{content:'';display:block;position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,168,.12) 40%,rgba(0,212,168,.12) 60%,transparent);pointer-events:none}
+
+/* logo */
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-pulse{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--teal),rgba(0,212,168,.5));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 12px rgba(0,212,168,.25);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(0,212,168,.3)}50%{box-shadow:0 0 18px rgba(0,212,168,.5)}}
+.logo-text{display:flex;flex-direction:column;gap:1px}
+.logo-title{font-size:13px;font-weight:700;color:var(--t1);letter-spacing:-.3px;line-height:1;white-space:nowrap}
+.logo-sub{font-size:calc(11px * var(--fs));color:var(--t3);font-weight:500;letter-spacing:.2px;white-space:nowrap}
+
+/* nav tabs */
+.bnav{display:flex;align-items:center;gap:2px;overflow-x:auto;flex:1;scrollbar-width:none}
+.bnav::-webkit-scrollbar{display:none}
+.bnav-item{display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:10px;border:1px solid transparent;font-size:calc(12px * var(--fs));font-weight:600;color:#cdd2e0;transition:background .2s,border-color .2s,color .2s;white-space:nowrap;cursor:pointer;background:transparent;font-family:inherit;outline:none}
+.bnav-item:hover{color:var(--t2);background:var(--bg3);border-color:var(--bd)}
+.bnav-item.active{color:#0D0E12;background:var(--teal);border-color:var(--teal);font-weight:700;box-shadow:0 2px 12px rgba(0,212,168,.3)}
+.bnav-item.active svg{stroke:#0D0E12 !important}
+[data-theme="light"] .bnav-item{color:#fff}
+[data-theme="light"] .bnav-item:hover{color:#fff;background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+[data-theme="light"] .bnav-item.active{background:#fff;color:#007A63;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+
+/* header buttons */
+.hdr-action-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;font-size:calc(11px * var(--fs));font-weight:700;border-radius:6px;border:.5px solid var(--bd2);background:var(--bg4);color:var(--t2);cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .2s,border-color .2s,color .2s;flex-shrink:0}
+.hdr-action-btn:hover{border-color:var(--teal);color:var(--teal);background:rgba(0,212,168,.05)}
+.hdr-action-btn.primary{background:var(--teal);color:#000;border-color:var(--teal)}
+.hdr-action-btn.primary:hover{opacity:.85}
+.hdr-sep{width:1px;height:26px;background:rgba(255,255,255,.12);flex-shrink:0}
+[data-theme="light"] .hdr-action-btn{background:#fff;border-color:#E2E8F0;color:#1E293B}
+[data-theme="light"] .hdr-action-btn:hover{background:#F5F7FA;border-color:#C0CAD8;color:#1E293B}
+[data-theme="light"] .hdr-action-btn.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+[data-theme="light"] .hdr-sep{background:rgba(0,0,0,.12)}
+
+/* period chips */
+.chip{padding:4px 12px;font-size:calc(11px * var(--fs));font-weight:600;border-radius:8px;border:1px solid var(--bd2);background:var(--bg3);color:var(--t2);cursor:pointer;font-family:inherit;transition:background .2s,border-color .2s,color .2s}
+.chip:hover:not(.on){border-color:rgba(0,212,168,.3);background:rgba(0,212,168,.06)}
+.chip.on{background:rgba(0,212,168,.15);border-color:rgba(0,212,168,.4);color:var(--teal)}
+[data-theme="light"] .chip{background:#fff;border-color:#D0D8E4;color:#64748B}
+[data-theme="light"] .chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+
+/* fs group */
+.fs-group{display:flex;gap:1px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:hidden;flex-shrink:0}
+.fs-btn{padding:6px 11px;font-size:calc(11px * var(--fs));font-weight:600;border:none;background:transparent;color:var(--t2);cursor:pointer;font-family:inherit;transition:background .2s,color .2s;white-space:nowrap}
+.fs-btn:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+.fs-btn.active{background:var(--teal);color:#0a0a0a;font-weight:700}
+[data-theme="light"] .fs-group{background:#fff;border-color:#E2E8F0}
+[data-theme="light"] .fs-btn{color:#64748B}
+[data-theme="light"] .fs-btn.active{background:var(--teal);color:#fff}
+
+/* theme select */
+.theme-select{font-size:calc(11px * var(--fs));font-weight:500;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--t1);padding:7px 10px;font-family:'Inter',sans-serif;cursor:pointer;outline:none;flex-shrink:0;transition:border-color .15s}
+.theme-select:hover{border-color:rgba(255,255,255,.2)}
+.theme-select:focus{border-color:var(--teal)}
+[data-theme="light"] .theme-select{background:#fff;border-color:#CBD5E1;color:#1E293B}
+
+/* ── LAYOUT ── */
+#app{display:flex;flex-direction:column;min-height:100vh}
+#body{display:flex;flex:1;position:relative}
+#main-scroll{flex:1;padding:24px 24px 60px;min-width:0;overflow-x:hidden;padding-right:calc(320px + 24px)}
+
+/* ── FILTER PANEL ── */
+#filter-panel{position:fixed;top:var(--topbar-h,108px);right:0;width:320px;height:calc(100vh - var(--topbar-h,108px));background:var(--fp-bg);border-left:1px solid rgba(255,255,255,.05);overflow-y:auto;z-index:150;padding:0;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;transition:transform .25s ease,opacity .2s ease}
+#filter-panel::-webkit-scrollbar{width:3px}
+#filter-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+#filter-toggle{display:none;align-items:center;gap:5px;padding:5px 11px;background:var(--bg4);border:.5px solid var(--bd2);border-radius:6px;cursor:pointer;font-size:calc(11px * var(--fs));font-weight:600;color:var(--t2);white-space:nowrap;transition:background .2s,border-color .2s,color .2s;flex-shrink:0;font-family:inherit}
+#filter-toggle:hover{border-color:var(--teal);color:var(--teal)}
+[data-theme="light"] #filter-panel{background:#F8FAFC;border-left-color:rgba(0,0,0,.06)}
+/* Collapsed filter panel (desktop) */
+#filter-panel.collapsed-panel{transform:translateX(100%);opacity:0;pointer-events:none}
+#main-scroll.full-width{padding-right:24px}
+#filter-toggle.show{display:flex}
+
+/* Floating filter button — appears when panel is collapsed, sits 150px below navbar on the right */
+#filter-fab{position:fixed;top:calc(var(--topbar-h,108px) + 150px);right:0;height:44px;width:44px;padding:0;border-radius:22px 0 0 22px;background:var(--teal);color:#0a0a0a;display:none;align-items:center;justify-content:center;gap:8px;cursor:pointer;z-index:300;border:none;font-size:calc(12px * var(--fs));font-weight:700;font-family:inherit;box-shadow:0 4px 16px rgba(0,212,168,.4);transition:width .25s ease,box-shadow .2s ease;overflow:hidden;white-space:nowrap}
+#filter-fab.show{display:inline-flex}
+#filter-fab svg{flex-shrink:0}
+#filter-fab .fab-label{max-width:0;opacity:0;transition:max-width .25s ease,opacity .2s ease .05s;overflow:hidden}
+#filter-fab:hover{width:120px;padding:0 16px 0 14px;box-shadow:0 6px 20px rgba(0,212,168,.5)}
+#filter-fab:hover .fab-label{max-width:80px;opacity:1}
+[data-theme="light"] #filter-fab{color:#fff}
+
+.fp-panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px}
+.fp-divider{height:1px;background:rgba(255,255,255,.07);margin:4px 0;flex-shrink:0}
+[data-theme="light"] .fp-divider{background:rgba(0,0,0,.1)}
+.fp-section-flat{padding:10px 14px}
+.fp-section-label{display:flex;align-items:center;gap:6px;font-size:calc(11px * var(--fs));font-weight:700;color:var(--t1);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+[data-theme="light"] .fp-section-label{color:#1E293B}
+.fp-pill-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:2px}
+.fp-pill{padding:4px 12px;font-size:calc(11px * var(--fs));font-weight:700;border-radius:8px;border:1px solid var(--bd2);background:var(--bg3);color:var(--t2);cursor:pointer;font-family:inherit;transition:background .2s,border-color .2s,color .2s;white-space:nowrap}
+.fp-pill:hover{border-color:rgba(0,212,168,.3);color:var(--t2)}
+.fp-pill.active{background:rgba(0,212,168,.12);border-color:rgba(0,212,168,.4);color:var(--teal)}
+[data-theme="light"] .fp-pill{background:#F7F9FC;border-color:#D0D8E4;color:#64748B}
+[data-theme="light"] .fp-pill.active{background:var(--teal);border-color:var(--teal);color:#fff}
+
+/* fp selects */
+.fp-select{width:100%;font-size:calc(11px * var(--fs));background:var(--bg4);border:.5px solid var(--bd2);border-radius:5px;color:var(--t2);padding:5px 8px;font-family:inherit;cursor:pointer;outline:none;margin-bottom:4px}
+.fp-select:focus{border-color:var(--teal)}
+[data-theme="light"] .fp-select{background:#fff;border-color:#D0D8E4;color:#64748B}
+
+/* ── SECTION HEADERS ── */
+.dash-section{scroll-margin-top:116px;margin-bottom:40px}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;user-select:none}
+.sec-hdr-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-hdr-title{font-size:calc(14px * var(--fs));font-weight:700;color:#CDD2E0;letter-spacing:-.2px}
+.sec-hdr-text{display:flex;flex-direction:column;gap:2px}
+.sec-hdr-sub{font-size:calc(11px * var(--fs));color:var(--t3);line-height:1.3}
+.sec-collapse-btn{width:24px;height:24px;border-radius:5px;background:var(--bg4);border:.5px solid var(--bd2);color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s,color .2s;flex-shrink:0;margin-left:auto}
+.sec-collapse-btn:hover{border-color:var(--teal);color:var(--teal)}
+.sec-body{overflow:visible;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s ease}
+.sec-body.collapsed{overflow:hidden;max-height:0!important;opacity:0;pointer-events:none}
+
+/* ── PANELS ── */
+.panel{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+[data-theme="light"] .panel{box-shadow:0 1px 4px rgba(0,0,0,.06)}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px}
+
+/* ── KPI CARDS (reference style) ── */
+.ref-kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+.ref-kpi-card{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:16px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s;cursor:default}
+.ref-kpi-card:hover{border-color:var(--bd2);transform:translateY(-1px)}
+.ref-kpi-card.accent{background:var(--teal);border-color:var(--teal)}
+.ref-kpi-card.accent .ref-kpi-label,.ref-kpi-card.accent .ref-kpi-sub{color:rgba(0,0,0,.6)}
+.ref-kpi-card.accent .ref-kpi-value{color:#000}
+.ref-kpi-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ref-kpi-icon-wrap{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ref-kpi-label{font-size:calc(11px * var(--fs));font-weight:600;color:#CDD2E0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:0;flex:1;min-width:0}
+.ref-kpi-value{font-size:calc(22px * var(--fs));font-weight:700;font-family:'Inter',monospace;color:var(--t1);line-height:1;letter-spacing:-1px;margin-bottom:8px}
+.ref-kpi-footer{display:flex;align-items:center;gap:calc(6px * var(--fs));flex-wrap:wrap}
+.ref-kpi-delta{display:inline-flex;align-items:center;gap:3px;font-size:calc(11px * var(--fs));font-weight:700;padding:2px 6px;border-radius:20px}
+.ref-kpi-delta.up{background:rgba(74,222,128,.14);color:#4ade80}
+.ref-kpi-delta.dn{background:rgba(255,107,107,.14);color:#ff6b6b}
+.ref-kpi-delta.nt{background:rgba(255,255,255,.06);color:var(--t3)}
+/* Colorful KPI tags */
+.ref-kpi-delta.teal{background:rgba(0,212,168,.14);color:#00d4a8}
+.ref-kpi-delta.indigo{background:rgba(108,99,255,.16);color:#8a82ff}
+.ref-kpi-delta.cyan{background:rgba(77,168,218,.16);color:#4DA8DA}
+.ref-kpi-delta.amber{background:rgba(246,183,60,.16);color:#F6B73C}
+.ref-kpi-delta.rose{background:rgba(251,113,133,.16);color:#fb7185}
+.ref-kpi-delta.green{background:rgba(74,222,128,.14);color:#4ade80}
+.ref-kpi-sub{font-size:calc(11px * var(--fs));color:var(--t3)}
+
+/* ── BAR ROWS ── */
+.br{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.bl{font-size:calc(11px * var(--fs));color:var(--t2);min-width:110px;flex-shrink:0}
+.bt{flex:1;height:6px;background:var(--bg5);border-radius:3px;overflow:hidden}
+.bf{height:100%;border-radius:3px}
+.bn{font-size:calc(11px * var(--fs));font-weight:700;color:#CDD2E0;text-align:right;min-width:42px}
+
+/* ── TABLES ── */
+.tab{width:100%;font-size:calc(11px * var(--fs));border-collapse:collapse}
+.tab th{text-align:left;padding:6px 8px;color:var(--t3);font-size:calc(11px * var(--fs));text-transform:uppercase;letter-spacing:.5px;font-weight:500;border-bottom:1px solid var(--bd2)}
+.tab td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--t1)}
+.tab th.num,.tab td.num{text-align:right}
+.tab th:first-child,.tab td:first-child{padding-left:0}
+.tab th:last-child,.tab td:last-child{padding-right:0}
+.tab tr:last-child td{border:0}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+/* Patient-column colors (one per section) */
+.pt-ret{color:#3ECFBC !important;font-weight:700}
+.pt-clin{color:#F6B73C !important;font-weight:700}
+.pt-geo{color:#fb7185 !important;font-weight:700}
+.pt-county{color:#5BA8FF !important;font-weight:700}
+.pt-city{color:#A887FF !important;font-weight:700}
+.pt-zip{color:#F6B94B !important;font-weight:700}
+.muted{color:var(--t3)}
+
+/* ── SECTION LABEL (like cohort dashboard) ── */
+.plbl{font-size:calc(11px * var(--fs));font-weight:700;color:#CDD2E0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.psub{font-size:calc(11px * var(--fs));color:var(--t3);margin-top:-4px;margin-bottom:8px}
+
+/* ── SVG CHARTS ── */
+.svg-chart{background:transparent}
+
+/* ── LEGEND ROWS ── */
+.lrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.li{display:flex;align-items:center;gap:5px;font-size:calc(11px * var(--fs));color:var(--t2)}
+.ld{width:9px;height:9px;border-radius:2px;flex-shrink:0;display:inline-block}
+
+/* ── INSIGHT BLOCKS ── */
+.ins{border-left:2px solid var(--ia,var(--teal));padding:8px 10px;background:rgba(0,0,0,.03);border-radius:0 6px 6px 0;margin-top:8px}
+.ins-t{font-size:calc(11px * var(--fs));font-weight:700;color:var(--t1);margin-bottom:3px}
+.ins-s{font-size:calc(11px * var(--fs));color:var(--t3);line-height:1.5}
+
+/* ── DQ DOTS ── */
+.dot-g,.dot-a,.dot-r{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-g{background:#4ade80;box-shadow:0 0 5px #4ade80}
+.dot-a{background:#fbbf24;box-shadow:0 0 5px #fbbf24}
+.dot-r{background:#fb7185;box-shadow:0 0 5px #fb7185}
+.dq-row{display:grid;grid-template-columns:1fr 50px 10px;gap:6px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:calc(11px * var(--fs));color:var(--t1)}
+.dq-row:last-child{border:0}
+.dq-p{font-variant-numeric:tabular-nums;font-weight:500;text-align:right}
+
+/* ── SCROLL TOP ── */
+#scroll-top{position:fixed;bottom:20px;right:340px;height:34px;min-width:34px;padding:0;border-radius:50%;background:var(--teal);color:#000;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:300;border:none;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:padding .25s,border-radius .25s,box-shadow .2s;white-space:nowrap;overflow:hidden;gap:6px;font-family:inherit;font-weight:700}
+#scroll-top.visible{display:inline-flex}
+#scroll-top:hover{padding:0 14px 0 12px;border-radius:18px}
+.st-label{font-size:calc(12px * var(--fs));font-weight:700;max-width:0;opacity:0;transition:max-width .25s,opacity .2s .05s;display:inline-block;overflow:hidden}
+#scroll-top:hover .st-label{max-width:120px;opacity:1}
+
+/* ── TABS (view toggle) ── */
+.ref-tab-group{display:flex;gap:4px;background:var(--bg3);border:1px solid var(--bd2);border-radius:8px;padding:3px}
+.ref-tab{padding:4px 10px;border-radius:6px;border:1px solid transparent;font-size:calc(11px * var(--fs));font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s,color .2s,border-color .2s;color:var(--t3);background:transparent}
+.ref-tab:hover:not(.active){background:rgba(0,212,168,.08);color:var(--t2);border-color:rgba(0,212,168,.3)}
+.ref-tab.active{background:rgba(0,212,168,.15);border-color:rgba(0,212,168,.4);color:var(--teal)}
+[data-theme="light"] .ref-tab-group{background:#fff;border-color:#D0D8E4}
+[data-theme="light"] .ref-tab{color:#64748B}
+[data-theme="light"] .ref-tab.active{background:var(--teal);border-color:var(--teal);color:#fff}
+
+/* ── FOOTER ── */
+.foot{text-align:center;padding:20px 0 4px;color:var(--t3);font-size:calc(11px * var(--fs))}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1500px){
+  #collapse-toggle-lbl{display:none}
+}
+@media(max-width:1300px){
+  #hdr-sv-btn span:not(#hdr-sv-count){display:none}
+}
+@media(max-width:1100px){
+  #main-scroll{padding-right:24px}
+  #filter-panel{display:none}
+  #filter-toggle{display:flex!important}
+  #filter-panel.open{display:block;top:110px;height:calc(100vh - 110px)}
+  .ref-kpi-row{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  #topbar-row1{height:50px;padding:0 12px}
+  .logo-sub{display:none}
+  .ref-kpi-row{grid-template-columns:repeat(2,1fr)}
+  .g2,.g3,.g4,.g6{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  #topbar-row1{padding:0 10px;gap:6px}
+  #main-scroll{padding:14px 14px 48px}
+}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"></head>
+<body data-theme="dark">
+<div id="app">
+
+<!-- ══════════════════════════════════════
+     TOPBAR
+══════════════════════════════════════ -->
+<div id="topbar">
+  <!-- Row 1: Command Center -->
+  <div id="topbar-row1">
+    <div class="logo">
+      <div class="logo-pulse">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15.5 13a3.5 3.5 0 0 0 -3.5 3.5v1a3.5 3.5 0 0 0 7 0v-1.8"></path>
+          <path d="M8.5 13a3.5 3.5 0 0 1 3.5 3.5v1a3.5 3.5 0 0 1 -7 0v-1.8"></path>
+          <path d="M17.5 16a3.5 3.5 0 0 0 0 -7h-.5"></path>
+          <path d="M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0"></path>
+          <path d="M6.5 16a3.5 3.5 0 0 1 0 -7h.5"></path>
+          <path d="M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10"></path>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-title">Noran Neurology</span>
+        <span class="logo-sub">Patient Registration Dashboard · Data Refresh: Jun 29, 2026</span>
+      </div>
+    </div>
+
+    <div style="flex:1"></div>
+
+    <select class="theme-select" id="theme-sel" onchange="setTheme(this.value)">
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+    </select>
+
+    <div class="fs-group">
+      <button class="fs-btn" onclick="setFs(&#39;sm&#39;,this)">S</button>
+      <button class="fs-btn active" onclick="setFs(&#39;md&#39;,this)">M</button>
+      <button class="fs-btn" onclick="setFs(&#39;lg&#39;,this)">L</button>
+      <button class="fs-btn" onclick="setFs(&#39;xl&#39;,this)">XL</button>
+    </div>
+
+    <div class="hdr-sep"></div>
+
+    <!-- Collapse all -->
+    <button class="hdr-action-btn" id="collapse-toggle-btn" onclick="toggleCollapseAll()" title="Collapse / Expand all sections">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="6" rx="2"></rect><rect x="4" y="14" width="16" height="6" rx="2"></rect></svg>
+      <span id="collapse-toggle-lbl">Collapse All</span>
+    </button>
+
+    <div class="hdr-sep"></div>
+
+    <!-- Saved Views dropdown -->
+    <div id="hdr-sv-wrap" style="position:relative">
+      <button class="hdr-action-btn" id="hdr-sv-btn" onclick="toggleSvDropdown()" title="Saved views">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M13 7a2 2 0 0 1 2 2v12l-5 -3l-5 3v-12a2 2 0 0 1 2 -2h6z"></path><path d="M9.265 4a2 2 0 0 1 1.735 -1h6a2 2 0 0 1 2 2v12l-1 -.6"></path></svg>
+        Saved Views
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.6"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div id="hdr-sv-dropdown" style="display:none;position:absolute;top:calc(100% + 10px);right:0;width:300px;background:var(--bg2);border:1px solid var(--bd2);border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,.55);z-index:400;overflow:hidden">
+        <div style="padding:12px 14px 10px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:7px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M13 7a2 2 0 0 1 2 2v12l-5 -3l-5 3v-12a2 2 0 0 1 2 -2h6z"></path><path d="M9.265 4a2 2 0 0 1 1.735 -1h6a2 2 0 0 1 2 2v12l-1 -.6"></path></svg>
+            <span style="font-size:11px;font-weight:700;color:var(--t1)">Saved Views</span>
+            <span id="hdr-sv-count" style="font-size:11px;font-weight:700;background:var(--bg4);border:1px solid var(--bd2);padding:1px 6px;border-radius:8px;color:var(--t3)">0</span>
+          </div>
+        </div>
+        <div id="hdr-sv-list" style="max-height:320px;overflow-y:auto;padding:6px">
+          <div style="padding:24px 16px;text-align:center">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(246,183,60,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:var(--amber)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 4h6a2 2 0 0 1 2 2v14l-5-3-5 3V6a2 2 0 0 1 2-2"></path></svg>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:var(--t2);margin-bottom:4px">No saved views yet</div>
+            <div style="font-size:11px;color:var(--t3);line-height:1.5">Save your current filter configuration<br>using the Save View button.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hdr-sep"></div>
+
+    <!-- Save View -->
+    <button class="hdr-action-btn primary" onclick="openSaveViewModal()" title="Save current filter configuration">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17l-5 3v-14a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v7"></path><line x1="16" y1="19" x2="22" y2="19"></line><line x1="19" y1="16" x2="19" y2="22"></line></svg>
+      Save View
+    </button>
+
+    <div class="hdr-sep"></div>
+
+    <!-- Export dropdown -->
+    <div id="hdr-export-wrap" style="position:relative">
+      <button class="hdr-action-btn" id="hdr-export-btn" onclick="toggleExportDropdown()" title="Export dashboard">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path><polyline points="7 11 12 16 17 11"></polyline><line x1="12" y1="4" x2="12" y2="16"></line></svg>
+        Export
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.6"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div id="hdr-export-dropdown" style="display:none;position:absolute;top:calc(100% + 10px);right:0;width:230px;background:var(--bg3);border:1px solid var(--bd2);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,.55);z-index:400;overflow:hidden">
+        <div style="padding:10px 14px 8px;border-bottom:1px solid var(--bd)">
+          <span style="font-size:11px;font-weight:700;color:var(--t1)">Export Dashboard</span>
+        </div>
+        <button onclick="exportDashboard(&#39;pdf&#39;)" style="width:100%;display:flex;align-items:center;gap:10px;padding:11px 14px;background:transparent;border:none;border-bottom:1px solid var(--bd);cursor:pointer;font-family:inherit">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(239,68,68,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4"></path><path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6"></path><path d="M17 18h2"></path><path d="M20 15h-3v6"></path><path d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1z"></path></svg>
+          </div>
+          <div style="text-align:left"><div style="font-size:11px;font-weight:700;color:var(--t1)">Export as PDF</div><div style="font-size:11px;color:var(--t3)">Full report with charts</div></div>
+        </button>
+        <button onclick="exportDashboard(&#39;csv&#39;)" style="width:100%;display:flex;align-items:center;gap:10px;padding:11px 14px;background:transparent;border:none;cursor:pointer;font-family:inherit">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4"></path><path d="M7 16.5a1.5 1.5 0 0 0 -3 0v3a1.5 1.5 0 0 0 3 0"></path><path d="M10 20.25c0 .414 .336 .75 .75 .75h1.25a1 1 0 0 0 1 -1v-1a1 1 0 0 0 -1 -1h-1a1 1 0 0 1 -1 -1v-1a1 1 0 0 1 1 -1h1.25a.75 .75 0 0 1 .75 .75"></path><path d="M16 15l2 6l2 -6"></path></svg>
+          </div>
+          <div style="text-align:left"><div style="font-size:11px;font-weight:700;color:var(--t1)">Export as CSV</div><div style="font-size:11px;color:var(--t3)">Filtered data, clean format</div></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="hdr-sep"></div>
+
+    <button id="filter-toggle" onclick="toggleFilters()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="14" cy="6" r="2"></circle><line x1="4" y1="6" x2="12" y2="6"></line><line x1="16" y1="6" x2="20" y2="6"></line><circle cx="8" cy="12" r="2"></circle><line x1="4" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="20" y2="12"></line><circle cx="17" cy="18" r="2"></circle><line x1="4" y1="18" x2="15" y2="18"></line><line x1="19" y1="18" x2="20" y2="18"></line></svg>
+      Filters
+    </button>
+  </div>
+
+  <!-- Row 2: Navigation Tabs -->
+  <div id="topbar-row2">
+    <nav class="bnav" id="bnav">
+      <button class="bnav-item" onclick="scrollToSec(&#39;lead&#39;)" id="bnav-lead">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#00d4a8" stroke-width="2"><path d="M4 4h6v8h-6z"></path><path d="M4 16h6v4h-6z"></path><path d="M14 12h6v8h-6z"></path><path d="M14 4h6v4h-6z"></path></svg>
+        Leadership
+      </button>
+      <button class="bnav-item" onclick="scrollToSec(&#39;ops&#39;)" id="bnav-ops">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8a82ff" stroke-width="2"><rect x="4" y="4" width="16" height="6" rx="2"></rect><rect x="4" y="14" width="16" height="6" rx="2"></rect></svg>
+        Operations
+      </button>
+      <button class="bnav-item active" onclick="scrollToSec(&#39;ret&#39;)" id="bnav-ret">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3ECFBC" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="14 7 21 7 21 14"></polyline></svg>
+        Retention
+      </button>
+      <button class="bnav-item" onclick="scrollToSec(&#39;time&#39;)" id="bnav-time">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line></svg>
+        Time Analysis
+      </button>
+      <button class="bnav-item" onclick="scrollToSec(&#39;demo&#39;)" id="bnav-demo">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4DA8DA" stroke-width="2"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path></svg>
+        Demographics
+      </button>
+      <button class="bnav-item" onclick="scrollToSec(&#39;clin&#39;)" id="bnav-clin">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F6B73C" stroke-width="2"><path d="M6 4h-1a2 2 0 0 0 -2 2v3.5h0a5.5 5.5 0 0 0 11 0v-3.5a2 2 0 0 0 -2 -2h-1"></path><path d="M8 15a6 6 0 1 0 12 0v-3"></path><path d="M11 3v2"></path><path d="M6 3v2"></path><circle cx="20" cy="10" r="2"></circle></svg>
+        Clinical &amp; Payer
+      </button>
+      <button class="bnav-item" onclick="scrollToSec(&#39;geo&#39;)" id="bnav-geo">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="2"><circle cx="12" cy="11" r="3"></circle><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg>
+        Geography
+      </button>
+      <button class="bnav-item" onclick="scrollToSec(&#39;dq&#39;)" id="bnav-dq">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        Data Quality
+      </button>
+    </nav>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     BODY
+══════════════════════════════════════ -->
+<div id="body">
+  <div id="main-scroll" class="full-width">
+
+<!-- ═══════════ LEADERSHIP ═══════════ -->
+<section id="sec-lead" class="dash-section">
+  <div class="sec-hdr">
+    <div class="sec-hdr-icon" style="background:rgba(0,212,168,.12);border:1px solid rgba(0,212,168,.25)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00d4a8" stroke-width="2"><path d="M4 4h6v8h-6z"></path><path d="M4 16h6v4h-6z"></path><path d="M14 12h6v8h-6z"></path><path d="M14 4h6v4h-6z"></path></svg>
+    </div>
+    <div class="sec-hdr-text">
+      <span class="sec-hdr-title">Leadership</span>
+      <span class="sec-hdr-sub">growth · scale · retention</span>
+    </div>
+    <button class="sec-collapse-btn" onclick="toggleSection(&#39;lead&#39;,this)" id="sec-btn-lead">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"></polyline></svg>
+    </button>
+  </div>
+  <div class="sec-body expanded" id="sec-body-lead" style="max-height:4000px">
+    <div class="ref-kpi-row">
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(0,212,168,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d4a8" stroke-width="2"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path></svg>
+          </div>
+        <div class="ref-kpi-label">Total Registrations</div>
+        </div>
+        <div class="ref-kpi-value" id="k-total" style="color:var(--teal)">4,524</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta dn" id="k-total-d">▼ 5.1%</span>
+          <span class="ref-kpi-sub">vs prior period</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(108,99,255,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path><path d="M16 11h6m-3-3v6"></path></svg>
+          </div>
+        <div class="ref-kpi-label">New Patients</div>
+        </div>
+        <div class="ref-kpi-value" id="k-new" style="color:#6C63FF">1,288</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta indigo" id="k-new-pct">28.5%</span>
+          <span class="ref-kpi-sub">of total</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(62,207,188,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3ECFBC" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"></polyline></svg>
+          </div>
+        <div class="ref-kpi-label">Active Panel</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#3ECFBC">312,840</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta cyan">52.3%</span>
+          <span class="ref-kpi-sub">of lifetime</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(74,222,128,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="14 7 21 7 21 14"></polyline></svg>
+          </div>
+        <div class="ref-kpi-label">YoY Growth</div>
+        </div>
+        <div class="ref-kpi-value" id="k-yoy" style="color:#fb7185">−5.0%</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta amber">3-yr CAGR</span>
+          <span class="ref-kpi-sub" style="color:#fbbf24">−1.2%</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(77,168,218,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4DA8DA" stroke-width="2"><circle cx="12" cy="11" r="3"></circle><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg>
+          </div>
+        <div class="ref-kpi-label">Geographic Reach</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#4DA8DA">43</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta cyan">43 states</span>
+          <span class="ref-kpi-sub">847 zips · 14 counties</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(107,114,128,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4-4h4"></path><line x1="3" y1="3" x2="21" y2="21"></line></svg>
+          </div>
+        <div class="ref-kpi-label">Deceased</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#94a3b8">2,184</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta rose">0.37%</span>
+          <span class="ref-kpi-sub">lifetime mortality</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trend chart -->
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div class="plbl">Registrations Over Time</div>
+          <div class="psub" id="trend-label">Q4 2025 daily · current vs prior period vs prior year</div>
+        </div>
+      </div>
+      <svg viewBox="0 0 720 220" style="width:100%;height:220px">
+        <defs>
+          <filter id="glow"><fegaussianblur stdDeviation="2" result="blur"></fegaussianblur><femerge><femergenode in="blur"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+        </defs>
+        <g stroke="rgba(255,255,255,.04)" stroke-width="1">
+          <line x1="40" y1="25" x2="720" y2="25"></line><line x1="40" y1="70" x2="720" y2="70"></line>
+          <line x1="40" y1="115" x2="720" y2="115"></line><line x1="40" y1="160" x2="720" y2="160"></line><line x1="40" y1="190" x2="720" y2="190"></line>
+        </g>
+        <g font-size="9" fill="#475569" text-anchor="end">
+          <text x="36" y="28">500</text><text x="36" y="73">400</text><text x="36" y="118">300</text><text x="36" y="163">200</text><text x="36" y="193">100</text>
+        </g>
+        <polyline id="trend-pp" points="60,148 90,108 120,118 150,170 180,148 210,98 240,118 270,170 300,148 330,98 360,120 390,170 420,135 450,108 480,128 510,180 540,148 570,98 600,118 630,180 660,148 690,108 715,138" fill="none" stroke="#c084fc" stroke-width="2" opacity=".85" filter="url(#glow)"></polyline>
+        <polyline id="trend-py" points="60,150 90,82 120,108 150,178 180,148 210,75 240,108 270,180 300,150 330,82 360,112 390,188 420,148 450,92 480,118 510,200 540,158 570,82 600,108 630,205 660,178 690,148 715,135" fill="none" stroke="#fbbf24" stroke-width="2" opacity=".85" filter="url(#glow)"></polyline>
+        <polyline id="trend-current" points="60,158 90,80 120,110 150,178 180,148 210,72 240,108 270,180 300,158 330,75 360,108 390,195 420,150 450,98 480,118 510,200 540,160 570,82 600,108 630,210 660,180 690,158 715,148" fill="none" stroke="#00d4a8" stroke-width="2.2" filter="url(#glow)"></polyline>
+        <g font-size="9" fill="#475569" id="trend-axis"><text x="60" y="210" fill="#475569" text-anchor="middle">Oct 1</text><text x="230" y="210" fill="#475569" text-anchor="middle">Oct 30</text><text x="400" y="210" fill="#475569" text-anchor="middle">Nov 30</text><text x="600" y="210" fill="#475569" text-anchor="middle">Dec 20</text><text x="715" y="210" fill="#475569" text-anchor="middle">Dec 31</text></g>
+        <g font-size="10">
+          <circle cx="498" cy="6" r="3" fill="#00d4a8" filter="url(#glow)"></circle><text x="508" y="9" fill="#94a3b8">Current</text>
+          <circle cx="555" cy="6" r="3" fill="#c084fc" filter="url(#glow)"></circle><text x="565" y="9" fill="#94a3b8">Prior period</text>
+          <circle cx="635" cy="6" r="3" fill="#fbbf24" filter="url(#glow)"></circle><text x="645" y="9" fill="#94a3b8">Prior year</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ OPERATIONS ═══════════ -->
+<section id="sec-ops" class="dash-section">
+  <div class="sec-hdr">
+    <div class="sec-hdr-icon" style="background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.25)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2"><rect x="4" y="4" width="16" height="6" rx="2"></rect><rect x="4" y="14" width="16" height="6" rx="2"></rect></svg>
+    </div>
+    <div class="sec-hdr-text">
+      <span class="sec-hdr-title">Operations</span>
+      <span class="sec-hdr-sub">pipeline · throughput · timing</span>
+    </div>
+    <button class="sec-collapse-btn" onclick="toggleSection(&#39;ops&#39;,this)" id="sec-btn-ops">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"></polyline></svg>
+    </button>
+  </div>
+  <div class="sec-body expanded" id="sec-body-ops" style="max-height:4000px">
+    <div class="ref-kpi-row">
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(108,99,255,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2"><path d="M7 18a4.6 4.4 0 0 1 0-9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1"></path><polyline points="9 15 12 18 15 15"></polyline><line x1="12" y1="13" x2="12" y2="22"></line></svg>
+          </div>
+        <div class="ref-kpi-label">Reg → 1st Encounter</div>
+        </div>
+        <div class="ref-kpi-value" id="k-conv" style="color:#6C63FF">68.4%</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta up" id="k-conv-d">▲ 6.8 pts</span>
+          <span class="ref-kpi-sub">conversion</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(108,99,255,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>
+          </div>
+        <div class="ref-kpi-label">Avg Days to 1st Enc</div>
+        </div>
+        <div class="ref-kpi-value" id="k-days" style="color:#6C63FF">6.2</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta up">▼ 1.1 days</span>
+          <span class="ref-kpi-sub">improving</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(246,183,60,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F6B73C" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </div>
+        <div class="ref-kpi-label">Pending 1st Encounter</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#F6B73C">31.6%</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta amber">1,430</span>
+          <span class="ref-kpi-sub">registered, no encounter</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(0,212,168,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d4a8" stroke-width="2"><rect x="3" y="12" width="4" height="8" rx="1"></rect><rect x="9" y="8" width="4" height="12" rx="1"></rect><rect x="15" y="4" width="4" height="16" rx="1"></rect><line x1="4" y1="20" x2="18" y2="20"></line></svg>
+          </div>
+        <div class="ref-kpi-label">Daily Average</div>
+        </div>
+        <div class="ref-kpi-value" id="k-daily" style="color:#00d4a8">86</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta teal">σ 24</span>
+          <span class="ref-kpi-sub">peak 142</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(77,168,218,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4DA8DA" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>
+          </div>
+        <div class="ref-kpi-label">Peak Hour</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#4DA8DA">10–11AM</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta cyan">Tue–Thu</span>
+          <span class="ref-kpi-sub">cluster</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(62,207,188,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3ECFBC" stroke-width="2"><path d="M8 7V3m8 4V3M3 11h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2H5a2 2 0 0 1 -2 -2V7a2 2 0 0 1 2 -2z"></path></svg>
+          </div>
+        <div class="ref-kpi-label">Same-Day Reg</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#3ECFBC">22.8%</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta" style="background:rgba(62,207,188,.16);color:#3ECFBC">walk-in</span>
+          <span class="ref-kpi-sub">urgent share</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ RETENTION ═══════════ -->
+<section id="sec-ret" class="dash-section">
+  <div class="sec-hdr">
+    <div class="sec-hdr-icon" style="background:rgba(62,207,188,.12);border:1px solid rgba(62,207,188,.25)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3ECFBC" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="14 7 21 7 21 14"></polyline></svg>
+    </div>
+    <div class="sec-hdr-text">
+      <span class="sec-hdr-title">Retention Curve</span>
+      <span class="sec-hdr-sub">active flag tiers · lifetime decay</span>
+    </div>
+    <button class="sec-collapse-btn" onclick="toggleSection(&#39;ret&#39;,this)" id="sec-btn-ret">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"></polyline></svg>
+    </button>
+  </div>
+  <div class="sec-body expanded" id="sec-body-ret" style="max-height:4000px">
+    <div class="g2">
+      <div class="panel">
+        <div class="plbl">Active Patient Tiers</div>
+        <div class="psub">How the panel decays over time</div>
+        <svg viewBox="0 0 520 200" style="width:100%;height:200px">
+          <defs>
+            <lineargradient id="grdt" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#3ECFBC" stop-opacity=".4"></stop>
+              <stop offset="100%" stop-color="#3ECFBC" stop-opacity="0"></stop>
+            </lineargradient>
+            <filter id="glt"><fegaussianblur stdDeviation="3" result="b"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+          </defs>
+          <g stroke="rgba(255,255,255,.04)" stroke-width=".5">
+            <line x1="0" y1="30" x2="520" y2="30"></line><line x1="0" y1="70" x2="520" y2="70"></line>
+            <line x1="0" y1="110" x2="520" y2="110"></line><line x1="0" y1="150" x2="520" y2="150"></line>
+          </g>
+          <path d="M 50,40 L 150,80 L 250,110 L 350,135 L 450,165 L 450,180 L 50,180 Z" fill="url(#grdt)"></path>
+          <polyline points="50,40 150,80 250,110 350,135 450,165" fill="none" stroke="#3ECFBC" stroke-width="2.5" filter="url(#glt)"></polyline>
+          <g fill="#3ECFBC" filter="url(#glt)">
+            <circle cx="50" cy="40" r="9"></circle><circle cx="150" cy="80" r="7"></circle><circle cx="250" cy="110" r="6"></circle><circle cx="350" cy="135" r="5"></circle><circle cx="450" cy="165" r="4"></circle>
+          </g>
+          <g font-size="11" fill="#CDD2E0" font-weight="500" text-anchor="middle">
+            <text x="50" y="25">598K</text><text x="150" y="65">412K</text><text x="250" y="95">358K</text><text x="350" y="120">312K</text><text x="450" y="150">218K</text>
+          </g>
+          <g font-size="9" fill="#6B7591" text-anchor="middle">
+            <text x="50" y="195">Lifetime</text><text x="150" y="195">24m active</text><text x="250" y="195">18m active</text><text x="350" y="195">12m active</text><text x="450" y="195">6m active</text>
+          </g>
+          <g font-size="9" fill="#8A95AF" text-anchor="middle">
+            <text x="100" y="50" font-style="italic">−31%</text><text x="200" y="90" font-style="italic">−13%</text><text x="300" y="120" font-style="italic">−13%</text><text x="400" y="148" font-style="italic">−30%</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel">
+        <div class="plbl">Tier Counts &amp; Ratios</div>
+        <table class="tab">
+          <thead><tr><th>Tier</th><th class="num">Patients</th><th class="num">vs Lifetime</th><th class="num">vs Prev</th></tr></thead>
+          <tbody>
+            <tr><td>Lifetime registered</td><td class="num pt-ret">598,190</td><td class="num muted">100%</td><td class="num muted">—</td></tr>
+            <tr><td>24m active</td><td class="num pt-ret">412,840</td><td class="num muted">69.0%</td><td class="num" style="color:#fbbf24">−31.0%</td></tr>
+            <tr><td>18m active</td><td class="num pt-ret">358,210</td><td class="num muted">59.9%</td><td class="num" style="color:#fbbf24">−13.2%</td></tr>
+            <tr><td>12m active</td><td class="num pt-ret">312,840</td><td class="num muted">52.3%</td><td class="num" style="color:#fbbf24">−12.7%</td></tr>
+            <tr><td>6m active</td><td class="num pt-ret">218,420</td><td class="num muted">36.5%</td><td class="num" style="color:#fb7185">−30.2%</td></tr>
+            <tr><td>Deceased</td><td class="num pt-ret">2,184</td><td class="num muted">0.37%</td><td class="num muted">—</td></tr>
+            <tr><td>Inactive 24m+</td><td class="num pt-ret">185,350</td><td class="num muted">31.0%</td><td class="num muted">—</td></tr>
+          </tbody>
+        </table>
+        <div class="ins" style="--ia:#3ECFBC;margin-top:12px">
+          <div class="ins-t">15% of cohort lapsed &gt;18 months</div>
+          <div class="ins-s">Proactive outreach for MS or progressive conditions may prevent delayed diagnosis of relapses.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TIME ANALYSIS ═══════════ -->
+<section id="sec-time" class="dash-section">
+  <div class="sec-hdr">
+    <div class="sec-hdr-icon" style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line></svg>
+    </div>
+    <span class="sec-hdr-title">Time Analysis</span>
+    <span style="font-size:11px;color:var(--t3);margin-left:4px">— one chart · five granularities</span>
+    <button class="sec-collapse-btn" onclick="toggleSection(&#39;time&#39;,this)" id="sec-btn-time">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"></polyline></svg>
+    </button>
+  </div>
+  <div class="sec-body expanded" id="sec-body-time" style="max-height:4000px">
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div class="plbl">Registration Volume</div>
+          <div class="psub" id="time-sub">2018–2025 · annual</div>
+        </div>
+        <div class="ref-tab-group" id="time-toggle">
+          <button class="ref-tab active" data-view="year" onclick="switchTimeView(&#39;year&#39;,this)">Year</button>
+          <button class="ref-tab" data-view="quarter" onclick="switchTimeView(&#39;quarter&#39;,this)">Quarter</button>
+          <button class="ref-tab" data-view="month" onclick="switchTimeView(&#39;month&#39;,this)">Month</button>
+          <button class="ref-tab" data-view="week" onclick="switchTimeView(&#39;week&#39;,this)">Week</button>
+          <button class="ref-tab" data-view="hour" onclick="switchTimeView(&#39;hour&#39;,this)">Hour×DOW</button>
+        </div>
+      </div>
+      <div id="time-chart-container" style="min-height:260px"><svg viewBox="0 0 880 260" style="width:100%;height:260px"><defs><filter id="bgl"><fegaussianblur stdDeviation="3" result="b"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter></defs><g stroke="rgba(255,255,255,.04)" stroke-width=".5"><line x1="0" y1="30" x2="880" y2="30"></line><line x1="0" y1="75" x2="880" y2="75"></line><line x1="0" y1="120" x2="880" y2="120"></line><line x1="0" y1="165" x2="880" y2="165"></line><line x1="0" y1="210" x2="880" y2="210"></line></g><rect x="16.5" y="61.779359430604984" width="77" height="148.22064056939502" rx="2" fill="#4ade80" opacity=".9" filter="url(#bgl)"></rect><text x="55" y="55.779359430604984" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">24.5K</text><text x="55" y="232" fill="#6B7591" font-size="10" text-anchor="middle">2018</text><rect x="126.5" y="53.91459074733095" width="77" height="156.08540925266905" rx="2" fill="#4ade80" opacity=".9" filter="url(#bgl)"></rect><text x="165" y="47.91459074733095" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">25.8K</text><text x="165" y="232" fill="#6B7591" font-size="10" text-anchor="middle">2019</text><rect x="236.5" y="95.65836298932383" width="77" height="114.34163701067617" rx="2" fill="#4ade80" opacity=".9" filter="url(#bgl)"></rect><text x="275" y="89.65836298932383" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">18.9K</text><text x="275" y="232" fill="#6B7591" font-size="10" text-anchor="middle">2020</text><rect x="346.5" y="50.28469750889681" width="77" height="159.7153024911032" rx="2" fill="#4ade80" opacity=".9" filter="url(#bgl)"></rect><text x="385" y="44.28469750889681" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">26.4K</text><text x="385" y="232" fill="#6B7591" font-size="10" text-anchor="middle">2021</text><rect x="456.5" y="40" width="77" height="170" rx="2" fill="#4ade80" opacity=".9" filter="url(#bgl)"></rect><text x="495" y="34" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">28.1K</text><text x="495" y="232" fill="#6B7591" font-size="10" text-anchor="middle">2022</text><rect x="566.5" y="44.23487544483987" width="77" height="165.76512455516013" rx="2" fill="#4ade80" opacity=".9" filter="url(#bgl)"></rect><text x="605" y="38.23487544483987" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">27.4K</text><text x="605" y="232" fill="#6B7591" font-size="10" text-anchor="middle">2023</text><rect x="676.5" y="47.86476868327401" width="77" height="162.135231316726" rx="2" fill="#4ade80" opacity=".9" filter="url(#bgl)"></rect><text x="715" y="41.86476868327401" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">26.8K</text><text x="715" y="232" fill="#6B7591" font-size="10" text-anchor="middle">2024</text><rect x="786.5" y="96.61423487544484" width="77" height="113.38576512455516" rx="2" fill="#4ade80" opacity=".9" filter="url(#bgl)"></rect><text x="825" y="90.61423487544484" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">18.7K</text><text x="825" y="232" fill="#6B7591" font-size="10" text-anchor="middle">2025</text></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DEMOGRAPHICS ═══════════ -->
+<section id="sec-demo" class="dash-section">
+  <div class="sec-hdr">
+    <div class="sec-hdr-icon" style="background:rgba(77,168,218,.12);border:1px solid rgba(77,168,218,.25)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4DA8DA" stroke-width="2"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path><path d="M21 21v-2a4 4 0 0 0 -3-3.85"></path></svg>
+    </div>
+    <div class="sec-hdr-text">
+      <span class="sec-hdr-title">Demographics</span>
+      <span class="sec-hdr-sub">gender · age · race · ethnicity · marital · language</span>
+    </div>
+    <button class="sec-collapse-btn" onclick="toggleSection(&#39;demo&#39;,this)" id="sec-btn-demo">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"></polyline></svg>
+    </button>
+  </div>
+  <div class="sec-body expanded" id="sec-body-demo" style="max-height:4000px">
+    <div class="g3">
+      <div class="panel">
+        <div class="plbl">By Gender</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+          <svg viewBox="0 0 100 100" width="80" height="80" style="filter:drop-shadow(0 0 12px rgba(96,165,250,.25))">
+            <circle cx="50" cy="50" r="36" fill="none" stroke="#fb7185" stroke-width="14" stroke-dasharray="127.8 226" transform="rotate(-90 50 50)"></circle>
+            <circle cx="50" cy="50" r="36" fill="none" stroke="#4DA8DA" stroke-width="14" stroke-dasharray="98.4 226" stroke-dashoffset="-127.8" transform="rotate(-90 50 50)"></circle>
+          </svg>
+          <div style="flex:1;font-size:11px">
+            <div style="display:flex;justify-content:space-between;padding:2px 0;color:var(--t1)"><span style="display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:2px;background:#fb7185"></span>Female</span><span>337,918</span></div>
+            <div style="display:flex;justify-content:space-between;padding:2px 0;color:var(--t1)"><span style="display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:2px;background:#4DA8DA"></span>Male</span><span>259,963</span></div>
+            <div style="display:flex;justify-content:space-between;padding:2px 0;color:var(--t3)"><span style="display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:2px;background:#475569"></span>Unknown</span><span>238</span></div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--t3);margin-top:8px">F:M 1.30 · 56.5% female</div>
+      </div>
+      <div class="panel">
+        <div class="plbl">By Age</div>
+        <svg viewBox="0 0 240 90" style="width:100%;height:80px">
+          <g fill="#6C63FF" style="filter:drop-shadow(0 0 5px rgba(77,168,218,.4))">
+            <rect x="2" y="70" width="22" height="20" rx="2"></rect><rect x="26" y="58" width="22" height="32" rx="2"></rect>
+            <rect x="50" y="48" width="22" height="42" rx="2"></rect><rect x="74" y="35" width="22" height="55" rx="2"></rect>
+            <rect x="98" y="22" width="22" height="68" rx="2"></rect><rect x="122" y="10" width="22" height="80" rx="2"></rect>
+            <rect x="146" y="18" width="22" height="72" rx="2"></rect><rect x="170" y="35" width="22" height="55" rx="2"></rect>
+            <rect x="194" y="58" width="22" height="32" rx="2"></rect><rect x="218" y="78" width="22" height="12" rx="2"></rect>
+          </g>
+        </svg>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px">Median 56 · 65+ 32% · Peds 5%</div>
+      </div>
+      <div class="panel">
+        <div class="plbl">By Race</div>
+        <div class="br"><span class="bl">Pt declined</span><div class="bt"><div class="bf" style="width:50%;background:#fbbf24"></div></div><span class="bn">50.3%</span></div>
+        <div class="br"><span class="bl">White</span><div class="bt"><div class="bf" style="width:44%;background:#3ECFBC"></div></div><span class="bn">43.5%</span></div>
+        <div class="br"><span class="bl">Black / AA</span><div class="bt"><div class="bf" style="width:6%;background:#3ECFBC"></div></div><span class="bn">5.6%</span></div>
+        <div class="br"><span class="bl">Asian</span><div class="bt"><div class="bf" style="width:3%;background:#3ECFBC"></div></div><span class="bn">2.7%</span></div>
+        <div class="br"><span class="bl">AI / AN</span><div class="bt"><div class="bf" style="width:1%;background:#3ECFBC"></div></div><span class="bn">0.6%</span></div>
+        <div class="br"><span class="bl">Other/Unsp</span><div class="bt"><div class="bf" style="width:1%;background:#6B7591"></div></div><span class="bn">1.3%</span></div>
+      </div>
+    </div>
+    <div class="g3">
+      <div class="panel">
+        <div class="plbl">By Ethnicity</div>
+        <div class="br"><span class="bl">Non-Hispanic</span><div class="bt"><div class="bf" style="width:78%;background:#4ade80"></div></div><span class="bn">77.8%</span></div>
+        <div class="br"><span class="bl">Hispanic/Latino</span><div class="bt"><div class="bf" style="width:4%;background:#4ade80"></div></div><span class="bn">3.6%</span></div>
+        <div class="br"><span class="bl">Pt declined</span><div class="bt"><div class="bf" style="width:14%;background:#fbbf24"></div></div><span class="bn">14.2%</span></div>
+        <div class="br"><span class="bl">Unknown</span><div class="bt"><div class="bf" style="width:4%;background:#6B7591"></div></div><span class="bn">4.4%</span></div>
+      </div>
+      <div class="panel">
+        <div class="plbl">By Marital Status</div>
+        <div class="br"><span class="bl">Married</span><div class="bt"><div class="bf" style="width:54%;background:#F6B73C"></div></div><span class="bn">54.2%</span></div>
+        <div class="br"><span class="bl">Single</span><div class="bt"><div class="bf" style="width:28%;background:#F6B73C"></div></div><span class="bn">28.1%</span></div>
+        <div class="br"><span class="bl">Divorced</span><div class="bt"><div class="bf" style="width:9%;background:#F6B73C"></div></div><span class="bn">8.7%</span></div>
+        <div class="br"><span class="bl">Widowed</span><div class="bt"><div class="bf" style="width:5%;background:#F6B73C"></div></div><span class="bn">5.4%</span></div>
+        <div class="br"><span class="bl">Other/Unkn</span><div class="bt"><div class="bf" style="width:4%;background:#6B7591"></div></div><span class="bn">3.6%</span></div>
+      </div>
+      <div class="panel">
+        <div class="plbl">By Language</div>
+        <div class="br"><span class="bl">English</span><div class="bt"><div class="bf" style="width:92%;background:#A78BFA"></div></div><span class="bn">91.8%</span></div>
+        <div class="br"><span class="bl">Spanish</span><div class="bt"><div class="bf" style="width:4%;background:#A78BFA"></div></div><span class="bn">3.4%</span></div>
+        <div class="br"><span class="bl">Hmong</span><div class="bt"><div class="bf" style="width:2%;background:#A78BFA"></div></div><span class="bn">1.6%</span></div>
+        <div class="br"><span class="bl">Somali</span><div class="bt"><div class="bf" style="width:2%;background:#A78BFA"></div></div><span class="bn">1.2%</span></div>
+        <div class="br"><span class="bl">Vietnamese</span><div class="bt"><div class="bf" style="width:1%;background:#A78BFA"></div></div><span class="bn">0.7%</span></div>
+        <div class="br"><span class="bl">Other (11)</span><div class="bt"><div class="bf" style="width:1%;background:#6B7591"></div></div><span class="bn">1.3%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CLINICAL & PAYER ═══════════ -->
+<section id="sec-clin" class="dash-section">
+  <div class="sec-hdr">
+    <div class="sec-hdr-icon" style="background:rgba(246,183,60,.12);border:1px solid rgba(246,183,60,.25)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F6B73C" stroke-width="2"><path d="M6 4h-1a2 2 0 0 0 -2 2v3.5h0a5.5 5.5 0 0 0 11 0v-3.5a2 2 0 0 0 -2 -2h-1"></path><path d="M8 15a6 6 0 1 0 12 0v-3"></path></svg>
+    </div>
+    <div class="sec-hdr-text">
+      <span class="sec-hdr-title">Clinical &amp; Payer Mix</span>
+      <span class="sec-hdr-sub">provider · visit type · specialty · facility · insurance</span>
+    </div>
+    <button class="sec-collapse-btn" onclick="toggleSection(&#39;clin&#39;,this)" id="sec-btn-clin">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"></polyline></svg>
+    </button>
+  </div>
+  <div class="sec-body expanded" id="sec-body-clin" style="max-height:4000px">
+    <div class="g4">
+      <div class="panel">
+        <div class="plbl">Primary Provider</div>
+        <table class="tab">
+          <thead><tr><th>Provider</th><th class="num">Pts</th></tr></thead>
+          <tbody>
+            <tr><td>Sethna M.</td><td class="num pt-clin">18,487</td></tr>
+            <tr><td>Niemi V.</td><td class="num pt-clin">17,930</td></tr>
+            <tr><td>Janousek S.</td><td class="num pt-clin">17,259</td></tr>
+            <tr><td>Lux F.</td><td class="num pt-clin">14,644</td></tr>
+            <tr><td>Shahkhan S.</td><td class="num pt-clin">13,995</td></tr>
+            <tr><td>Evans C.</td><td class="num pt-clin">11,617</td></tr>
+            <tr><td>Other (26)</td><td class="num muted">102,258</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="plbl">Visit Type</div>
+        <div class="br"><span class="bl">Office visit</span><div class="bt"><div class="bf" style="width:100%;background:#4DA8DA"></div></div><span class="bn">73.0%</span></div>
+        <div class="br"><span class="bl">Diag test</span><div class="bt"><div class="bf" style="width:18%;background:#4DA8DA"></div></div><span class="bn">13.0%</span></div>
+        <div class="br"><span class="bl">Radiology</span><div class="bt"><div class="bf" style="width:7%;background:#4DA8DA"></div></div><span class="bn">5.4%</span></div>
+        <div class="br"><span class="bl">Hospital</span><div class="bt"><div class="bf" style="width:4%;background:#4DA8DA"></div></div><span class="bn">3.2%</span></div>
+        <div class="br"><span class="bl">Admin</span><div class="bt"><div class="bf" style="width:2%;background:#4DA8DA"></div></div><span class="bn">1.3%</span></div>
+        <div class="br"><span class="bl">Virtual</span><div class="bt"><div class="bf" style="width:1%;background:#4DA8DA"></div></div><span class="bn">0.5%</span></div>
+        <div class="br"><span class="bl">Other</span><div class="bt"><div class="bf" style="width:5%;background:#6B7591"></div></div><span class="bn">3.6%</span></div>
+      </div>
+      <div class="panel">
+        <div class="plbl">Specialty</div>
+        <div class="br"><span class="bl">Neurology</span><div class="bt"><div class="bf" style="width:100%;background:#3ECFBC"></div></div><span class="bn">65.0%</span></div>
+        <div class="br"><span class="bl">Ped Neuro</span><div class="bt"><div class="bf" style="width:23%;background:#3ECFBC"></div></div><span class="bn">15.1%</span></div>
+        <div class="br"><span class="bl">Sleep Med</span><div class="bt"><div class="bf" style="width:10%;background:#3ECFBC"></div></div><span class="bn">6.2%</span></div>
+        <div class="br"><span class="bl">Clin Neuropsych</span><div class="bt"><div class="bf" style="width:1%;background:#3ECFBC"></div></div><span class="bn">0.4%</span></div>
+        <div class="br"><span class="bl">PA / NP</span><div class="bt"><div class="bf" style="width:1%;background:#3ECFBC"></div></div><span class="bn">0.6%</span></div>
+        <div class="br"><span class="bl">Other</span><div class="bt"><div class="bf" style="width:20%;background:#6B7591"></div></div><span class="bn">12.7%</span></div>
+      </div>
+      <div class="panel">
+        <div class="plbl">Insurance / Payer</div>
+        <div class="br"><span class="bl">Commercial</span><div class="bt"><div class="bf" style="width:48%;background:#4ade80"></div></div><span class="bn">48.2%</span></div>
+        <div class="br"><span class="bl">Medicare</span><div class="bt"><div class="bf" style="width:28%;background:#4ade80"></div></div><span class="bn">28.4%</span></div>
+        <div class="br"><span class="bl">BCBS MN</span><div class="bt"><div class="bf" style="width:14%;background:#4ade80"></div></div><span class="bn">13.8%</span></div>
+        <div class="br"><span class="bl">Medicaid (MA)</span><div class="bt"><div class="bf" style="width:6%;background:#4ade80"></div></div><span class="bn">5.9%</span></div>
+        <div class="br"><span class="bl">Self-pay</span><div class="bt"><div class="bf" style="width:2%;background:#fb7185"></div></div><span class="bn">2.1%</span></div>
+        <div class="br"><span class="bl">Workers comp</span><div class="bt"><div class="bf" style="width:1%;background:#4ade80"></div></div><span class="bn">1.2%</span></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="panel">
+        <div class="plbl">Facility</div>
+        <div class="br"><span class="bl">Noran main (Mpls)</span><div class="bt"><div class="bf" style="width:100%;background:#A78BFA"></div></div><span class="bn">66.9%</span></div>
+        <div class="br"><span class="bl">Lake Elmo</span><div class="bt"><div class="bf" style="width:9%;background:#A78BFA"></div></div><span class="bn">6.2%</span></div>
+        <div class="br"><span class="bl">Blaine</span><div class="bt"><div class="bf" style="width:8%;background:#A78BFA"></div></div><span class="bn">5.7%</span></div>
+        <div class="br"><span class="bl">Bloomington/Edina</span><div class="bt"><div class="bf" style="width:8%;background:#A78BFA"></div></div><span class="bn">5.2%</span></div>
+        <div class="br"><span class="bl">Plymouth</span><div class="bt"><div class="bf" style="width:6%;background:#A78BFA"></div></div><span class="bn">4.3%</span></div>
+        <div class="br"><span class="bl">Other (4)</span><div class="bt"><div class="bf" style="width:17%;background:#6B7591"></div></div><span class="bn">11.7%</span></div>
+      </div>
+      <div class="panel">
+        <div class="plbl">Scheduling Provider</div>
+        <div class="br"><span class="bl">Feyma T.</span><div class="bt"><div class="bf" style="width:100%;background:#FF7A59"></div></div><span class="bn">8,142</span></div>
+        <div class="br"><span class="bl">Hanes E.</span><div class="bt"><div class="bf" style="width:82%;background:#FF7A59"></div></div><span class="bn">6,680</span></div>
+        <div class="br"><span class="bl">Wegener C.</span><div class="bt"><div class="bf" style="width:68%;background:#FF7A59"></div></div><span class="bn">5,540</span></div>
+        <div class="br"><span class="bl">Menon R.</span><div class="bt"><div class="bf" style="width:54%;background:#FF7A59"></div></div><span class="bn">4,398</span></div>
+        <div class="br"><span class="bl">McCartney K.</span><div class="bt"><div class="bf" style="width:48%;background:#FF7A59"></div></div><span class="bn">3,910</span></div>
+        <div class="br"><span class="bl">Other (7)</span><div class="bt"><div class="bf" style="width:62%;background:#6B7591"></div></div><span class="bn">5,050</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GEOGRAPHY ═══════════ -->
+<section id="sec-geo" class="dash-section">
+  <div class="sec-hdr">
+    <div class="sec-hdr-icon" style="background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.25)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="2"><circle cx="12" cy="11" r="3"></circle><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg>
+    </div>
+    <span class="sec-hdr-title">Geography</span>
+    <span style="font-size:11px;color:var(--t3);margin-left:4px">— counts at every level · city · zip · county · state</span>
+    <button class="sec-collapse-btn" onclick="toggleSection(&#39;geo&#39;,this)" id="sec-btn-geo">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"></polyline></svg>
+    </button>
+  </div>
+  <div class="sec-body expanded" id="sec-body-geo" style="max-height:4000px">
+    <div class="ref-kpi-row" style="grid-template-columns:repeat(4,1fr)">
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(251,113,133,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="2"><path d="M3 7l6-3l6 3l6-3v13l-6 3l-6-3l-6 3z"></path><line x1="9" y1="4" x2="9" y2="17"></line><line x1="15" y1="7" x2="15" y2="20"></line></svg>
+          </div>
+        <div class="ref-kpi-label">States</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#fb7185">43</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta rose">MN 94.2%</span>
+          <span class="ref-kpi-sub">WI 2.8% · IA 0.9%</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(108,99,255,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2"><circle cx="12" cy="11" r="3"></circle><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg>
+          </div>
+        <div class="ref-kpi-label">Counties</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#6C63FF">14</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta indigo">89%</span>
+          <span class="ref-kpi-sub">5 Twin Cities counties</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(246,183,60,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF7A59" stroke-width="2"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><line x1="9" y1="9" x2="9" y2="9.01"></line><line x1="9" y1="12" x2="9" y2="12.01"></line><line x1="9" y1="15" x2="9" y2="15.01"></line></svg>
+          </div>
+        <div class="ref-kpi-label">Cities</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#FF7A59">3,247</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta amber">64%</span>
+          <span class="ref-kpi-sub">top 12 cities of panel</span>
+        </div>
+      </div>
+      <div class="ref-kpi-card">
+        <div class="ref-kpi-top">
+          <div class="ref-kpi-icon-wrap" style="background:rgba(167,139,250,.1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2"><circle cx="12" cy="11" r="3"></circle><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg>
+          </div>
+        <div class="ref-kpi-label">Zip Codes</div>
+        </div>
+        <div class="ref-kpi-value" style="color:#A78BFA">847</div>
+        <div class="ref-kpi-footer">
+          <span class="ref-kpi-delta" style="background:rgba(167,139,250,.16);color:#A78BFA">38%</span>
+          <span class="ref-kpi-sub">top 20 zips of panel</span>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div class="plbl">Patient &amp; Facility Map</div>
+          <div class="psub" id="map-sub">Twin Cities metro · facility markers + patient density</div>
+        </div>
+        <div class="ref-tab-group" id="map-toggle">
+          <button class="ref-tab active" data-view="twin" onclick="switchMapView(&#39;twin&#39;,this)">Twin Cities</button>
+          <button class="ref-tab" data-view="mn" onclick="switchMapView(&#39;mn&#39;,this)">Minnesota</button>
+          <button class="ref-tab" data-view="us" onclick="switchMapView(&#39;us&#39;,this)">US wide</button>
+        </div>
+      </div>
+      <div id="map-container" style="position:relative"><svg viewBox="0 0 800 440" style="width:100%;height:440px;background:var(--bg);border-radius:8px"><defs><filter id="mgl"><fegaussianblur stdDeviation="4" result="b"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter></defs><g stroke="rgba(255,255,255,.025)" stroke-width=".5"><line x1="0" y1="0" x2="0" y2="440"></line><line x1="80" y1="0" x2="80" y2="440"></line><line x1="160" y1="0" x2="160" y2="440"></line><line x1="240" y1="0" x2="240" y2="440"></line><line x1="320" y1="0" x2="320" y2="440"></line><line x1="400" y1="0" x2="400" y2="440"></line><line x1="480" y1="0" x2="480" y2="440"></line><line x1="560" y1="0" x2="560" y2="440"></line><line x1="640" y1="0" x2="640" y2="440"></line><line x1="720" y1="0" x2="720" y2="440"></line><line x1="0" y1="0" x2="800" y2="0"></line><line x1="0" y1="80" x2="800" y2="80"></line><line x1="0" y1="160" x2="800" y2="160"></line><line x1="0" y1="240" x2="800" y2="240"></line><line x1="0" y1="320" x2="800" y2="320"></line><line x1="0" y1="400" x2="800" y2="400"></line></g><path d="M 360,40 Q 380,120 400,200 Q 420,280 460,360 Q 480,400 500,440" stroke="rgba(77,168,218,.15)" stroke-width="14" fill="none"></path><g font-size="9" fill="rgba(255,255,255,.08)" text-anchor="middle"><text x="100" y="40">NW Metro</text><text x="700" y="40">East Metro</text><text x="100" y="420">SW Metro</text><text x="700" y="420">SE Metro</text></g><circle cx="360" cy="215" r="56" fill="rgba(251,113,133,.08)"></circle><circle cx="360" cy="215" r="28" fill="rgba(251,113,133,.25)" filter="url(#mgl)"></circle><circle cx="360" cy="215" r="11.200000000000001" fill="#fb7185"></circle><text x="392" y="218" fill="#CDD2E0" font-size="10" font-weight="500">Minneapolis</text><text x="392" y="230" fill="#6B7591" font-size="9">98.4K</text><circle cx="470" cy="220" r="35.32777890672627" fill="rgba(251,113,133,.08)"></circle><circle cx="470" cy="220" r="17.663889453363137" fill="rgba(251,113,133,.25)" filter="url(#mgl)"></circle><circle cx="470" cy="220" r="7.065555781345255" fill="#fb7185"></circle><text x="491.66388945336314" y="223" fill="#CDD2E0" font-size="10" font-weight="500">St Paul</text><text x="491.66388945336314" y="235" fill="#6B7591" font-size="9">52.2K</text><circle cx="350" cy="295" r="24.93802072749441" fill="rgba(251,113,133,.08)"></circle><circle cx="350" cy="295" r="12.469010363747206" fill="rgba(251,113,133,.25)" filter="url(#mgl)"></circle><circle cx="350" cy="295" r="4.987604145498882" fill="#fb7185"></circle><text x="366.4690103637472" y="298" fill="#CDD2E0" font-size="10" font-weight="500">Bloomington</text><text x="366.4690103637472" y="310" fill="#6B7591" font-size="9">28.9K</text><circle cx="250" cy="155" r="20.865271286323917" fill="rgba(251,113,133,.08)"></circle><circle cx="250" cy="155" r="10.432635643161959" fill="rgba(251,113,133,.25)" filter="url(#mgl)"></circle><circle cx="250" cy="155" r="4.173054257264783" fill="#fb7185"></circle><text x="264.432635643162" y="158" fill="#CDD2E0" font-size="10" font-weight="500">Maple Grove</text><text x="264.432635643162" y="170" fill="#6B7591" font-size="9">19.8K</text><circle cx="270" cy="190" r="19.69396464133306" fill="rgba(251,113,133,.08)"></circle><circle cx="270" cy="190" r="9.84698232066653" fill="rgba(251,113,133,.25)" filter="url(#mgl)"></circle><circle cx="270" cy="190" r="3.9387929282666123" fill="#fb7185"></circle><text x="283.84698232066654" y="193" fill="#CDD2E0" font-size="10" font-weight="500">Plymouth</text><text x="283.84698232066654" y="205" fill="#6B7591" font-size="9">17.2K</text><circle cx="430" cy="310" r="18.925015240804715" fill="rgba(251,113,133,.08)"></circle><circle cx="430" cy="310" r="9.462507620402357" fill="rgba(251,113,133,.25)" filter="url(#mgl)"></circle><circle cx="430" cy="310" r="3.7850030481609434" fill="#fb7185"></circle><text x="443.46250762040233" y="313" fill="#CDD2E0" font-size="10" font-weight="500">Eagan</text><text x="443.46250762040233" y="325" fill="#6B7591" font-size="9">15.5K</text><circle cx="390" cy="330" r="18.38406827880512" fill="rgba(251,113,133,.08)"></circle><circle cx="390" cy="330" r="9.19203413940256" fill="rgba(251,113,133,.25)" filter="url(#mgl)"></circle><circle cx="390" cy="330" r="3.6768136557610243" fill="#fb7185"></circle><text x="403.19203413940255" y="333" fill="#CDD2E0" font-size="10" font-weight="500">Burnsville</text><text x="403.19203413940255" y="345" fill="#6B7591" font-size="9">14.3K</text><circle cx="540" cy="260" r="17.239585450111765" fill="rgba(251,113,133,.08)"></circle><circle cx="540" cy="260" r="8.619792725055882" fill="rgba(251,113,133,.25)" filter="url(#mgl)"></circle><circle cx="540" cy="260" r="3.447917090022353" fill="#fb7185"></circle><text x="552.6197927250558" y="263" fill="#CDD2E0" font-size="10" font-weight="500">Woodbury</text><text x="552.6197927250558" y="275" fill="#6B7591" font-size="9">11.7K</text><circle cx="360" cy="220" r="30" fill="rgba(0,212,168,.12)" filter="url(#mgl)"></circle><circle cx="360" cy="220" r="12" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"></circle><text x="360" y="224" fill="#0a0a0a" font-size="11" font-weight="700" text-anchor="middle">★</text><circle cx="540" cy="220" r="17.5" fill="rgba(0,212,168,.12)" filter="url(#mgl)"></circle><circle cx="540" cy="220" r="7" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"></circle><circle cx="380" cy="110" r="17.5" fill="rgba(0,212,168,.12)" filter="url(#mgl)"></circle><circle cx="380" cy="110" r="7" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"></circle><circle cx="340" cy="290" r="17.5" fill="rgba(0,212,168,.12)" filter="url(#mgl)"></circle><circle cx="340" cy="290" r="7" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"></circle><circle cx="270" cy="190" r="17.5" fill="rgba(0,212,168,.12)" filter="url(#mgl)"></circle><circle cx="270" cy="190" r="7" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"></circle><circle cx="350" cy="215" r="17.5" fill="rgba(0,212,168,.12)" filter="url(#mgl)"></circle><circle cx="350" cy="215" r="7" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"></circle><circle cx="380" cy="360" r="17.5" fill="rgba(0,212,168,.12)" filter="url(#mgl)"></circle><circle cx="380" cy="360" r="7" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"></circle><circle cx="320" cy="270" r="17.5" fill="rgba(0,212,168,.12)" filter="url(#mgl)"></circle><circle cx="320" cy="270" r="7" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"></circle><g transform="translate(20,380)"><rect x="0" y="0" width="190" height="50" rx="6" fill="rgba(20,21,25,.7)" stroke="rgba(255,255,255,.08)"></rect><circle cx="14" cy="18" r="6" fill="#00d4a8" filter="url(#mgl)"></circle><text x="26" y="22" fill="#CDD2E0" font-size="10">Facility (8 sites)</text><circle cx="14" cy="38" r="6" fill="rgba(251,113,133,.4)"></circle><circle cx="14" cy="38" r="3" fill="#fb7185"></circle><text x="26" y="42" fill="#CDD2E0" font-size="10">Patient city · size = volume</text></g></svg></div>
+    </div>
+    <div class="g2">
+      <div class="panel">
+        <div class="plbl">State-wise Counts</div>
+        <table class="tab">
+          <thead><tr><th>State</th><th class="num">Patients</th><th class="num">Share</th></tr></thead>
+          <tbody>
+            <tr><td>Minnesota</td><td class="num pt-geo">562,800</td><td class="num muted">94.20%</td></tr>
+            <tr><td>Wisconsin</td><td class="num pt-geo">16,740</td><td class="num muted">2.80%</td></tr>
+            <tr><td>Iowa</td><td class="num pt-geo">5,380</td><td class="num muted">0.90%</td></tr>
+            <tr><td>North Dakota</td><td class="num pt-geo">3,580</td><td class="num muted">0.60%</td></tr>
+            <tr><td>South Dakota</td><td class="num pt-geo">2,390</td><td class="num muted">0.40%</td></tr>
+            <tr><td>Ohio</td><td class="num pt-geo">740</td><td class="num muted">0.12%</td></tr>
+            <tr><td>North Carolina</td><td class="num pt-geo">628</td><td class="num muted">0.10%</td></tr>
+            <tr><td>Other (36)</td><td class="num pt-geo">3,932</td><td class="num muted">0.66%</td></tr>
+            <tr style="border-top:1px solid rgba(251,113,133,.2)"><td style="font-weight:600">Total · 43 states</td><td class="num pt-geo" style="color:#fb7185;font-weight:600">598,190</td><td class="num muted">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="plbl">County-wise Counts</div>
+        <table class="tab">
+          <thead><tr><th>County</th><th class="num">Patients</th><th class="num">Share</th></tr></thead>
+          <tbody>
+            <tr><td>Hennepin</td><td class="num pt-county">253,036</td><td class="num muted">42.30%</td></tr>
+            <tr><td>Ramsey</td><td class="num pt-county">108,272</td><td class="num muted">18.10%</td></tr>
+            <tr><td>Anoka</td><td class="num pt-county">70,587</td><td class="num muted">11.80%</td></tr>
+            <tr><td>Dakota</td><td class="num pt-county">56,230</td><td class="num muted">9.40%</td></tr>
+            <tr><td>Washington</td><td class="num pt-county">45,463</td><td class="num muted">7.60%</td></tr>
+            <tr><td>Carver</td><td class="num pt-county">18,540</td><td class="num muted">3.10%</td></tr>
+            <tr><td>Scott</td><td class="num pt-county">16,150</td><td class="num muted">2.70%</td></tr>
+            <tr><td>Wright</td><td class="num pt-county">12,560</td><td class="num muted">2.10%</td></tr>
+            <tr><td>Other (6)</td><td class="num pt-county">17,352</td><td class="num muted">2.90%</td></tr>
+            <tr style="border-top:1px solid rgba(108,99,255,.2)"><td style="font-weight:600">Total · 14 counties</td><td class="num pt-county" style="color:#6C63FF;font-weight:600">598,190</td><td class="num muted">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="panel">
+        <div class="plbl">City-wise Counts</div>
+        <table class="tab">
+          <thead><tr><th>City</th><th class="num">Patients</th><th class="num">Share</th></tr></thead>
+          <tbody>
+            <tr><td>Minneapolis</td><td class="num pt-city">98,420</td><td class="num muted">16.45%</td></tr>
+            <tr><td>St Paul</td><td class="num pt-city">52,180</td><td class="num muted">8.72%</td></tr>
+            <tr><td>Bloomington</td><td class="num pt-city">28,940</td><td class="num muted">4.84%</td></tr>
+            <tr><td>Maple Grove</td><td class="num pt-city">19,830</td><td class="num muted">3.32%</td></tr>
+            <tr><td>Plymouth</td><td class="num pt-city">17,210</td><td class="num muted">2.88%</td></tr>
+            <tr><td>Eagan</td><td class="num pt-city">15,490</td><td class="num muted">2.59%</td></tr>
+            <tr><td>Burnsville</td><td class="num pt-city">14,280</td><td class="num muted">2.39%</td></tr>
+            <tr><td>Edina</td><td class="num pt-city">12,840</td><td class="num muted">2.15%</td></tr>
+            <tr><td>Woodbury</td><td class="num pt-city">11,720</td><td class="num muted">1.96%</td></tr>
+            <tr><td>Apple Valley</td><td class="num pt-city">10,180</td><td class="num muted">1.70%</td></tr>
+            <tr><td>Other (3,237)</td><td class="num pt-city">317,100</td><td class="num muted">53.00%</td></tr>
+            <tr style="border-top:1px solid rgba(246,183,60,.2)"><td style="font-weight:600">Total · 3,247 cities</td><td class="num pt-city" style="color:#F6B73C;font-weight:600">598,190</td><td class="num muted">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="plbl">Zip-wise Counts</div>
+        <table class="tab">
+          <thead><tr><th>Zip · Area</th><th class="num">Patients</th><th class="num">Share</th></tr></thead>
+          <tbody>
+            <tr><td>55401 · Mpls downtown</td><td class="num pt-zip">8,420</td><td class="num muted">1.41%</td></tr>
+            <tr><td>55408 · Mpls South</td><td class="num pt-zip">7,180</td><td class="num muted">1.20%</td></tr>
+            <tr><td>55104 · St Paul</td><td class="num pt-zip">5,940</td><td class="num muted">0.99%</td></tr>
+            <tr><td>55124 · Apple Valley</td><td class="num pt-zip">5,490</td><td class="num muted">0.92%</td></tr>
+            <tr><td>55305 · Hopkins</td><td class="num pt-zip">4,830</td><td class="num muted">0.81%</td></tr>
+            <tr><td>55075 · S St Paul</td><td class="num pt-zip">4,210</td><td class="num muted">0.70%</td></tr>
+            <tr><td>55416 · St Louis Park</td><td class="num pt-zip">3,920</td><td class="num muted">0.66%</td></tr>
+            <tr><td>55369 · Maple Grove</td><td class="num pt-zip">3,810</td><td class="num muted">0.64%</td></tr>
+            <tr><td>55337 · Burnsville</td><td class="num pt-zip">3,640</td><td class="num muted">0.61%</td></tr>
+            <tr><td>55121 · Eagan</td><td class="num pt-zip">3,520</td><td class="num muted">0.59%</td></tr>
+            <tr><td>Other (837)</td><td class="num pt-zip">547,230</td><td class="num muted">91.47%</td></tr>
+            <tr style="border-top:1px solid rgba(167,139,250,.2)"><td style="font-weight:600">Total · 847 zips</td><td class="num pt-zip" style="color:#A78BFA;font-weight:600">598,190</td><td class="num muted">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DATA QUALITY ═══════════ -->
+<section id="sec-dq" class="dash-section">
+  <div class="sec-hdr">
+    <div class="sec-hdr-icon" style="background:rgba(107,117,145,.12);border:1px solid rgba(107,117,145,.25)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7591" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    </div>
+    <div class="sec-hdr-text">
+      <span class="sec-hdr-title">Data Quality</span>
+      <span class="sec-hdr-sub">field capture across the listed schema</span>
+    </div>
+    <button class="sec-collapse-btn" onclick="toggleSection(&#39;dq&#39;,this)" id="sec-btn-dq">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"></polyline></svg>
+    </button>
+  </div>
+  <div class="sec-body expanded" id="sec-body-dq" style="max-height:4000px">
+    <div class="g3">
+      <div class="panel">
+        <div class="plbl">Identifiers &amp; Core</div>
+        <div class="dq-row"><span>patient_id / ndid</span><span class="dq-p">100%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>registration_date</span><span class="dq-p">100%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>registration_time</span><span class="dq-p">98.4%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>date_of_birth</span><span class="dq-p">98.1%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>gender</span><span class="dq-p">99.96%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>first_enc_date</span><span class="dq-p">68.4%</span><span class="dot-a"></span></div>
+      </div>
+      <div class="panel">
+        <div class="plbl">Contact &amp; Demographics</div>
+        <div class="dq-row"><span>mobile_number</span><span class="dq-p">97.8%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>email</span><span class="dq-p">84.1%</span><span class="dot-a"></span></div>
+        <div class="dq-row"><span>address + zip</span><span class="dq-p">93.6%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>marital_status</span><span class="dq-p">85.1%</span><span class="dot-a"></span></div>
+        <div class="dq-row"><span>primary_language</span><span class="dq-p">66.0%</span><span class="dot-r"></span></div>
+        <div class="dq-row"><span>race (≠ decline/UNK)</span><span class="dq-p">33.0%</span><span class="dot-r"></span></div>
+      </div>
+      <div class="panel">
+        <div class="plbl">Clinical &amp; Provider</div>
+        <div class="dq-row"><span>primary_provider_id</span><span class="dq-p">73.9%</span><span class="dot-a"></span></div>
+        <div class="dq-row"><span>scheduling_provider</span><span class="dq-p">94.2%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>facility_name</span><span class="dq-p">100%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>visit_type_grouped</span><span class="dq-p">96.4%</span><span class="dot-g"></span></div>
+        <div class="dq-row"><span>specialty</span><span class="dq-p">88.2%</span><span class="dot-a"></span></div>
+        <div class="dq-row"><span>Insurance</span><span class="dq-p">91.4%</span><span class="dot-g"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="foot">Sourced strictly from listed fields · 598,190 lifetime patients · refreshed 6:00 AM</div>
+
+  </div><!-- end main-scroll -->
+
+  <!-- ═══════════════════ FILTER PANEL ═══════════════════ -->
+  <div id="filter-panel" class="collapsed-panel">
+    <div class="fp-panel-header">
+      <span style="font-size:11px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:7px">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M5.5 5h13a1 1 0 0 1 .5 1.5l-5 5.5v6l-4-3v-3l-5-5.5a1 1 0 0 1 .5-1.5"></path></svg>
+        Filters
+      </span>
+      <button onclick="toggleFilters()" title="Close" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0;color:var(--t3);background:transparent;border:none;border-radius:6px;cursor:pointer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="fp-divider"></div>
+
+    <!-- Period -->
+    <div class="fp-section-flat">
+      <div class="fp-section-label">Time Period</div>
+      <div class="fp-pill-row">
+        <button class="fp-pill" id="fp-d30" onclick="update(&#39;d30&#39;,null)">Last 30 days</button>
+        <button class="fp-pill" id="fp-mom" onclick="update(&#39;mom&#39;,null)">MoM</button>
+        <button class="fp-pill active" id="fp-qtd" onclick="update(&#39;qtd&#39;,null)">QTD</button>
+        <button class="fp-pill" id="fp-ytd" onclick="update(&#39;ytd&#39;,null)">YTD</button>
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+
+    <!-- Facility -->
+    <div class="fp-section-flat">
+      <div class="fp-section-label">Facility</div>
+      <select class="fp-select" id="fp-facility">
+        <option>All facilities</option>
+        <option>Noran main (Mpls)</option>
+        <option>Lake Elmo - NNC</option>
+        <option>Blaine - NNC</option>
+        <option>Bloomington / Edina</option>
+        <option>Plymouth - NNC</option>
+        <option>Lakeville - NNC</option>
+      </select>
+    </div>
+    <div class="fp-divider"></div>
+
+    <!-- Provider -->
+    <div class="fp-section-flat">
+      <div class="fp-section-label">Provider</div>
+      <select class="fp-select" id="fp-provider">
+        <option>All providers</option>
+        <option>Sethna M.</option>
+        <option>Niemi V.</option>
+        <option>Janousek S.</option>
+        <option>Lux F.</option>
+        <option>Shahkhan S.</option>
+        <option>Evans C.</option>
+      </select>
+    </div>
+
+    <div style="height:24px"></div>
+  </div><!-- end filter-panel -->
+
+</div><!-- end body -->
+</div><!-- end app -->
+
+<!-- Floating filter button (shows when panel collapsed) -->
+<button id="filter-fab" onclick="toggleFilters()" title="Open filters" class="show">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="14" cy="6" r="2"></circle><line x1="4" y1="6" x2="12" y2="6"></line><line x1="16" y1="6" x2="20" y2="6"></line><circle cx="8" cy="12" r="2"></circle><line x1="4" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="20" y2="12"></line><circle cx="17" cy="18" r="2"></circle><line x1="4" y1="18" x2="15" y2="18"></line><line x1="19" y1="18" x2="20" y2="18"></line></svg>
+  <span class="fab-label">Filters</span>
+</button>
+
+<!-- Scroll to top -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:&#39;smooth&#39;})" title="Back to top" class="visible" style="right: 20px;">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="18" y1="11" x2="12" y2="5"></line><line x1="6" y1="11" x2="12" y2="5"></line></svg>
+  <span class="st-label">Back to top</span>
+</button>
+
+<script>
+// ── DATA ──
+var periods = {
+  d30:{ label:"Last 30 days · Dec 1–31, 2025", trendLabel:"last 30 days · daily", total:"1,510", totalChange:"▼ 2.8%", totalClass:"dn", yoy:"−3.2%", newPt:"430", newPtPct:"28.5%", days:6.4, conv:"67.9%", daily:88,
+    trendCurrent:"60,165 100,90 140,98 180,200 220,165 260,82 300,108 340,200 380,160 420,90 460,118 500,205 540,178 580,108 620,168 660,72 700,140",
+    trendPp:"60,155 100,108 140,118 180,178 220,148 260,108 300,128 340,180 380,142 420,108 460,128 500,180 540,150 580,118 620,178 660,82 700,148",
+    trendPy:"60,148 100,82 140,92 180,178 220,142 260,75 300,98 340,180 380,138 420,82 460,98 500,180 540,140 580,98 620,170 660,68 700,135",
+    trendAxis:[{x:60,l:"Dec 1"},{x:260,l:"Dec 10"},{x:460,l:"Dec 20"},{x:710,l:"Dec 31"}] },
+  mom:{ label:"Nov 2025 vs Oct 2025 · MoM", trendLabel:"November daily", total:"1,485", totalChange:"▼ 5.7%", totalClass:"dn", yoy:"−4.4%", newPt:"422", newPtPct:"28.4%", days:6.3, conv:"68.0%", daily:89,
+    trendCurrent:"60,162 100,88 140,98 180,198 220,162 260,82 300,108 340,200 380,160 420,90 460,115 500,202 540,175 580,105 620,165 660,72 700,148",
+    trendPp:"60,148 100,82 140,90 180,170 220,138 260,75 300,98 340,178 380,135 420,80 460,98 500,178 540,142 580,98 620,168 660,70 700,138",
+    trendPy:"60,150 100,90 140,98 180,182 220,148 260,82 300,105 340,185 380,140 420,88 460,108 500,185 540,148 580,105 620,175 660,72 700,142",
+    trendAxis:[{x:60,l:"Nov 1"},{x:260,l:"Nov 10"},{x:460,l:"Nov 20"},{x:710,l:"Nov 30"}] },
+  qtd:{ label:"QTD · Oct 1 – Dec 31, 2025", trendLabel:"Q4 2025 daily", total:"4,524", totalChange:"▼ 5.1%", totalClass:"dn", yoy:"−5.0%", newPt:"1,288", newPtPct:"28.5%", days:6.2, conv:"68.4%", daily:86,
+    trendCurrent:"60,158 90,80 120,110 150,178 180,148 210,72 240,108 270,180 300,158 330,75 360,108 390,195 420,150 450,98 480,118 510,200 540,160 570,82 600,108 630,210 660,180 690,158 715,148",
+    trendPp:"60,148 90,108 120,118 150,170 180,148 210,98 240,118 270,170 300,148 330,98 360,120 390,170 420,135 450,108 480,128 510,180 540,148 570,98 600,118 630,180 660,148 690,108 715,138",
+    trendPy:"60,150 90,82 120,108 150,178 180,148 210,75 240,108 270,180 300,150 330,82 360,112 390,188 420,148 450,92 480,118 510,200 540,158 570,82 600,108 630,205 660,178 690,148 715,135",
+    trendAxis:[{x:60,l:"Oct 1"},{x:230,l:"Oct 30"},{x:400,l:"Nov 30"},{x:600,l:"Dec 20"},{x:715,l:"Dec 31"}] },
+  ytd:{ label:"YTD · Jan 1 – Dec 31, 2025", trendLabel:"YTD 2025 weekly", total:"18,742", totalChange:"▲ 1.6%", totalClass:"up", yoy:"+1.6%", newPt:"5,316", newPtPct:"28.4%", days:6.5, conv:"67.8%", daily:87,
+    trendCurrent:"60,148 100,138 140,142 180,128 220,108 260,118 300,138 340,148 380,158 420,142 460,148 500,162 540,170 580,158 620,162 660,158 700,168",
+    trendPp:"60,158 100,148 140,158 180,138 220,118 260,128 300,148 340,158 380,168 420,152 460,158 500,172 540,180 580,168 620,172 660,168 700,178",
+    trendPy:"60,170 100,158 140,162 180,148 220,128 260,140 300,158 340,168 380,172 420,160 460,168 500,180 540,185 580,172 620,180 660,175 700,180",
+    trendAxis:[{x:60,l:"Jan"},{x:200,l:"Mar"},{x:380,l:"Jun"},{x:540,l:"Sep"},{x:700,l:"Dec"}] }
+};
+
+var timeViews = {
+  year:{ sub:"2018–2025 · annual", type:"bars", color:"#4ade80", data:[{l:"2018",v:24500},{l:"2019",v:25800},{l:"2020",v:18900},{l:"2021",v:26400},{l:"2022",v:28100},{l:"2023",v:27400},{l:"2024",v:26800},{l:"2025",v:18742}] },
+  quarter:{ sub:"last 8 quarters", type:"bars", color:"#4ade80", data:[{l:"Q1 24",v:6800},{l:"Q2 24",v:7200},{l:"Q3 24",v:6600},{l:"Q4 24",v:6200},{l:"Q1 25",v:5800},{l:"Q2 25",v:5200},{l:"Q3 25",v:4218},{l:"Q4 25",v:4524}] },
+  month:{ sub:"12 months · 2025", type:"bars", color:"#4ade80", data:[{l:"Jan",v:1820},{l:"Feb",v:1640},{l:"Mar",v:1880},{l:"Apr",v:1720},{l:"May",v:1580},{l:"Jun",v:1750},{l:"Jul",v:1480},{l:"Aug",v:1320},{l:"Sep",v:1418},{l:"Oct",v:1510},{l:"Nov",v:1485},{l:"Dec",v:1529}] },
+  week:{ sub:"last 13 weeks · trend", type:"line", color:"#4ade80", data:[{l:"W41",v:1180},{l:"W42",v:1320},{l:"W43",v:1480},{l:"W44",v:1380},{l:"W45",v:1260},{l:"W46",v:1410},{l:"W47",v:1540},{l:"W48",v:1490},{l:"W49",v:1350},{l:"W50",v:1430},{l:"W51",v:1540},{l:"W52",v:1620},{l:"W53",v:1680}] },
+  hour:{ sub:"registration_time × day-of-week · brighter = more registrations", type:"heatmap" }
+};
+
+var heatPattern = [
+  [0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,1,2,3,4,4,4,4,3,3,2,2,1,1,0,0,0,0],
+  [0,0,0,0,0,0,0,1,3,4,5,5,5,5,4,4,3,2,1,1,0,0,0,0],
+  [0,0,0,0,0,0,0,1,3,4,5,5,5,5,4,4,3,2,1,1,0,0,0,0],
+  [0,0,0,0,0,0,0,1,3,4,5,5,5,5,4,4,3,2,1,1,0,0,0,0],
+  [0,0,0,0,0,0,0,1,2,3,4,4,4,4,3,3,2,1,1,1,0,0,0,0],
+  [0,0,0,0,0,0,0,0,1,1,2,2,2,1,1,0,0,0,0,0,0,0,0,0]
+];
+var dayLabels=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var hourLabels=["12a","1","2","3","4","5","6","7","8","9","10","11","12p","1","2","3","4","5","6","7","8","9","10","11"];
+
+// ── THEME ──
+function setTheme(t){
+  document.body.setAttribute('data-theme',t);
+  localStorage.setItem('nrTheme',t);
+}
+function setFs(s,btn){
+  document.documentElement.setAttribute('data-fs',s);
+  document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active')});
+  if(btn)btn.classList.add('active');
+  localStorage.setItem('nrFs',s);
+  requestAnimationFrame(syncTopbarHeight);
+}
+(function(){
+  var t=localStorage.getItem('nrTheme')||'dark';
+  document.body.setAttribute('data-theme',t);
+  var sel=document.getElementById('theme-sel');
+  if(sel)sel.value=t;
+  var fs=localStorage.getItem('nrFs')||'md';
+  document.documentElement.setAttribute('data-fs',fs);
+})();
+
+// ── TOPBAR HEIGHT SYNC ──
+function syncTopbarHeight(){
+  var tb=document.getElementById('topbar');
+  if(!tb)return;
+  var h=Math.round(tb.getBoundingClientRect().height);
+  if(h>0)document.documentElement.style.setProperty('--topbar-h',h+'px');
+}
+window.addEventListener('load',syncTopbarHeight);
+window.addEventListener('resize',function(){requestAnimationFrame(syncTopbarHeight)});
+
+// ── NAV ──
+var _scrolling=false;
+function scrollToSec(sid){
+  var el=document.getElementById('sec-'+sid);
+  if(!el)return;
+  var tb=document.getElementById('topbar');
+  var offset=tb?tb.offsetHeight+8:90;
+  var top=el.getBoundingClientRect().top+window.pageYOffset-offset;
+  _scrolling=true;
+  window.scrollTo({top:top,behavior:'smooth'});
+  setActiveBnav(sid);
+  clearTimeout(scrollToSec._t);
+  scrollToSec._t=setTimeout(function(){_scrolling=false},800);
+}
+function setActiveBnav(sid){
+  document.querySelectorAll('.bnav-item').forEach(function(a){a.classList.remove('active')});
+  var a=document.getElementById('bnav-'+sid);
+  if(a)a.classList.add('active');
+}
+// Scroll spy
+(function(){
+  if(typeof IntersectionObserver==='undefined')return;
+  var sections=['lead','ops','ret','time','demo','clin','geo','dq'];
+  var obs=new IntersectionObserver(function(entries){
+    if(_scrolling)return;
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id=e.target.id.replace('sec-','');
+        setActiveBnav(id);
+      }
+    });
+  },{rootMargin:'-20% 0px -70% 0px'});
+  sections.forEach(function(sid){
+    var el=document.getElementById('sec-'+sid);
+    if(el)obs.observe(el);
+  });
+})();
+
+// ── SCROLL TOP ──
+window.addEventListener('scroll',function(){
+  var btn=document.getElementById('scroll-top');
+  if(window.pageYOffset>400)btn.classList.add('visible');
+  else btn.classList.remove('visible');
+});
+
+// ── SECTION COLLAPSE ──
+function toggleSection(sid,btn){
+  var body=document.getElementById('sec-body-'+sid);
+  if(!body)return;
+  var isCollapsed=body.classList.contains('collapsed');
+  if(isCollapsed){
+    body.classList.remove('collapsed');
+    body.style.maxHeight='4000px';
+    if(btn)btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"/></svg>';
+  } else {
+    body.style.maxHeight=body.scrollHeight+'px';
+    requestAnimationFrame(function(){
+      body.classList.add('collapsed');
+      body.style.maxHeight='0';
+    });
+    if(btn)btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+  }
+}
+
+// ── FILTER PANEL ──
+function toggleFilters(){
+  var p=document.getElementById('filter-panel');
+  var ms=document.getElementById('main-scroll');
+  var ft=document.getElementById('filter-toggle');
+  var st=document.getElementById('scroll-top');
+  if(window.innerWidth<=1100){
+    p.classList.toggle('open');
+    return;
+  }
+  var collapsed=p.classList.toggle('collapsed-panel');
+  ms.classList.toggle('full-width',collapsed);
+  var fab=document.getElementById('filter-fab');
+  if(fab)fab.classList.toggle('show',collapsed);
+  if(st)st.style.right=collapsed?'20px':'340px';
+}
+
+// ── PERIOD UPDATE ──
+function update(period,chipEl){
+  var d=periods[period];if(!d)return;
+  // update chips in header
+  document.querySelectorAll('.chip[data-period]').forEach(function(b){
+    b.classList.toggle('on',b.dataset.period===period);
+  });
+  // update filter panel pills
+  ['fp-d30','fp-mom','fp-qtd','fp-ytd'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.classList.remove('active');
+  });
+  var fpMap={d30:'fp-d30',mom:'fp-mom',qtd:'fp-qtd',ytd:'fp-ytd'};
+  if(fpMap[period]){
+    var fp=document.getElementById(fpMap[period]);
+    if(fp)fp.classList.add('active');
+  }
+  // update values
+  function setText(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  function setAttr(id,k,v){var el=document.getElementById(id);if(el)el.setAttribute(k,v);}
+  setText('k-total',d.total);
+  var td=document.getElementById('k-total-d');
+  if(td){td.textContent=d.totalChange;td.className='ref-kpi-delta '+d.totalClass;}
+  setText('k-yoy',d.yoy);
+  setText('k-new',d.newPt);
+  setText('k-new-pct',d.newPtPct);
+  setText('k-days',d.days);
+  setText('k-conv',d.conv);
+  setText('k-daily',d.daily);
+  setText('trend-label',d.trendLabel+' · current vs prior period vs prior year');
+  setAttr('trend-current','points',d.trendCurrent);
+  setAttr('trend-pp','points',d.trendPp);
+  setAttr('trend-py','points',d.trendPy);
+  document.getElementById('trend-axis').innerHTML=d.trendAxis.map(function(a){
+    return "<text x='"+a.x+"' y='210' fill='#475569' text-anchor='middle'>"+a.l+"</text>";
+  }).join('');
+}
+
+// ── TIME CHART ──
+function switchTimeView(view,btn){
+  document.querySelectorAll('#time-toggle .ref-tab').forEach(function(b){b.classList.remove('active')});
+  if(btn)btn.classList.add('active');
+  renderTimeChart(view);
+}
+function renderTimeChart(view){
+  var v=timeViews[view];
+  document.getElementById('time-sub').textContent=v.sub;
+  var container=document.getElementById('time-chart-container');
+  var color=v.color||'#4ade80';
+
+  if(v.type==='bars'){
+    var max=Math.max.apply(null,v.data.map(function(d){return d.v;}));
+    var w=880,bw=w/v.data.length;
+    var html='<svg viewBox="0 0 '+w+' 260" style="width:100%;height:260px"><defs><filter id="bgl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+    html+='<g stroke="rgba(255,255,255,.04)" stroke-width=".5">';
+    for(var i=0;i<5;i++){var yg=30+i*45;html+='<line x1="0" y1="'+yg+'" x2="'+w+'" y2="'+yg+'"/>';}
+    html+='</g>';
+    v.data.forEach(function(d,i){
+      var h=(d.v/max)*170,x=i*bw+bw*.15,bwA=bw*.7,y=210-h;
+      var label=d.v>=1000?(d.v/1000).toFixed(1)+'K':d.v;
+      html+='<rect x="'+x+'" y="'+y+'" width="'+bwA+'" height="'+h+'" rx="2" fill="'+color+'" opacity=".9" filter="url(#bgl)"/>';
+      html+='<text x="'+(x+bwA/2)+'" y="'+(y-6)+'" fill="#CDD2E0" font-size="11" font-weight="500" text-anchor="middle">'+label+'</text>';
+      html+='<text x="'+(x+bwA/2)+'" y="232" fill="#6B7591" font-size="10" text-anchor="middle">'+d.l+'</text>';
+    });
+    html+='</svg>';
+    container.innerHTML=html;
+  } else if(v.type==='line'){
+    var max=Math.max.apply(null,v.data.map(function(d){return d.v;}));
+    var w=880,stepX=(w-60)/(v.data.length-1);
+    var html='<svg viewBox="0 0 '+w+' 260" style="width:100%;height:260px"><defs><filter id="lgl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="lgrd" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="'+color+'" stop-opacity=".4"/><stop offset="100%" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs>';
+    html+='<g stroke="rgba(255,255,255,.04)" stroke-width=".5">';
+    for(var i=0;i<5;i++){var yg=30+i*45;html+='<line x1="30" y1="'+yg+'" x2="'+w+'" y2="'+yg+'"/>';}
+    html+='</g>';
+    var points=v.data.map(function(d,i){
+      return (30+i*stepX)+','+(210-(d.v/max)*170);
+    }).join(' ');
+    var areaPoints=points+' '+(30+(v.data.length-1)*stepX)+',210 30,210';
+    html+='<polygon points="'+areaPoints+'" fill="url(#lgrd)"/>';
+    html+='<polyline points="'+points+'" fill="none" stroke="'+color+'" stroke-width="2.2" filter="url(#lgl)"/>';
+    v.data.forEach(function(d,i){
+      var x=30+i*stepX,y=210-(d.v/max)*170;
+      html+='<circle cx="'+x+'" cy="'+y+'" r="4" fill="'+color+'" filter="url(#lgl)"/>';
+      html+='<text x="'+x+'" y="'+(y-10)+'" fill="#CDD2E0" font-size="10" text-anchor="middle">'+d.v.toLocaleString()+'</text>';
+      html+='<text x="'+x+'" y="232" fill="#6B7591" font-size="9" text-anchor="middle">'+d.l+'</text>';
+    });
+    html+='</svg>';
+    container.innerHTML=html;
+  } else if(v.type==='heatmap'){
+    var html='<div style="display:grid;grid-template-columns:40px repeat(24,1fr);gap:3px;padding-top:8px">';
+    html+='<div></div>';
+    hourLabels.forEach(function(h){html+='<div style="font-size:11px;color:#6B7591;text-align:center;padding-bottom:4px">'+h+'</div>';});
+    for(var i=0;i<7;i++){
+      html+='<div style="font-size:11px;color:#8A95AF;display:flex;align-items:center">'+dayLabels[i]+'</div>';
+      for(var j=0;j<24;j++){
+        var intensity=heatPattern[i][j];
+        var alphas=[.04,.14,.3,.5,.72,.92];
+        html+='<div style="height:24px;border-radius:3px;background:rgba(74,222,128,'+alphas[intensity]+')">'+'</div>';
+      }
+    }
+    html+='</div><div style="margin-top:10px;font-size:11px;color:#6B7591">Peak load <span style="color:#4ade80">Tue–Thu, 9 AM – 2 PM</span> · staff accordingly</div>';
+    container.innerHTML=html;
+  }
+}
+
+// ── FP PILL TOGGLE ──
+document.querySelectorAll('.fp-pill-row').forEach(function(row){
+  row.querySelectorAll('.fp-pill').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      row.querySelectorAll('.fp-pill').forEach(function(b){b.classList.remove('active')});
+      btn.classList.add('active');
+    });
+  });
+});
+
+// ── MAP ──
+var mapViews = {
+  twin:{ sub:"Twin Cities metro · facility markers + patient density", view:"twin",
+    facilities:[
+      {name:"Noran main",x:360,y:220,count:397838,big:true},
+      {name:"Lake Elmo - NNC",x:540,y:220,count:19443},
+      {name:"Blaine - NNC",x:380,y:110,count:16947},
+      {name:"Bloomington/Edina",x:340,y:290,count:14760},
+      {name:"Plymouth - NNC",x:270,y:190,count:12129},
+      {name:"Minneapolis - NNC",x:350,y:215,count:6224},
+      {name:"Lakeville - NNC",x:380,y:360,count:5198},
+      {name:"Edina - NNC",x:320,y:270,count:2737}
+    ],
+    cities:[
+      {name:"Minneapolis",x:360,y:215,count:98420},
+      {name:"St Paul",x:470,y:220,count:52180},
+      {name:"Bloomington",x:350,y:295,count:28940},
+      {name:"Maple Grove",x:250,y:155,count:19830},
+      {name:"Plymouth",x:270,y:190,count:17210},
+      {name:"Eagan",x:430,y:310,count:15490},
+      {name:"Burnsville",x:390,y:330,count:14280},
+      {name:"Woodbury",x:540,y:260,count:11720}
+    ] },
+  mn:{ sub:"Minnesota state · county heatmap", view:"mn" },
+  us:{ sub:"US wide · all 43 states with patients", view:"us" }
+};
+
+function switchMapView(view,btn){
+  document.querySelectorAll('#map-toggle .ref-tab').forEach(function(b){b.classList.remove('active')});
+  if(btn)btn.classList.add('active');
+  renderMap(view);
+}
+function renderMap(view){
+  var v=mapViews[view];
+  document.getElementById('map-sub').textContent=v.sub;
+  var container=document.getElementById('map-container');
+
+  if(v.view==='twin'){
+    var maxC=Math.max.apply(null,v.cities.map(function(c){return c.count;}));
+    var html='<svg viewBox="0 0 800 440" style="width:100%;height:440px;background:var(--bg);border-radius:8px">';
+    html+='<defs><filter id="mgl"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+    html+='<g stroke="rgba(255,255,255,.025)" stroke-width=".5">';
+    for(var gx=0;gx<800;gx+=80)html+='<line x1="'+gx+'" y1="0" x2="'+gx+'" y2="440"/>';
+    for(var gy=0;gy<440;gy+=80)html+='<line x1="0" y1="'+gy+'" x2="800" y2="'+gy+'"/>';
+    html+='</g>';
+    html+='<path d="M 360,40 Q 380,120 400,200 Q 420,280 460,360 Q 480,400 500,440" stroke="rgba(77,168,218,.15)" stroke-width="14" fill="none"/>';
+    html+='<g font-size="9" fill="rgba(255,255,255,.08)" text-anchor="middle"><text x="100" y="40">NW Metro</text><text x="700" y="40">East Metro</text><text x="100" y="420">SW Metro</text><text x="700" y="420">SE Metro</text></g>';
+    v.cities.forEach(function(c){
+      var r=6+(c.count/maxC)*22;
+      html+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+(r*2)+'" fill="rgba(251,113,133,.08)"/>';
+      html+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+r+'" fill="rgba(251,113,133,.25)" filter="url(#mgl)"/>';
+      html+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+(r*.4)+'" fill="#fb7185"/>';
+      html+='<text x="'+(c.x+r+4)+'" y="'+(c.y+3)+'" fill="#CDD2E0" font-size="10" font-weight="500">'+c.name+'</text>';
+      html+='<text x="'+(c.x+r+4)+'" y="'+(c.y+15)+'" fill="#6B7591" font-size="9">'+(c.count>=1000?(c.count/1000).toFixed(1)+'K':c.count)+'</text>';
+    });
+    v.facilities.forEach(function(f){
+      var r=f.big?12:7;
+      html+='<circle cx="'+f.x+'" cy="'+f.y+'" r="'+(r*2.5)+'" fill="rgba(0,212,168,.12)" filter="url(#mgl)"/>';
+      html+='<circle cx="'+f.x+'" cy="'+f.y+'" r="'+r+'" fill="#00d4a8" stroke="var(--bg)" stroke-width="2" filter="url(#mgl)"/>';
+      if(f.big)html+='<text x="'+f.x+'" y="'+(f.y+4)+'" fill="#0a0a0a" font-size="11" font-weight="700" text-anchor="middle">★</text>';
+    });
+    html+='<g transform="translate(20,380)">';
+    html+='<rect x="0" y="0" width="190" height="50" rx="6" fill="rgba(20,21,25,.7)" stroke="rgba(255,255,255,.08)"/>';
+    html+='<circle cx="14" cy="18" r="6" fill="#00d4a8" filter="url(#mgl)"/><text x="26" y="22" fill="#CDD2E0" font-size="10">Facility (8 sites)</text>';
+    html+='<circle cx="14" cy="38" r="6" fill="rgba(251,113,133,.4)"/><circle cx="14" cy="38" r="3" fill="#fb7185"/><text x="26" y="42" fill="#CDD2E0" font-size="10">Patient city · size = volume</text></g>';
+    html+='</svg>';
+    container.innerHTML=html;
+  } else if(v.view==='mn'){
+    var html='<svg viewBox="0 0 800 440" style="width:100%;height:440px;background:var(--bg);border-radius:8px">';
+    html+='<defs><filter id="mnl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+    html+='<path d="M 300,40 L 460,40 L 460,90 L 540,90 L 540,180 L 590,180 L 600,360 L 510,400 L 380,400 L 320,380 L 290,320 L 280,260 L 290,150 Z" fill="rgba(62,207,188,.05)" stroke="rgba(62,207,188,.4)" stroke-width="1.5"/>';
+    var counties=[
+      {name:"Hennepin",x:420,y:290,count:253036,color:1.0},
+      {name:"Ramsey",x:470,y:285,count:108272,color:.7},
+      {name:"Anoka",x:440,y:245,count:70587,color:.55},
+      {name:"Dakota",x:460,y:330,count:56230,color:.45},
+      {name:"Washington",x:510,y:295,count:45463,color:.4},
+      {name:"Carver",x:380,y:320,count:18500,color:.25},
+      {name:"Scott",x:420,y:350,count:16400,color:.22},
+      {name:"Wright",x:360,y:250,count:12300,color:.18}
+    ];
+    counties.forEach(function(c){
+      var r=14+c.color*22;
+      html+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+(r*1.8)+'" fill="rgba(62,207,188,'+(c.color*.15)+')"/>';
+      html+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+r+'" fill="rgba(62,207,188,'+(c.color*.5)+')" filter="url(#mnl)"/>';
+      html+='<text x="'+c.x+'" y="'+(c.y+4)+'" fill="#CDD2E0" font-size="10" font-weight="500" text-anchor="middle">'+c.name+'</text>';
+      html+='<text x="'+c.x+'" y="'+(c.y+18)+'" fill="#8A95AF" font-size="9" text-anchor="middle">'+(c.count>=1000?(c.count/1000).toFixed(0)+'K':c.count)+'</text>';
+    });
+    html+='<text x="350" y="80" fill="rgba(62,207,188,.6)" font-size="14" font-weight="700" letter-spacing="3">MINNESOTA</text>';
+    html+='<text x="350" y="98" fill="rgba(255,255,255,.2)" font-size="9" letter-spacing="2">562,800 PATIENTS · 94.2% OF TOTAL</text>';
+    html+='<rect x="380" y="210" width="170" height="140" fill="none" stroke="rgba(251,113,133,.3)" stroke-width="1" stroke-dasharray="4 4" rx="6"/>';
+    html+='<text x="465" y="205" fill="#fb7185" font-size="9" text-anchor="middle">TWIN CITIES METRO</text>';
+    html+='</svg>';
+    container.innerHTML=html;
+  } else if(v.view==='us'){
+    var states=[
+      ["WA",1,1,12,.05],["MT",2,1,28,.08],["ND",3,1,3580,.6],["MN",4,1,562800,1.0],["WI",5,1,16740,.95],["MI",7,1,220,.12],["VT",9,1,5,.03],["NH",10,1,8,.04],["ME",11,1,11,.05],
+      ["OR",1,2,28,.08],["ID",2,2,35,.09],["SD",3,2,2390,.45],["IA",4,2,5380,.7],["IL",5,2,380,.18],["IN",6,2,95,.08],["OH",7,2,740,.25],["PA",8,2,520,.2],["NY",9,2,280,.15],["MA",10,2,395,.18],["CT",11,2,42,.08],
+      ["CA",1,3,178,.12],["NV",2,3,612,.22],["UT",3,3,48,.08],["CO",4,3,145,.1],["NE",4.5,2.5,585,.22],["KS",4,4,88,.08],["MO",5,3,145,.1],["KY",6,3,62,.08],["WV",7,3,24,.07],["VA",8,3,92,.09],["MD",9,3,38,.08],["DE",10,3,6,.04],["NJ",10.5,2.5,95,.09],
+      ["AZ",2,4,78,.08],["NM",3,4,35,.07],["OK",4,5,95,.09],["AR",5,4,32,.07],["TN",6,4,580,.22],["NC",7,4,628,.22],["SC",7,5,54,.08],["GA",6,5,68,.08],
+      ["TX",3,5,245,.14],["LA",4,6,18,.06],["MS",5,5,15,.05],["AL",6,6,22,.06],["FL",7,6,184,.12],
+      ["AK",0,5,372,.18],["HI",1,6,12,.05]
+    ];
+    var html='<svg viewBox="0 0 800 440" style="width:100%;height:440px;background:var(--bg);border-radius:8px">';
+    html+='<text x="40" y="40" fill="#CDD2E0" font-size="14" font-weight="500">United States · catchment by state</text>';
+    html+='<text x="40" y="56" fill="#6B7591" font-size="10">43 states represented · MN/WI dominant · sparse out-of-state outliers</text>';
+    var cellW=60,cellH=50,startX=60,startY=90;
+    states.forEach(function(s){
+      var x=startX+s[1]*cellW,y=startY+s[2]*cellH,intensity=s[4];
+      html+='<rect x="'+x+'" y="'+y+'" width="'+(cellW-6)+'" height="'+(cellH-6)+'" rx="4" fill="rgba(251,113,133,'+(intensity*.6+.04)+')" stroke="rgba(255,255,255,'+(.04+intensity*.15)+')"/>';
+      html+='<text x="'+(x+(cellW-6)/2)+'" y="'+(y+20)+'" fill="'+(intensity>.4?'#CDD2E0':'#8A95AF')+'" font-size="11" font-weight="600" text-anchor="middle">'+s[0]+'</text>';
+      var label=s[3]>=1000?(s[3]/1000).toFixed(s[3]>=10000?0:1)+'K':s[3];
+      html+='<text x="'+(x+(cellW-6)/2)+'" y="'+(y+34)+'" fill="'+(intensity>.4?'#CDD2E0':'#6B7591')+'" font-size="9" text-anchor="middle">'+label+'</text>';
+    });
+    html+='<g transform="translate(560,380)"><text x="0" y="0" fill="#8A95AF" font-size="9">Patient volume</text>';
+    [.05,.2,.5,1.0].forEach(function(i,idx){
+      html+='<rect x="'+(idx*50)+'" y="10" width="44" height="14" rx="3" fill="rgba(251,113,133,'+(i*.6+.04)+')"/>';
+      var lbl=i<.1?'<100':(i<.3?'100-1K':(i<.7?'1-10K':'>10K'));
+      html+='<text x="'+(idx*50+22)+'" y="38" fill="#6B7591" font-size="9" text-anchor="middle">'+lbl+'</text>';
+    });
+    html+='</g></svg>';
+    container.innerHTML=html;
+  }
+}
+
+// ── COLLAPSE ALL ──
+var _allCollapsed=false;
+function toggleCollapseAll(){
+  var sections=['lead','ops','ret','time','demo','clin','geo','dq'];
+  _allCollapsed=!_allCollapsed;
+  sections.forEach(function(sid){
+    var body=document.getElementById('sec-body-'+sid);
+    var btn=document.getElementById('sec-btn-'+sid);
+    if(!body)return;
+    if(_allCollapsed){
+      if(!body.classList.contains('collapsed')){
+        body.style.maxHeight=body.scrollHeight+'px';
+        requestAnimationFrame(function(){body.classList.add('collapsed');body.style.maxHeight='0';});
+        if(btn)btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+      }
+    } else {
+      body.classList.remove('collapsed');
+      body.style.maxHeight='4000px';
+      if(btn)btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"/></svg>';
+    }
+  });
+  var lbl=document.getElementById('collapse-toggle-lbl');
+  if(lbl)lbl.textContent=_allCollapsed?'Expand All':'Collapse All';
+}
+
+// ── HEADER DROPDOWNS ──
+function toggleSvDropdown(){
+  var dd=document.getElementById('hdr-sv-dropdown');
+  var ex=document.getElementById('hdr-export-dropdown');
+  if(ex)ex.style.display='none';
+  dd.style.display=dd.style.display==='block'?'none':'block';
+}
+function toggleExportDropdown(){
+  var dd=document.getElementById('hdr-export-dropdown');
+  var sv=document.getElementById('hdr-sv-dropdown');
+  if(sv)sv.style.display='none';
+  dd.style.display=dd.style.display==='block'?'none':'block';
+}
+function openSaveViewModal(){
+  alert('Save View — captures current Period / Facility / Provider filters. (Demo)');
+}
+function exportDashboard(type){
+  document.getElementById('hdr-export-dropdown').style.display='none';
+  alert('Exporting dashboard as '+type.toUpperCase()+' … (Demo)');
+}
+// close dropdowns on outside click
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#hdr-sv-wrap')){var d=document.getElementById('hdr-sv-dropdown');if(d)d.style.display='none';}
+  if(!e.target.closest('#hdr-export-wrap')){var d=document.getElementById('hdr-export-dropdown');if(d)d.style.display='none';}
+});
+
+// ── INIT ──
+renderTimeChart('year');
+renderMap('twin');
+update('qtd',null);
+requestAnimationFrame(syncTopbarHeight);
+</script>
+
+
+</body></html>

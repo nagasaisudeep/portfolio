@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-fs="md" style="--topbar-h: 109px;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referral Analytics — Neurology Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+
+<style>
+  :root{
+    /* Deep dark — 4-layer surface hierarchy */
+    --bg:#0D0E12;--bg1:#0D0E12;--bg2:#141519;--bg3:#1C1E24;--bg4:#22252E;--bg5:#2A2E3A;
+    --fp-bg:#191C23;--fp-card:#1F2229;
+    --hdr-bg:#242830;--hdr-row2:#1E2128;
+    --bd:#252830;--bd2:#2E323C;
+    --t1:#CDD2E0;--t2:#8A95AF;--t3:#6B7591;
+    --teal:#3ecfbc;--blue:#6861E0;--amber:#F6B32D;--coral:#FF6B6B;
+    --purple:#A78BFA;--green:#68B684;--pink:#1A9E82;--orange:#FF7A59;--red:#E8526E;--cyan:#4DA8DA;
+    --violet:#A78BFA;
+    --map-land:#1C1E24;--map-line:#2E323C;--map-lab:#6B7591;
+    --fs:1;
+    --mono:'Inter',sans-serif;--sans:'Inter',sans-serif;
+  }
+  [data-theme="light"]{
+    --bg:#F5F7FA;--bg1:#F5F7FA;--bg2:#FFFFFF;--bg3:#F8FAFC;--bg4:#F0F4F8;--bg5:#E2E8F0;
+    --fp-bg:#F8FAFC;--fp-card:#FFFFFF;
+    --hdr-bg:#FFFFFF;--hdr-row2:#007A63;
+    --bd:#E2E8F0;--bd2:#CBD5E1;
+    --t1:#1E293B;--t2:#64748B;--t3:#353637;
+    --teal:#007A63;--blue:#4DA8DA;--amber:#F6B32D;--coral:#F7933A;
+    --purple:#8B6CFF;--green:#4CD97B;--pink:#EC4899;--orange:#F7933A;--red:#E8526E;--cyan:#42B9F5;
+    --violet:#8B6CFF;
+    --map-land:#EDF2F7;--map-line:#CBD5E1;--map-lab:#94A3B8;
+  }
+  [data-fs="sm"]{--fs:.9} [data-fs="md"]{--fs:1} [data-fs="lg"]{--fs:1.10} [data-fs="xl"]{--fs:1.25}
+  [data-fs="sm"] #main-scroll{zoom:.9} [data-fs="lg"] #main-scroll{zoom:1.1} [data-fs="xl"] #main-scroll{zoom:1.25}
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:.1px}
+
+  /* ═══════════ TOPBAR (cohort-dashboard style) ═══════════ */
+  #topbar{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--hdr-bg);border-bottom:1px solid var(--bd);box-shadow:0 2px 8px rgba(0,0,0,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  #topbar-row1{display:flex;align-items:center;height:calc(58px * var(--fs));padding:0 calc(22px * var(--fs));gap:12px;border-bottom:1px solid rgba(255,255,255,.05)}
+  [data-theme="light"] #topbar-row1{border-bottom:1px solid rgba(0,0,0,.05)}
+  #topbar-row2{display:flex;align-items:center;height:calc(50px * var(--fs));padding:0 calc(22px * var(--fs));gap:6px;background:var(--hdr-row2)}
+  #topbar::after{content:'';display:block;position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(62,207,188,.12) 40%,rgba(62,207,188,.12) 60%,transparent);pointer-events:none}
+  [data-theme="light"] #topbar::after{background:none}
+
+  .logo{display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:default}
+  .logo-pulse{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--teal),rgba(62,207,188,.5));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 12px rgba(62,207,188,.25);animation:pulse 3s ease-in-out infinite;color:#000}
+  @keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(62,207,188,.3)}50%{box-shadow:0 0 18px rgba(62,207,188,.5)}}
+  .logo-text{display:flex;flex-direction:column;gap:1px}
+  .logo-title{font-size:calc(13px * var(--fs));font-weight:700;color:var(--t1);letter-spacing:-.3px;line-height:1;white-space:nowrap}
+  .logo-title .logo-tag{font-size:calc(11px * var(--fs));font-weight:500;color:var(--t3);letter-spacing:0}
+  .logo-sub{font-size:calc(11px * var(--fs));color:var(--t3);font-weight:500;letter-spacing:.2px;white-space:nowrap}
+
+  .hdr-sep{width:1px;height:26px;background:rgba(255,255,255,.12);flex-shrink:0}
+  [data-theme="light"] .hdr-sep{background:rgba(0,0,0,.1)}
+
+  .hdr-action-btn{display:flex;align-items:center;gap:6px;padding:8px 13px;font-size:calc(11px * var(--fs));font-weight:600;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.07);color:var(--t1);cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:background .2s ease,border-color .2s ease,color .2s ease,transform .1s ease;flex-shrink:0;letter-spacing:-.1px}
+  .hdr-action-btn:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.2);transform:translateY(-1px)}
+  .hdr-action-btn:active{transform:translateY(0)}
+  [data-theme="light"] .hdr-action-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);color:var(--t1)}
+  [data-theme="light"] .hdr-action-btn:hover{background:rgba(0,0,0,.07);border-color:rgba(0,0,0,.18)}
+  .hdr-action-btn.primary{background:var(--teal);color:#0a0a0a;border-color:var(--teal);font-weight:700;padding:8px 18px;box-shadow:0 2px 12px rgba(62,207,188,.3);letter-spacing:-.2px}
+  .hdr-action-btn.primary:hover{opacity:.92;box-shadow:0 4px 18px rgba(62,207,188,.4)}
+  [data-theme="light"] .hdr-action-btn.primary{color:#fff}
+  .hdr-action-btn.secondary{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.06)}
+  .hdr-action-btn.secondary:hover{border-color:rgba(62,207,188,.3);background:rgba(62,207,188,.1);color:var(--teal)}
+  [data-theme="light"] .hdr-action-btn.secondary{border-color:rgba(0,0,0,.12);background:rgba(0,0,0,.03)}
+  [data-theme="light"] .hdr-action-btn.secondary:hover{border-color:rgba(0,122,99,.4);background:rgba(0,122,99,.06);color:var(--teal)}
+  .hdr-action-btn i{display:inline-flex;align-items:center;justify-content:center}
+  .hdr-action-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* icon-only theme toggle: no color, moon <-> sun */
+  #theme-toggle{display:flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.07);color:var(--t1);cursor:pointer;flex-shrink:0;transition:background .2s ease,border-color .2s ease}
+  #theme-toggle:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.2)}
+  [data-theme="light"] #theme-toggle{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+  [data-theme="light"] #theme-toggle:hover{background:rgba(0,0,0,.07);border-color:rgba(0,0,0,.18)}
+  #theme-toggle svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  .fs-group{display:flex;gap:1px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:hidden;flex-shrink:0}
+  [data-theme="light"] .fs-group{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+  .fs-btn{padding:7px 11px;font-size:calc(11px * var(--fs));font-weight:600;border:none;background:transparent;color:var(--t2);cursor:pointer;font-family:'Inter',sans-serif;transition:background .2s ease,color .2s ease;white-space:nowrap}
+  .fs-btn:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+  .fs-btn.active{background:var(--teal);color:#0a0a0a;font-weight:700}
+  [data-theme="light"] .fs-btn.active{color:#fff}
+
+  /* floating filter button — icon-only, flush to right edge, reveals label on hover */
+  #filter-toggle{position:fixed;top:calc(var(--topbar-h,150px) + 150px);right:0;z-index:180;display:flex;align-items:center;gap:0;padding:12px;background:var(--teal);border:none;border-radius:12px 0 0 12px;cursor:pointer;font-size:calc(12px * var(--fs));font-weight:700;color:#0a0a0a;white-space:nowrap;box-shadow:0 6px 22px rgba(62,207,188,.4);transition:padding .2s ease,gap .2s ease,box-shadow .2s ease,right .25s ease,border-radius .25s ease;font-family:inherit;overflow:hidden}
+  #filter-toggle .ft-label{max-width:0;opacity:0;overflow:hidden;transition:max-width .25s ease,opacity .2s ease}
+  #filter-toggle:hover{gap:8px;padding:12px 16px;box-shadow:0 10px 30px rgba(62,207,188,.55)}
+  #filter-toggle:hover .ft-label{max-width:80px;opacity:1}
+  [data-theme="light"] #filter-toggle{color:#fff}
+  #filter-toggle.open{right:320px;border-radius:12px 0 0 12px}
+  #filter-toggle.hide{display:none}
+  @media(max-width:900px){#filter-toggle.open{right:0}}
+  #filter-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  /* nav tabs — pill style */
+  .bnav{display:flex;align-items:center;gap:2px;overflow-x:auto;flex:1;scrollbar-width:none}
+  .bnav::-webkit-scrollbar{display:none}
+  .bnav-item{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:10px;border:1px solid transparent;font-size:calc(12px * var(--fs));font-weight:600;color:#cdd2e0;transition:background .2s ease,border-color .2s ease,color .2s ease;white-space:nowrap;cursor:pointer;background:transparent;font-family:inherit;outline:none;letter-spacing:.1px;word-spacing:2px}
+  .bnav-item:hover{color:var(--t2);background:var(--bg3);border-color:var(--bd)}
+  .bnav-item.active{color:#0D0E12;background:var(--teal);border-color:var(--teal);font-weight:700;box-shadow:0 2px 12px rgba(62,207,188,.3)}
+  .bnav-item svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .bnav-item i{display:inline-flex;transition:color .2s}
+  .bnav-item.active i{color:#0D0E12!important}
+  [data-theme="light"] .bnav-item{color:#fff}
+  [data-theme="light"] .bnav-item:hover{background:rgba(255,255,255,.14);border-color:transparent;color:#fff}
+  [data-theme="light"] .bnav-item.active{background:#fff;color:#007A63;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  [data-theme="light"] .bnav-item i{color:#fff!important}
+  [data-theme="light"] .bnav-item.active i{color:#007A63!important}
+
+  /* dropdowns in header */
+  .hdr-dd{position:absolute;top:calc(100% + 10px);right:0;width:250px;background:var(--bg3);border:1px solid var(--bd2);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,.55);z-index:400;overflow:hidden;display:none}
+  [data-theme="light"] .hdr-dd{box-shadow:0 16px 48px rgba(0,0,0,.18)}
+  .hdr-dd.show{display:block}
+  .hdr-dd-title{padding:10px 14px 8px;border-bottom:1px solid var(--bd);font-size:calc(11px * var(--fs));font-weight:700;color:var(--t1)}
+  .hdr-dd-item{width:100%;display:flex;align-items:center;gap:10px;padding:11px 14px;background:transparent;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:background .12s;text-align:left}
+  .hdr-dd-item:hover{background:var(--bg4)}
+  .hdr-dd-item + .hdr-dd-item{border-top:1px solid var(--bd)}
+  .hdr-dd-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .hdr-dd-ic svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .hdr-dd-l1{font-size:calc(11px * var(--fs));font-weight:700;color:var(--t1)}
+  .hdr-dd-l2{font-size:calc(11px * var(--fs));color:var(--t3)}
+  .sv-card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:8px}
+  .sv-card:hover{border-color:rgba(62,207,188,.3)}
+  .sv-card .sv-nm{font-size:calc(11px * var(--fs));font-weight:700;color:var(--t1);flex:1}
+  .sv-card .sv-meta{font-size:calc(11px * var(--fs));color:var(--t3)}
+  .sv-del{width:22px;height:22px;border-radius:6px;background:transparent;border:1px solid var(--bd2);color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .sv-del:hover{border-color:var(--coral);color:var(--coral)}
+  .sv-del svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ═══════════ LAYOUT ═══════════ */
+  #body{display:flex;position:relative}
+  #main-scroll{flex:1;min-width:0;overflow-x:hidden;padding:0 24px 60px;transition:margin-right .25s ease}
+  #main-scroll.panel-open{margin-right:320px}
+  @media(max-width:900px){#main-scroll.panel-open{margin-right:0}}
+
+  /* applied filters bar — third row of the topbar, attached to the nav bar */
+  #applied-filters-bar{display:flex;align-items:center;flex-wrap:nowrap;gap:6px;height:42px;padding:0 24px;background:var(--hdr-row2);border-top:1px solid rgba(255,255,255,.06);overflow-x:auto;scrollbar-width:none}
+  #applied-filters-bar::-webkit-scrollbar{display:none}
+  [data-theme="light"] #applied-filters-bar{background:#EEF2F6;border-top:1px solid rgba(0,0,0,.06)}
+  .filter-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 8px 3px 10px;background:rgba(62,207,188,.08);border:.5px solid rgba(62,207,188,.3);border-radius:14px;font-size:calc(11px * var(--fs));font-weight:600;color:var(--teal);white-space:nowrap}
+  .filter-chip-label{color:var(--t3);font-weight:400;margin-right:2px}
+  .filter-chip-x{width:14px;height:14px;border-radius:50%;background:rgba(62,207,188,.15);border:none;color:var(--teal);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;padding:0;transition:background .15s;line-height:1}
+  .filter-chip-x:hover{background:rgba(62,207,188,.35)}
+  .af-empty{font-size:calc(11px * var(--fs));color:var(--t3);display:flex;align-items:center;gap:5px}
+  .af-empty svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .af-clear-btn{margin-left:auto;padding:3px 10px;font-size:calc(11px * var(--fs));font-weight:700;border-radius:5px;border:.5px solid var(--bd2);background:transparent;color:var(--t3);cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:4px}
+  .af-clear-btn:hover{border-color:var(--coral);color:var(--coral)}
+  .af-count{font-size:calc(11px * var(--fs));color:var(--t3);font-family:var(--mono);margin-left:4px}
+
+  /* ═══════════ FILTER PANEL ═══════════ */
+  #filter-panel{position:fixed;top:var(--topbar-h,150px);right:0;width:320px;height:calc(100vh - var(--topbar-h,150px));background:var(--fp-bg);border-left:1px solid rgba(255,255,255,.05);overflow-y:auto;z-index:150;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;transform:translateX(0);opacity:1;transition:transform .25s ease,opacity .2s ease}
+  [data-theme="light"] #filter-panel{background:#F8FAFC!important;border-left-color:rgba(0,0,0,.06)}
+  #filter-panel.closed{transform:translateX(100%);opacity:0;pointer-events:none;visibility:hidden}
+  #filter-panel::-webkit-scrollbar{width:3px}
+  #filter-panel::-webkit-scrollbar-track{background:transparent}
+  #filter-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+  .fp-section-flat{padding:10px 14px}
+  .fp-section-label{display:flex;align-items:center;gap:6px;font-size:calc(11px * var(--fs));font-weight:700;color:var(--t1);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;cursor:pointer;user-select:none}
+  .fp-section-label .fp-chev{margin-left:auto;transition:transform .25s ease;flex-shrink:0;opacity:.6}
+  .fp-section-label .fp-chev svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .fp-section-label.collapsed .fp-chev{transform:rotate(-90deg)}
+  .fp-sec-body.collapsed{display:none}
+  .fp-collapse-all{margin-left:auto;padding:3px 8px;font-size:calc(11px * var(--fs));font-weight:700;letter-spacing:.3px;border-radius:5px;border:.5px solid var(--bd2);background:transparent;color:var(--t3);cursor:pointer;font-family:inherit;text-transform:uppercase}
+  .fp-collapse-all:hover{border-color:var(--teal);color:var(--teal)}
+  .fp-close{margin-left:6px;width:24px;height:24px;border-radius:6px;border:.5px solid var(--bd2);background:transparent;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .fp-close:hover{border-color:var(--coral);color:var(--coral)}
+  .fp-close svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .fp-section-label svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.85}
+  .fp-divider{height:1px;background:rgba(255,255,255,.07);margin:4px 0;flex-shrink:0}
+  [data-theme="light"] .fp-divider{background:rgba(0,0,0,.08)}
+  .fp-pill-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:2px}
+  .fp-pill{padding:4px 12px;font-size:calc(11px * var(--fs));font-weight:700;border-radius:8px;border:1px solid var(--bd2);background:var(--bg3);color:var(--t2);cursor:pointer;font-family:inherit;transition:background .2s ease,border-color .2s ease,color .2s ease;white-space:nowrap}
+  [data-theme="light"] .fp-pill{background:#fff}
+  .fp-pill:hover{border-color:rgba(62,207,188,.3)}
+  .fp-pill.active{background:rgba(62,207,188,.12);border-color:rgba(62,207,188,.4);color:var(--teal)}
+  .fp-select{width:100%;font-size:calc(11px * var(--fs));background:var(--bg4);border:.5px solid var(--bd2);border-radius:5px;color:var(--t2);padding:6px 8px;font-family:inherit;cursor:pointer;outline:none}
+  .fp-search{width:100%;font-size:calc(11px * var(--fs));background:var(--bg4);border:.5px solid var(--bd2);border-radius:5px;color:var(--t1);padding:6px 10px;font-family:inherit;outline:none;margin-bottom:6px}
+  [data-theme="light"] .fp-select,[data-theme="light"] .fp-search{background:#fff}
+  .fp-prov-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;background:var(--bg3);border:1px solid var(--bd2);border-radius:8px;cursor:pointer;font-family:inherit;transition:background .2s ease,border-color .2s ease;margin-bottom:4px}
+  [data-theme="light"] .fp-prov-btn{background:#fff}
+  .fp-prov-btn:hover{border-color:rgba(62,207,188,.35);background:rgba(62,207,188,.05)}
+  .fp-prov-btn .fp-prov-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .fp-prov-btn .fp-prov-name{font-size:calc(11px * var(--fs));font-weight:600;color:var(--t2);flex:1;text-align:left}
+  .fp-prov-btn .fp-prov-count{font-size:calc(11px * var(--fs));font-weight:700;color:var(--t3);font-family:var(--mono)}
+  .fp-prov-btn.active{border-color:rgba(62,207,188,.4);background:rgba(62,207,188,.08)}
+  .fp-prov-btn.active .fp-prov-name{color:var(--teal)}
+  .fp-check-row{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:calc(11px * var(--fs));color:var(--t2)}
+  .fp-check-row:hover{background:var(--bg4)}
+  .fp-check-row input{width:13px;height:13px;accent-color:var(--teal);cursor:pointer;flex-shrink:0}
+  .fp-check-row .cnt{margin-left:auto;font-family:var(--mono);font-size:calc(11px * var(--fs));color:var(--t3)}
+  .fp-reset-btn{width:100%;padding:9px 0;border-radius:8px;border:1px solid var(--bd2);background:transparent;color:var(--t2);font-weight:700;font-size:calc(11px * var(--fs));font-family:inherit;cursor:pointer;transition:border-color .2s,color .2s}
+  .fp-reset-btn:hover{border-color:var(--coral);color:var(--coral)}
+  .fp-scroll-list{max-height:180px;overflow-y:auto;scrollbar-width:thin}
+
+  /* ═══════════ SECTIONS (cohort style headers) ═══════════ */
+  .dash-section{scroll-margin-top:calc(var(--topbar-h,108px) + 60px);margin-bottom:40px;padding-top:24px}
+  .sec-hdr{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;user-select:none}
+  .sec-hdr-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .sec-hdr-icon svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  [data-theme="light"] .sec-hdr-icon{background:#fff!important;border:none!important}
+  .sec-hdr-main{flex:1;min-width:0}
+  .sec-hdr-row{display:flex;align-items:center;gap:12px}
+  .sec-hdr-title{font-size:calc(14px * var(--fs));font-weight:700;color:var(--t1);letter-spacing:-.2px}
+  [data-theme="light"] .sec-hdr-title{color:#0F1925!important;font-weight:700!important}
+  .sec-hdr-note{font-size:calc(11px * var(--fs));color:var(--t2);margin-top:5px;max-width:92ch;line-height:1.5}
+  .sec-hdr-seg{margin-left:auto;flex-shrink:0}
+  .dash-section.sec-collapsed .sec-hdr-seg{display:none}
+  .dash-section.sec-collapsed .sec-hdr-note{display:none}
+  .sec-collapse-btn{width:24px;height:24px;border-radius:5px;background:var(--bg4);border:.5px solid var(--bd2);color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s ease,border-color .2s ease,color .2s ease;flex-shrink:0;margin-top:1px}
+  .sec-collapse-btn:hover{border-color:var(--teal);color:var(--teal)}
+  .sec-collapse-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s ease}
+  .sec-collapse-btn.collapsed svg{transform:rotate(180deg)}
+  [data-theme="light"] .sec-collapse-btn{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.12);color:#1E293B}
+  .sec-body.collapsed{display:none}
+  .dash-section.sec-collapsed{border-bottom:1px solid var(--bd);margin-bottom:0;padding-bottom:10px}
+  .dash-section.sec-collapsed .sec-hdr{margin-bottom:0;cursor:pointer}
+
+  .panel{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:18px}
+  .grid{display:grid;gap:14px}
+
+  /* KPI cards */
+  .kpis{grid-template-columns:repeat(6,1fr)}
+  .kpi{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+  .kpi-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .kpi-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .kpi-ic svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .kpi .lab{font-size:calc(12px * var(--fs));font-weight:600;color:var(--t1)}
+  .kpi .val{font-size:calc(30px * var(--fs));font-weight:800;letter-spacing:-.5px;line-height:1}
+  .kpi .val small{font-size:calc(15px * var(--fs));color:var(--t2);font-weight:600}
+  .kpi .delta{font-size:calc(11px * var(--fs));margin-top:12px;color:var(--t3);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .kpi .delta b{font-weight:700}
+  .ktag{display:inline-flex;align-items:center;padding:2px 10px;border-radius:20px;font-size:calc(11px * var(--fs));font-weight:700;white-space:nowrap}
+  .up{color:var(--green)} .down{color:var(--red)}
+
+  .sankey-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+  .sblegend{display:flex;flex-wrap:wrap;gap:10px 16px;margin:2px 0 18px}
+  .sblegend span{font-family:var(--mono);font-size:11px;color:var(--t2);display:flex;align-items:center;gap:6px}
+  .sblegend i{width:11px;height:11px;border-radius:3px;flex:none}
+  #network{width:100%;display:block}
+  .cnode{cursor:pointer;stroke:var(--bg);stroke-width:1}
+  .clab{font-family:var(--mono);font-size:11px;fill:var(--t2);pointer-events:none}
+  .cedge{cursor:default;transition:stroke-opacity .12s}
+  .seg{display:inline-flex;border:1px solid var(--bd2);border-radius:8px;overflow:hidden}
+  .seg button{font-family:var(--mono);font-size:11px;letter-spacing:.4px;background:transparent;color:var(--t2);border:0;padding:7px 13px;cursor:pointer}
+  .seg button+button{border-left:1px solid var(--bd2)}
+  .seg button.on{background:var(--teal);color:#0a0a0a}
+  [data-theme="light"] .seg button.on{color:#fff}
+  .legend{display:flex;gap:16px;font-family:var(--mono);font-size:11px;color:var(--t2);margin-left:auto;flex-wrap:wrap}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
+  .colhdr{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin:2px 4px 8px}
+
+  .two{grid-template-columns:1.35fr 1fr}
+  .geo2{grid-template-columns:1.15fr 1fr}
+
+  .apptcards{grid-template-columns:repeat(3,1fr);margin-bottom:14px}
+  .acard{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+  .acard-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .acard-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .acard-ic svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .acard .al{font-size:calc(12px * var(--fs));font-weight:600;color:var(--t1)}
+  .acard .av{font-size:calc(28px * var(--fs));font-weight:800;letter-spacing:-.5px;line-height:1;color:var(--t1)}
+  .acard .ad{font-size:calc(11px * var(--fs));color:var(--t3);margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+  .funnel{display:flex;flex-direction:column;gap:9px}
+  .fbar-wrap{display:flex;align-items:center;gap:12px}
+  .fbar{height:38px;border-radius:6px;display:flex;align-items:center;padding:0 12px;font-family:var(--mono);font-size:12px;color:#06121f;font-weight:700;min-width:90px}
+  .fmeta{font-family:var(--mono);font-size:11px;color:var(--t2)}
+  .fmeta b{color:var(--t1)}
+  .fleak{font-family:var(--mono);font-size:11px;color:var(--red);margin-left:6px}
+  .stagename{font-family:var(--mono);font-size:11px;color:var(--t2);width:118px;flex:none;text-align:right}
+
+  .leakrows{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+  .leakrow{display:grid;grid-template-columns:170px 1fr 40px;align-items:center;gap:10px}
+  .leakrow .nm{font-size:12px;color:var(--t2)}
+  .ltrack{height:9px;background:var(--bg4);border-radius:5px;overflow:hidden}
+  .lfill{height:100%;background:linear-gradient(90deg,var(--red),var(--coral));border-radius:5px}
+  .leakrow .pc{font-family:var(--mono);font-size:11px;text-align:right;color:var(--t1)}
+
+  table.rank{width:100%;border-collapse:collapse}
+  .rank-scroll{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bd2) transparent}
+  .rank-scroll::-webkit-scrollbar{width:6px}
+  .rank-scroll::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+  #src-panel,#load-panel{display:flex;flex-direction:column}
+  table.rank thead th{position:sticky;top:0;z-index:2;background:var(--bg3)}
+  table.rank th{font-family:var(--mono);font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);text-align:left;padding:7px 8px;border-bottom:1px solid var(--bd)}
+  table.rank th.r,table.rank td.r{text-align:right}
+  table.rank td{padding:9px 8px;border-bottom:1px solid var(--bd);font-size:12.5px}
+  table.rank tr:hover td{background:var(--bg3)}
+  .src{display:flex;align-items:center;gap:9px}
+  .rk{font-family:var(--mono);font-size:11px;color:var(--t3);width:16px}
+  .stk{height:8px;border-radius:4px;display:flex;overflow:hidden;width:110px;background:var(--bg4)}
+  .stk span{height:100%}
+  .numm{font-family:var(--mono)}
+  .pos{color:var(--green)} .neg{color:var(--red)}
+
+  .loadlist{display:flex;flex-direction:column;gap:11px}
+  .loadrow{display:grid;grid-template-columns:1fr auto;gap:6px}
+  .loadrow .top{display:flex;justify-content:space-between;align-items:baseline}
+  .loadrow .pname{font-size:12.5px}
+  .loadrow .psub{font-family:var(--mono);font-size:11px;color:var(--t3)}
+  .loadrow .pn{font-family:var(--mono);font-size:12px;color:var(--t1)}
+  .ltrk{grid-column:1/3;height:8px;background:var(--bg4);border-radius:5px;overflow:hidden}
+  .lf{height:100%;background:var(--cyan);border-radius:5px}
+
+  .splitbar{height:34px;border-radius:8px;overflow:hidden;display:flex;margin:0 0 18px}
+  .splitbar div{display:flex;align-items:center;padding:0 14px;font-size:calc(12px * var(--fs));font-weight:700;color:#06121f}
+  .cmprows{display:flex;flex-direction:column;gap:16px}
+  .cmprow .ttl{font-family:var(--mono);font-size:11px;letter-spacing:.5px;color:var(--t2);margin-bottom:7px}
+  .cmpbar{display:grid;grid-template-columns:54px 1fr 46px;align-items:center;gap:10px;margin-bottom:6px}
+  .cmpbar .lg{font-family:var(--mono);font-size:11px;color:var(--t3)}
+  .cmptrack{height:14px;background:var(--bg4);border-radius:7px;overflow:hidden}
+  .cmptrack span{display:block;height:100%;border-radius:7px}
+  .cmpbar .vv{font-family:var(--mono);font-size:11.5px;text-align:right}
+  .bigsplit{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .bigsplit .bs{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:16px 18px}
+  .bs-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .bs-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .bs-ic svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .bigsplit .bl{font-size:calc(12px * var(--fs));font-weight:600;color:var(--t1)}
+  .bigsplit .bv{font-size:calc(30px * var(--fs));font-weight:800;letter-spacing:-.5px;line-height:1}
+  .bigsplit .bv small{font-size:calc(14px * var(--fs));color:var(--t2);font-weight:600}
+  .bigsplit .bd{font-size:calc(11px * var(--fs));color:var(--t3);margin-top:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+  #scatter{width:100%;display:block}
+  .scatter-head{display:flex;align-items:center;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+  .concord{background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:14px;margin-top:14px}
+  .concord .cv{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--teal)}
+  .concord .cl{font-size:12px;color:var(--t2);margin-top:3px}
+
+  .cyclechips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .cchip{flex:1;min-width:200px;background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+  .cchip-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .cchip-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .cchip-ic svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .cchip .cl{font-size:calc(12px * var(--fs));font-weight:600;color:var(--t1)}
+  .cchip .cv{font-size:calc(24px * var(--fs));font-weight:800;letter-spacing:-.5px;line-height:1;color:var(--t1)}
+  .cchip .cv small{font-size:calc(13px * var(--fs));color:var(--t2);font-weight:600}
+  .cchip .cd{font-size:calc(11px * var(--fs));color:var(--t3);margin-top:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .ct-head{display:flex;align-items:center;gap:14px;margin-bottom:4px;flex-wrap:wrap}
+  .ct-title{font-family:var(--mono);font-size:11px;letter-spacing:.4px;color:var(--t2)}
+  .ct-box-title{font-family:var(--mono);font-size:11px;letter-spacing:.4px;color:var(--t2);margin:22px 0 2px}
+  #cdf,#boxes{width:100%;display:block}
+  .cdfgrid{stroke:var(--bd);stroke-width:1}
+  .cdfref{stroke:var(--bd2);stroke-width:1;stroke-dasharray:4 4}
+  .cdfax{font-family:var(--mono);font-size:11px;fill:var(--t3)}
+  .cdfcur{stroke:var(--t1);stroke-width:1;stroke-dasharray:3 3;opacity:0}
+  .boxrow:hover .boxhit{fill:rgba(255,255,255,.03)}
+
+  .cohorts{grid-template-columns:repeat(2,1fr)}
+  .coh{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:16px 18px}
+  .coh-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .coh-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .coh-ic svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .coh .win{font-size:calc(12px * var(--fs));font-weight:600;color:var(--t1)}
+  .coh .big{font-size:calc(30px * var(--fs));font-weight:800;letter-spacing:-.5px;line-height:1;color:var(--t1)}
+  .coh .rate{font-size:calc(11px * var(--fs));color:var(--t3);margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .coh .meter{height:7px;background:var(--bg4);border-radius:5px;overflow:hidden;margin-top:12px}
+  .coh .meter span{display:block;height:100%;border-radius:5px}
+
+  #tip{position:fixed;pointer-events:none;z-index:999;background:var(--bg3);border:1px solid var(--bd2);border-radius:8px;padding:9px 11px;font-family:var(--mono);font-size:11px;color:var(--t1);opacity:0;transition:opacity .1s;box-shadow:0 10px 30px rgba(0,0,0,.5);max-width:250px}
+  #tip .tt{color:var(--teal);font-size:11px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px}
+  #tip .tr{display:flex;justify-content:space-between;gap:18px}
+  #tip .tr span{color:var(--t2)}
+
+  footer{padding:26px 0 40px;color:var(--t3);font-family:var(--mono);font-size:11px;line-height:1.7}
+  footer code{color:var(--t2);background:var(--bg3);padding:1px 6px;border-radius:4px}
+
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:1px solid var(--bd2);color:var(--t1);padding:10px 18px;border-radius:10px;font-size:12px;font-weight:600;opacity:0;transition:opacity .2s,transform .2s;z-index:500;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* save-view modal */
+  #sv-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:450;display:none;align-items:center;justify-content:center}
+  #sv-modal.show{display:flex}
+  .sv-modal-box{width:340px;background:var(--bg2);border:1px solid var(--bd2);border-radius:14px;padding:18px;box-shadow:0 16px 48px rgba(0,0,0,.55)}
+  .sv-modal-box h3{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px}
+  .sv-modal-box input{width:100%;font-size:12px;background:var(--bg4);border:.5px solid var(--bd2);border-radius:8px;color:var(--t1);padding:9px 12px;font-family:inherit;outline:none;margin-bottom:12px}
+  .sv-modal-box input:focus{border-color:var(--teal)}
+  .sv-modal-acts{display:flex;gap:8px;justify-content:flex-end}
+  .sv-modal-acts button{padding:8px 16px;border-radius:8px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer}
+  .sv-cancel{background:transparent;border:1px solid var(--bd2);color:var(--t2)}
+  .sv-save{background:var(--teal);border:1px solid var(--teal);color:#0a0a0a}
+  [data-theme="light"] .sv-save{color:#fff}
+
+  @media(max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr)}.two,.geo2,.apptcards,.cohorts,.bigsplit{grid-template-columns:1fr}.bigsplit{display:grid}.sec-hdr-note{display:none}}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.slink{transition:none}}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"></head>
+<body>
+
+<div id="topbar">
+  <!-- Row 1: Command Center -->
+  <div id="topbar-row1">
+    <div class="logo">
+      <div class="logo-pulse">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 13a3.5 3.5 0 0 0 -3.5 3.5v1a3.5 3.5 0 0 0 7 0v-1.8"></path><path d="M8.5 13a3.5 3.5 0 0 1 3.5 3.5v1a3.5 3.5 0 0 1 -7 0v-1.8"></path><path d="M17.5 16a3.5 3.5 0 0 0 0 -7h-.5"></path><path d="M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0"></path><path d="M6.5 16a3.5 3.5 0 0 1 0 -7h.5"></path><path d="M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10"></path></svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-title">Referral Analytics &nbsp;<span class="logo-tag">/ Intake, Conversion &amp; Catchment</span></span>
+        <span class="logo-sub" id="asof">As of 2026-06-24 · 24-mo window</span>
+      </div>
+    </div>
+
+    <div style="flex:1"></div>
+
+    <!-- Theme toggle: moon <-> sun, icon only, no color -->
+    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle dark / light mode">
+      <svg id="ico-moon" viewBox="0 0 24 24"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg>
+      <svg id="ico-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="4"></circle><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"></path></svg>
+    </button>
+
+    <div class="fs-group" title="Font size">
+      <button class="fs-btn" onclick="setFs(&#39;sm&#39;,this)">S</button>
+      <button class="fs-btn active" onclick="setFs(&#39;md&#39;,this)">M</button>
+      <button class="fs-btn" onclick="setFs(&#39;lg&#39;,this)">L</button>
+      <button class="fs-btn" onclick="setFs(&#39;xl&#39;,this)">XL</button>
+    </div>
+
+    <div class="hdr-sep"></div>
+
+    <button class="hdr-action-btn" id="collapse-toggle-btn" onclick="toggleCollapseAll()" title="Collapse / Expand all sections">
+      <i><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="6" rx="2"></rect><rect x="4" y="14" width="16" height="6" rx="2"></rect></svg></i>
+      <span id="collapse-toggle-lbl">Collapse All</span>
+    </button>
+
+    <div class="hdr-sep"></div>
+
+    <!-- Saved Views -->
+    <div style="position:relative" id="hdr-sv-wrap">
+      <button class="hdr-action-btn secondary" onclick="toggleSvDropdown(event)" title="Saved views">
+        <i><svg viewBox="0 0 24 24"><path d="M13 7a2 2 0 0 1 2 2v12l-5 -3l-5 3v-12a2 2 0 0 1 2 -2h6z"></path><path d="M9.265 4a2 2 0 0 1 1.735 -1h6a2 2 0 0 1 2 2v12l-1 -.6"></path></svg></i>
+        Saved Views
+        <i><svg viewBox="0 0 24 24" style="width:10px;height:10px;opacity:.6"><polyline points="6 9 12 15 18 9"></polyline></svg></i>
+      </button>
+      <div class="hdr-dd" id="sv-dd" style="width:290px">
+        <div class="hdr-dd-title">Saved Views <span id="sv-count" style="font-weight:700;background:var(--bg4);border:1px solid var(--bd2);padding:1px 6px;border-radius:8px;color:var(--t3);font-size:11px;margin-left:4px">0</span></div>
+        <div id="sv-list" style="max-height:300px;overflow-y:auto;padding:8px"></div>
+      </div>
+    </div>
+
+    <div class="hdr-sep"></div>
+
+    <button class="hdr-action-btn primary" onclick="openSaveViewModal()" title="Save current filter configuration">
+      <i><svg viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M12 17l-5 3v-14a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v7"></path><line x1="16" y1="19" x2="22" y2="19"></line><line x1="19" y1="16" x2="19" y2="22"></line></svg></i>Save View
+    </button>
+
+    <div class="hdr-sep"></div>
+
+    <!-- Export -->
+    <div style="position:relative" id="hdr-export-wrap">
+      <button class="hdr-action-btn secondary" onclick="toggleExportDropdown(event)" title="Export dashboard">
+        <i><svg viewBox="0 0 24 24"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path><polyline points="7 11 12 16 17 11"></polyline><line x1="12" y1="4" x2="12" y2="16"></line></svg></i>
+        Export
+        <i><svg viewBox="0 0 24 24" style="width:10px;height:10px;opacity:.6"><polyline points="6 9 12 15 18 9"></polyline></svg></i>
+      </button>
+      <div class="hdr-dd" id="export-dd">
+        <div class="hdr-dd-title">Export Dashboard</div>
+        <button class="hdr-dd-item" onclick="exportCSV()">
+          <div class="hdr-dd-ic" style="background:rgba(104,182,132,.12);color:var(--green)"><svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4"></path><path d="M7 16.5a1.5 1.5 0 0 0 -3 0v3a1.5 1.5 0 0 0 3 0"></path><path d="M10 20.25c0 .414 .336 .75 .75 .75h1.25a1 1 0 0 0 1 -1v-1a1 1 0 0 0 -1 -1h-1a1 1 0 0 1 -1 -1v-1a1 1 0 0 1 1 -1h1.25a.75 .75 0 0 1 .75 .75"></path><path d="M16 15l2 6l2 -6"></path></svg></div>
+          <div><div class="hdr-dd-l1">Export as CSV</div><div class="hdr-dd-l2">Filtered referral records</div></div>
+        </button>
+        <button class="hdr-dd-item" onclick="exportPDF()">
+          <div class="hdr-dd-ic" style="background:rgba(232,82,110,.12);color:var(--red)"><svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4"></path><path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6"></path><path d="M17 18h2"></path><path d="M20 15h-3v6"></path><path d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1z"></path></svg></div>
+          <div><div class="hdr-dd-l1">Export as PDF</div><div class="hdr-dd-l2">Print-ready full report</div></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Navigation Tabs -->
+  <div id="topbar-row2">
+    <nav class="bnav" id="bnav">
+      <button onclick="scrollToSec(&#39;overview&#39;)" class="bnav-item" id="bnav-overview">
+        <i style="color:#3ecfbc"><svg viewBox="0 0 24 24"><path d="M4 4h6v8h-6z"></path><path d="M4 16h6v4h-6z"></path><path d="M14 12h6v8h-6z"></path><path d="M14 4h6v4h-6z"></path></svg></i>Overview
+      </button>
+      <button onclick="scrollToSec(&#39;flow&#39;)" class="bnav-item" id="bnav-flow">
+        <i style="color:#3ecfbc"><svg viewBox="0 0 24 24"><path d="M21 17h-8l-3.5 -5h-6.5"></path><path d="M21 7h-8l-3.495 5"></path><path d="M18 10l3 -3l-3 -3"></path><path d="M18 20l3 -3l-3 -3"></path></svg></i>Flow
+      </button>
+      <button onclick="scrollToSec(&#39;conv&#39;)" class="bnav-item" id="bnav-conv">
+        <i style="color:#4DA8DA"><svg viewBox="0 0 24 24"><path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z"></path></svg></i>Funnel &amp; Appts
+      </button>
+      <button onclick="scrollToSec(&#39;mix&#39;)" class="bnav-item active" id="bnav-mix">
+        <i style="color:#4DA8DA"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path></svg></i>Self vs External
+      </button>
+      <button onclick="scrollToSec(&#39;geo&#39;)" class="bnav-item" id="bnav-geo">
+        <i style="color:#F6B32D"><svg viewBox="0 0 24 24"><circle cx="12" cy="11" r="3"></circle><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg></i>Geography
+      </button>
+      <button onclick="scrollToSec(&#39;sources&#39;)" class="bnav-item" id="bnav-sources">
+        <i style="color:#68B684"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 11l2 2l4 -4"></path></svg></i>Referrers
+      </button>
+      <button onclick="scrollToSec(&#39;cycle&#39;)" class="bnav-item" id="bnav-cycle">
+        <i style="color:#4DA8DA"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg></i>Cycle Time
+      </button>
+      <button onclick="scrollToSec(&#39;active&#39;)" class="bnav-item" id="bnav-active">
+        <i style="color:#FF7A59"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8l4 -16l3 8h4"></path></svg></i>Active
+      </button>
+    </nav>
+  </div>
+
+  <!-- Row 3: Active filters — attached directly to the nav bar -->
+  <div id="applied-filters-bar" style="display:none"></div>
+</div>
+
+<div id="body">
+
+<button id="filter-toggle" onclick="toggleFilters()" title="Filters">
+  <svg viewBox="0 0 24 24"><circle cx="14" cy="6" r="2"></circle><line x1="4" y1="6" x2="12" y2="6"></line><line x1="16" y1="6" x2="20" y2="6"></line><circle cx="8" cy="12" r="2"></circle><line x1="4" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="20" y2="12"></line><circle cx="17" cy="18" r="2"></circle><line x1="4" y1="18" x2="15" y2="18"></line><line x1="19" y1="18" x2="20" y2="18"></line></svg><span class="ft-label">Filters</span>
+</button>
+
+<main id="main-scroll" style="padding-top: 117px;">
+
+  <section id="overview" class="dash-section" style="padding-top:14px">
+    <div class="sec-hdr">
+      <div class="sec-hdr-icon" style="background:rgba(62,207,188,.12);border:1px solid rgba(62,207,188,.25);color:#3ecfbc"><svg viewBox="0 0 24 24"><path d="M4 4h6v8h-6z"></path><path d="M4 16h6v4h-6z"></path><path d="M14 12h6v8h-6z"></path><path d="M14 4h6v4h-6z"></path></svg></div>
+      <div class="sec-hdr-main">
+        <div class="sec-hdr-row"><span class="sec-hdr-title">Overview</span></div>
+      </div>
+      <button class="sec-collapse-btn" onclick="toggleSection(&#39;overview&#39;,this)" title="Collapse section"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></button>
+    </div>
+    <div class="sec-body" id="sec-body-overview">
+      <div class="grid kpis" id="kpis">
+    <div class="kpi">
+      <div class="kpi-head"><div class="kpi-ic" style="background:#4DA8DA1f;color:#4DA8DA"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path></svg></div><div class="lab">Self-referrals</div></div>
+      <div class="val" style="color:#4DA8DA">944 <small>(28%)</small></div>
+      <div class="delta">no referring provider on record</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-head"><div class="kpi-ic" style="background:#6861E01f;color:#6861E0"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path></svg></div><div class="lab">External referrals</div></div>
+      <div class="val" style="color:#6861E0">2,473 <small>(72%)</small></div>
+      <div class="delta">of 3,417 total referrals</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-head"><div class="kpi-ic" style="background:#3ecfbc1f;color:#3ecfbc"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 12l2 2l4 -4"></path></svg></div><div class="lab">Conversion rate</div></div>
+      <div class="val" style="color:#3ecfbc">59.4<small>%</small></div>
+      <div class="delta"><span class="ktag" style="background:#68B6841f;color:#68B684">2,031</span> referrals converted</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-head"><div class="kpi-ic" style="background:#E8526E1f;color:#E8526E"><svg viewBox="0 0 24 24"><path d="M3 17l6 -6l4 4l8 -8"></path><path d="M14 7l7 0l0 7"></path></svg></div><div class="lab">Leakage</div></div>
+      <div class="val" style="color:#E8526E">34.3<small>%</small></div>
+      <div class="delta"><span class="ktag" style="background:#E8526E1f;color:#E8526E">1,173</span> referrals lost</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-head"><div class="kpi-ic" style="background:#68B6841f;color:#68B684"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line><path d="M9 16l2 2l4 -4"></path></svg></div><div class="lab">Appointments completed</div></div>
+      <div class="val" style="color:#68B684">2,031</div>
+      <div class="delta"><span class="ktag" style="background:#F6B32D1f;color:#F6B32D">118 booked</span><span class="ktag" style="background:#E8526E1f;color:#E8526E">238 cancelled</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-head"><div class="kpi-ic" style="background:#F6B32D1f;color:#F6B32D"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg></div><div class="lab">Avg referral → appointment</div></div>
+      <div class="val" style="color:#F6B32D">27<small> d</small></div>
+      <div class="delta">ref→reg <span class="ktag" style="background:#3ecfbc1f;color:#3ecfbc">6 d</span> reg→appt <span class="ktag" style="background:#6861E01f;color:#6861E0">21 d</span></div>
+    </div></div>
+    </div>
+  </section>
+
+  <section id="flow" class="dash-section">
+    <div class="sec-hdr">
+      <div class="sec-hdr-icon" style="background:rgba(62,207,188,.12);border:1px solid rgba(62,207,188,.25);color:#3ecfbc"><svg viewBox="0 0 24 24"><path d="M21 17h-8l-3.5 -5h-6.5"></path><path d="M21 7h-8l-3.495 5"></path><path d="M18 10l3 -3l-3 -3"></path><path d="M18 20l3 -3l-3 -3"></path></svg></div>
+      <div class="sec-hdr-main">
+        <div class="sec-hdr-row"><span class="sec-hdr-title">Referral Flow — Referring Provider → Referred-to Provider</span>
+          <div class="seg sec-hdr-seg" id="flowseg">
+            <button data-m="all" class="on">All referrals</button>
+            <button data-m="converted">Converted</button>
+            <button data-m="leaked">Leaked</button>
+          </div>
+        </div>
+        <div class="sec-hdr-note">External referrals only. Referring providers ring the left, neurologists the right; each curved edge is a referral relationship (thickness = volume). Hover a node to isolate its connections.</div>
+      </div>
+      <button class="sec-collapse-btn" onclick="toggleSection(&#39;flow&#39;,this)" title="Collapse section"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></button>
+    </div>
+    <div class="sec-body" id="sec-body-flow">
+      <div class="panel">
+        <div class="sblegend" id="sblegend"><span><i style="background:#8a97b8"></i>Referring provider (external)</span><span><i style="background:#3ecfbc"></i>Dr. A. Reyes · General Neurology</span><span><i style="background:#6861E0"></i>Dr. M. Okafor · Epilepsy</span><span><i style="background:#A78BFA"></i>Dr. P. Nair · Headache</span><span><i style="background:#F6B32D"></i>Dr. S. Halvorsen · Movement Disorders</span><span><i style="background:#68B684"></i>Dr. L. Castellano · Neuromuscular</span><span><i style="background:#1A9E82"></i>Dr. J. Whitfield · MS / Neuroimmun.</span><span><i style="background:#FF7A59"></i>Dr. K. Bauer · Cognitive / Memory</span></div>
+        <div id="network"><svg viewBox="0 0 820 600" height="600" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block"><path class="cedge" d="M373.5,113.5 Q414.4,217.2 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="3.45" stroke-opacity="0.3" stroke-linecap="round" data-i="0" data-j="0" data-v="66"></path><path class="cedge" d="M373.5,113.5 Q430.1,226.0 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="6.40" stroke-opacity="0.3" stroke-linecap="round" data-i="0" data-j="1" data-v="130"></path><path class="cedge" d="M373.5,113.5 Q440.8,240.5 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="4.78" stroke-opacity="0.3" stroke-linecap="round" data-i="0" data-j="2" data-v="95"></path><path class="cedge" d="M373.5,113.5 Q444.5,258.0 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="2.57" stroke-opacity="0.3" stroke-linecap="round" data-i="0" data-j="3" data-v="47"></path><path class="cedge" d="M373.5,113.5 Q440.8,275.6 583.2,378.1" fill="none" stroke="#68B684" stroke-width="1.65" stroke-opacity="0.3" stroke-linecap="round" data-i="0" data-j="4" data-v="27"></path><path class="cedge" d="M373.5,113.5 Q430.1,290.1 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="1.97" stroke-opacity="0.3" stroke-linecap="round" data-i="0" data-j="5" data-v="34"></path><path class="cedge" d="M373.5,113.5 Q414.4,298.9 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="1.51" stroke-opacity="0.3" stroke-linecap="round" data-i="0" data-j="6" data-v="24"></path><path class="cedge" d="M335.1,125.4 Q405.7,219.9 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="4.78" stroke-opacity="0.3" stroke-linecap="round" data-i="1" data-j="0" data-v="95"></path><path class="cedge" d="M335.1,125.4 Q421.4,228.7 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="2.29" stroke-opacity="0.3" stroke-linecap="round" data-i="1" data-j="1" data-v="41"></path><path class="cedge" d="M335.1,125.4 Q432.1,243.1 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="2.71" stroke-opacity="0.3" stroke-linecap="round" data-i="1" data-j="2" data-v="50"></path><path class="cedge" d="M335.1,125.4 Q435.9,260.7 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="2.48" stroke-opacity="0.3" stroke-linecap="round" data-i="1" data-j="3" data-v="45"></path><path class="cedge" d="M335.1,125.4 Q432.1,278.3 583.2,378.1" fill="none" stroke="#68B684" stroke-width="3.54" stroke-opacity="0.3" stroke-linecap="round" data-i="1" data-j="4" data-v="68"></path><path class="cedge" d="M335.1,125.4 Q421.4,292.8 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="1.83" stroke-opacity="0.3" stroke-linecap="round" data-i="1" data-j="5" data-v="31"></path><path class="cedge" d="M335.1,125.4 Q405.7,301.6 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="1.55" stroke-opacity="0.3" stroke-linecap="round" data-i="1" data-j="6" data-v="25"></path><path class="cedge" d="M300.1,145.0 Q397.9,224.3 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="4.23" stroke-opacity="0.3" stroke-linecap="round" data-i="2" data-j="0" data-v="83"></path><path class="cedge" d="M300.1,145.0 Q413.5,233.1 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="1.78" stroke-opacity="0.3" stroke-linecap="round" data-i="2" data-j="1" data-v="30"></path><path class="cedge" d="M300.1,145.0 Q424.2,247.6 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="2.25" stroke-opacity="0.3" stroke-linecap="round" data-i="2" data-j="2" data-v="40"></path><path class="cedge" d="M300.1,145.0 Q428.0,265.1 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="1.97" stroke-opacity="0.3" stroke-linecap="round" data-i="2" data-j="3" data-v="34"></path><path class="cedge" d="M300.1,145.0 Q424.2,282.7 583.2,378.1" fill="none" stroke="#68B684" stroke-width="1.32" stroke-opacity="0.3" stroke-linecap="round" data-i="2" data-j="4" data-v="20"></path><path class="cedge" d="M300.1,145.0 Q413.5,297.2 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="2.71" stroke-opacity="0.3" stroke-linecap="round" data-i="2" data-j="5" data-v="50"></path><path class="cedge" d="M300.1,145.0 Q397.9,306.0 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="1.14" stroke-opacity="0.3" stroke-linecap="round" data-i="2" data-j="6" data-v="16"></path><path class="cedge" d="M269.9,171.6 Q391.1,230.3 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="2.34" stroke-opacity="0.3" stroke-linecap="round" data-i="3" data-j="0" data-v="42"></path><path class="cedge" d="M269.9,171.6 Q406.8,239.1 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="2.15" stroke-opacity="0.3" stroke-linecap="round" data-i="3" data-j="1" data-v="38"></path><path class="cedge" d="M269.9,171.6 Q417.4,253.5 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="1.69" stroke-opacity="0.3" stroke-linecap="round" data-i="3" data-j="2" data-v="28"></path><path class="cedge" d="M269.9,171.6 Q421.2,271.1 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="3.91" stroke-opacity="0.3" stroke-linecap="round" data-i="3" data-j="3" data-v="76"></path><path class="cedge" d="M269.9,171.6 Q417.4,288.7 583.2,378.1" fill="none" stroke="#68B684" stroke-width="1.28" stroke-opacity="0.3" stroke-linecap="round" data-i="3" data-j="4" data-v="19"></path><path class="cedge" d="M269.9,171.6 Q406.8,303.2 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="1.55" stroke-opacity="0.3" stroke-linecap="round" data-i="3" data-j="5" data-v="25"></path><path class="cedge" d="M269.9,171.6 Q391.1,312.0 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="1.32" stroke-opacity="0.3" stroke-linecap="round" data-i="3" data-j="6" data-v="20"></path><path class="cedge" d="M246.1,204.0 Q385.7,237.5 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="2.20" stroke-opacity="0.3" stroke-linecap="round" data-i="4" data-j="0" data-v="39"></path><path class="cedge" d="M246.1,204.0 Q401.4,246.3 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="1.88" stroke-opacity="0.3" stroke-linecap="round" data-i="4" data-j="1" data-v="32"></path><path class="cedge" d="M246.1,204.0 Q412.1,260.8 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="1.78" stroke-opacity="0.3" stroke-linecap="round" data-i="4" data-j="2" data-v="30"></path><path class="cedge" d="M246.1,204.0 Q415.9,278.4 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="1.69" stroke-opacity="0.3" stroke-linecap="round" data-i="4" data-j="3" data-v="28"></path><path class="cedge" d="M246.1,204.0 Q412.1,296.0 583.2,378.1" fill="none" stroke="#68B684" stroke-width="1.37" stroke-opacity="0.3" stroke-linecap="round" data-i="4" data-j="4" data-v="21"></path><path class="cedge" d="M246.1,204.0 Q401.4,310.4 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="1.74" stroke-opacity="0.3" stroke-linecap="round" data-i="4" data-j="5" data-v="29"></path><path class="cedge" d="M246.1,204.0 Q385.7,319.2 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="2.34" stroke-opacity="0.3" stroke-linecap="round" data-i="4" data-j="6" data-v="42"></path><path class="cedge" d="M229.5,240.6 Q382.0,245.8 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="1.51" stroke-opacity="0.3" stroke-linecap="round" data-i="5" data-j="0" data-v="24"></path><path class="cedge" d="M229.5,240.6 Q397.7,254.6 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="1.37" stroke-opacity="0.3" stroke-linecap="round" data-i="5" data-j="1" data-v="21"></path><path class="cedge" d="M229.5,240.6 Q408.4,269.1 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="3.12" stroke-opacity="0.3" stroke-linecap="round" data-i="5" data-j="2" data-v="59"></path><path class="cedge" d="M229.5,240.6 Q412.1,286.6 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="1.65" stroke-opacity="0.3" stroke-linecap="round" data-i="5" data-j="3" data-v="27"></path><path class="cedge" d="M229.5,240.6 Q408.4,304.2 583.2,378.1" fill="none" stroke="#68B684" stroke-width="1.00" stroke-opacity="0.3" stroke-linecap="round" data-i="5" data-j="4" data-v="13"></path><path class="cedge" d="M229.5,240.6 Q397.7,318.7 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="1.00" stroke-opacity="0.3" stroke-linecap="round" data-i="5" data-j="5" data-v="13"></path><path class="cedge" d="M229.5,240.6 Q382.0,327.5 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="1.37" stroke-opacity="0.3" stroke-linecap="round" data-i="5" data-j="6" data-v="21"></path><path class="cedge" d="M221.1,279.9 Q380.1,254.6 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="1.92" stroke-opacity="0.3" stroke-linecap="round" data-i="6" data-j="0" data-v="33"></path><path class="cedge" d="M221.1,279.9 Q395.8,263.4 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="1.46" stroke-opacity="0.3" stroke-linecap="round" data-i="6" data-j="1" data-v="23"></path><path class="cedge" d="M221.1,279.9 Q406.5,277.9 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="1.32" stroke-opacity="0.3" stroke-linecap="round" data-i="6" data-j="2" data-v="20"></path><path class="cedge" d="M221.1,279.9 Q410.2,295.5 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="1.32" stroke-opacity="0.3" stroke-linecap="round" data-i="6" data-j="3" data-v="20"></path><path class="cedge" d="M221.1,279.9 Q406.5,313.1 583.2,378.1" fill="none" stroke="#68B684" stroke-width="1.51" stroke-opacity="0.3" stroke-linecap="round" data-i="6" data-j="4" data-v="24"></path><path class="cedge" d="M221.1,279.9 Q395.8,327.5 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="1.51" stroke-opacity="0.3" stroke-linecap="round" data-i="6" data-j="5" data-v="24"></path><path class="cedge" d="M221.1,279.9 Q380.1,336.3 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="0.91" stroke-opacity="0.3" stroke-linecap="round" data-i="6" data-j="6" data-v="11"></path><path class="cedge" d="M221.1,320.1 Q380.1,263.7 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="1.74" stroke-opacity="0.3" stroke-linecap="round" data-i="7" data-j="0" data-v="29"></path><path class="cedge" d="M221.1,320.1 Q395.8,272.5 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="2.25" stroke-opacity="0.3" stroke-linecap="round" data-i="7" data-j="1" data-v="40"></path><path class="cedge" d="M221.1,320.1 Q406.5,286.9 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="1.65" stroke-opacity="0.3" stroke-linecap="round" data-i="7" data-j="2" data-v="27"></path><path class="cedge" d="M221.1,320.1 Q410.2,304.5 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="1.18" stroke-opacity="0.3" stroke-linecap="round" data-i="7" data-j="3" data-v="17"></path><path class="cedge" d="M221.1,320.1 Q406.5,322.1 583.2,378.1" fill="none" stroke="#68B684" stroke-width="0.91" stroke-opacity="0.3" stroke-linecap="round" data-i="7" data-j="4" data-v="11"></path><path class="cedge" d="M221.1,320.1 Q395.8,336.6 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="0.91" stroke-opacity="0.3" stroke-linecap="round" data-i="7" data-j="5" data-v="11"></path><path class="cedge" d="M221.1,320.1 Q380.1,345.4 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="0.72" stroke-opacity="0.3" stroke-linecap="round" data-i="7" data-j="6" data-v="7"></path><path class="cedge" d="M229.5,359.4 Q382.0,272.5 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="1.78" stroke-opacity="0.3" stroke-linecap="round" data-i="8" data-j="0" data-v="30"></path><path class="cedge" d="M229.5,359.4 Q397.7,281.3 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="1.37" stroke-opacity="0.3" stroke-linecap="round" data-i="8" data-j="1" data-v="21"></path><path class="cedge" d="M229.5,359.4 Q408.4,295.8 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="1.18" stroke-opacity="0.3" stroke-linecap="round" data-i="8" data-j="2" data-v="17"></path><path class="cedge" d="M229.5,359.4 Q412.1,313.4 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="1.09" stroke-opacity="0.3" stroke-linecap="round" data-i="8" data-j="3" data-v="15"></path><path class="cedge" d="M229.5,359.4 Q408.4,330.9 583.2,378.1" fill="none" stroke="#68B684" stroke-width="1.32" stroke-opacity="0.3" stroke-linecap="round" data-i="8" data-j="4" data-v="20"></path><path class="cedge" d="M229.5,359.4 Q397.7,345.4 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="0.58" stroke-opacity="0.3" stroke-linecap="round" data-i="8" data-j="5" data-v="4"></path><path class="cedge" d="M229.5,359.4 Q382.0,354.2 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="0.68" stroke-opacity="0.3" stroke-linecap="round" data-i="8" data-j="6" data-v="6"></path><path class="cedge" d="M246.1,396.0 Q385.7,280.8 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="1.92" stroke-opacity="0.3" stroke-linecap="round" data-i="9" data-j="0" data-v="33"></path><path class="cedge" d="M246.1,396.0 Q401.4,289.6 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="1.00" stroke-opacity="0.3" stroke-linecap="round" data-i="9" data-j="1" data-v="13"></path><path class="cedge" d="M246.1,396.0 Q412.1,304.0 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="1.00" stroke-opacity="0.3" stroke-linecap="round" data-i="9" data-j="2" data-v="13"></path><path class="cedge" d="M246.1,396.0 Q415.9,321.6 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="0.86" stroke-opacity="0.3" stroke-linecap="round" data-i="9" data-j="3" data-v="10"></path><path class="cedge" d="M246.1,396.0 Q412.1,339.2 583.2,378.1" fill="none" stroke="#68B684" stroke-width="0.86" stroke-opacity="0.3" stroke-linecap="round" data-i="9" data-j="4" data-v="10"></path><path class="cedge" d="M246.1,396.0 Q401.4,353.7 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="0.95" stroke-opacity="0.3" stroke-linecap="round" data-i="9" data-j="5" data-v="12"></path><path class="cedge" d="M246.1,396.0 Q385.7,362.5 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="1.00" stroke-opacity="0.3" stroke-linecap="round" data-i="9" data-j="6" data-v="13"></path><path class="cedge" d="M269.9,428.4 Q391.1,288.0 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="1.09" stroke-opacity="0.3" stroke-linecap="round" data-i="10" data-j="0" data-v="15"></path><path class="cedge" d="M269.9,428.4 Q406.8,296.8 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="0.68" stroke-opacity="0.3" stroke-linecap="round" data-i="10" data-j="1" data-v="6"></path><path class="cedge" d="M269.9,428.4 Q417.4,311.3 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="0.58" stroke-opacity="0.3" stroke-linecap="round" data-i="10" data-j="2" data-v="4"></path><path class="cedge" d="M269.9,428.4 Q421.2,328.9 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="1.60" stroke-opacity="0.3" stroke-linecap="round" data-i="10" data-j="3" data-v="26"></path><path class="cedge" d="M269.9,428.4 Q417.4,346.5 583.2,378.1" fill="none" stroke="#68B684" stroke-width="0.82" stroke-opacity="0.3" stroke-linecap="round" data-i="10" data-j="4" data-v="9"></path><path class="cedge" d="M269.9,428.4 Q406.8,360.9 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="0.63" stroke-opacity="0.3" stroke-linecap="round" data-i="10" data-j="5" data-v="5"></path><path class="cedge" d="M269.9,428.4 Q391.1,369.7 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="0.63" stroke-opacity="0.3" stroke-linecap="round" data-i="10" data-j="6" data-v="5"></path><path class="cedge" d="M300.1,455.0 Q397.9,294.0 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="1.14" stroke-opacity="0.3" stroke-linecap="round" data-i="11" data-j="0" data-v="16"></path><path class="cedge" d="M300.1,455.0 Q413.5,302.8 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="0.82" stroke-opacity="0.3" stroke-linecap="round" data-i="11" data-j="1" data-v="9"></path><path class="cedge" d="M300.1,455.0 Q424.2,317.3 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="1.00" stroke-opacity="0.3" stroke-linecap="round" data-i="11" data-j="2" data-v="13"></path><path class="cedge" d="M300.1,455.0 Q428.0,334.9 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="0.86" stroke-opacity="0.3" stroke-linecap="round" data-i="11" data-j="3" data-v="10"></path><path class="cedge" d="M300.1,455.0 Q424.2,352.4 583.2,378.1" fill="none" stroke="#68B684" stroke-width="0.77" stroke-opacity="0.3" stroke-linecap="round" data-i="11" data-j="4" data-v="8"></path><path class="cedge" d="M300.1,455.0 Q413.5,366.9 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="0.77" stroke-opacity="0.3" stroke-linecap="round" data-i="11" data-j="5" data-v="8"></path><path class="cedge" d="M300.1,455.0 Q397.9,375.7 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="0.58" stroke-opacity="0.3" stroke-linecap="round" data-i="11" data-j="6" data-v="4"></path><path class="cedge" d="M335.1,474.6 Q405.7,298.4 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="0.91" stroke-opacity="0.3" stroke-linecap="round" data-i="13" data-j="0" data-v="11"></path><path class="cedge" d="M335.1,474.6 Q421.4,307.2 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="0.72" stroke-opacity="0.3" stroke-linecap="round" data-i="13" data-j="1" data-v="7"></path><path class="cedge" d="M335.1,474.6 Q432.1,321.7 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="0.77" stroke-opacity="0.3" stroke-linecap="round" data-i="13" data-j="2" data-v="8"></path><path class="cedge" d="M335.1,474.6 Q435.9,339.3 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="0.72" stroke-opacity="0.3" stroke-linecap="round" data-i="13" data-j="3" data-v="7"></path><path class="cedge" d="M335.1,474.6 Q432.1,356.9 583.2,378.1" fill="none" stroke="#68B684" stroke-width="1.05" stroke-opacity="0.3" stroke-linecap="round" data-i="13" data-j="4" data-v="14"></path><path class="cedge" d="M335.1,474.6 Q421.4,371.3 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="1.09" stroke-opacity="0.3" stroke-linecap="round" data-i="13" data-j="5" data-v="15"></path><path class="cedge" d="M335.1,474.6 Q405.7,380.1 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="0.58" stroke-opacity="0.3" stroke-linecap="round" data-i="13" data-j="6" data-v="4"></path><path class="cedge" d="M373.5,486.5 Q414.4,301.1 466.0,118.4" fill="none" stroke="#3ecfbc" stroke-width="0.86" stroke-opacity="0.3" stroke-linecap="round" data-i="12" data-j="0" data-v="10"></path><path class="cedge" d="M373.5,486.5 Q430.1,309.9 535.7,157.5" fill="none" stroke="#6861E0" stroke-width="0.72" stroke-opacity="0.3" stroke-linecap="round" data-i="12" data-j="1" data-v="7"></path><path class="cedge" d="M373.5,486.5 Q440.8,324.4 583.2,221.9" fill="none" stroke="#A78BFA" stroke-width="0.95" stroke-opacity="0.3" stroke-linecap="round" data-i="12" data-j="2" data-v="12"></path><path class="cedge" d="M373.5,486.5 Q444.5,342.0 600.0,300.0" fill="none" stroke="#F6B32D" stroke-width="0.86" stroke-opacity="0.3" stroke-linecap="round" data-i="12" data-j="3" data-v="10"></path><path class="cedge" d="M373.5,486.5 Q440.8,359.5 583.2,378.1" fill="none" stroke="#68B684" stroke-width="0.68" stroke-opacity="0.3" stroke-linecap="round" data-i="12" data-j="4" data-v="6"></path><path class="cedge" d="M373.5,486.5 Q430.1,374.0 535.7,442.5" fill="none" stroke="#1A9E82" stroke-width="0.58" stroke-opacity="0.3" stroke-linecap="round" data-i="12" data-j="5" data-v="4"></path><path class="cedge" d="M373.5,486.5 Q414.4,382.8 466.0,481.6" fill="none" stroke="#FF7A59" stroke-width="0.77" stroke-opacity="0.3" stroke-linecap="round" data-i="12" data-j="6" data-v="8"></path><circle class="cnode" cx="373.5" cy="113.5" r="9.6" fill="#8a97b8" data-kind="s" data-idx="0"></circle><text class="clab" x="367.4" y="105.7" text-anchor="end">Dr. Patel</text><circle class="cnode" cx="335.1" cy="125.4" r="9.0" fill="#8a97b8" data-kind="s" data-idx="1"></circle><text class="clab" x="326.8" y="118.3" text-anchor="end">Dr. Nguyen</text><circle class="cnode" cx="300.1" cy="145.0" r="8.3" fill="#8a97b8" data-kind="s" data-idx="2"></circle><text class="clab" x="289.7" y="139.1" text-anchor="end">Dr. Alvarez</text><circle class="cnode" cx="269.9" cy="171.6" r="8.0" fill="#8a97b8" data-kind="s" data-idx="3"></circle><text class="clab" x="257.8" y="167.2" text-anchor="end">Dr. Brooks</text><circle class="cnode" cx="246.1" cy="204.0" r="7.8" fill="#8a97b8" data-kind="s" data-idx="4"></circle><text class="clab" x="232.6" y="201.4" text-anchor="end">Dr. Schaefer</text><circle class="cnode" cx="229.5" cy="240.6" r="7.3" fill="#8a97b8" data-kind="s" data-idx="5"></circle><text class="clab" x="215.1" y="240.2" text-anchor="end">Dr. Okeke</text><circle class="cnode" cx="221.1" cy="279.9" r="7.0" fill="#8a97b8" data-kind="s" data-idx="6"></circle><text class="clab" x="206.1" y="281.7" text-anchor="end">Dr. Romano</text><circle class="cnode" cx="221.1" cy="320.1" r="6.8" fill="#8a97b8" data-kind="s" data-idx="7"></circle><text class="clab" x="206.1" y="324.3" text-anchor="end">Dr. Friedman</text><circle class="cnode" cx="229.5" cy="359.4" r="6.4" fill="#8a97b8" data-kind="s" data-idx="8"></circle><text class="clab" x="215.1" y="365.8" text-anchor="end">Dr. Castillo</text><circle class="cnode" cx="246.1" cy="396.0" r="6.3" fill="#8a97b8" data-kind="s" data-idx="9"></circle><text class="clab" x="232.6" y="404.6" text-anchor="end">Dr. Maxwell</text><circle class="cnode" cx="269.9" cy="428.4" r="5.7" fill="#8a97b8" data-kind="s" data-idx="10"></circle><text class="clab" x="257.8" y="438.8" text-anchor="end">Dr. Sato</text><circle class="cnode" cx="300.1" cy="455.0" r="5.6" fill="#8a97b8" data-kind="s" data-idx="11"></circle><text class="clab" x="289.7" y="466.9" text-anchor="end">Dr. Mercer</text><circle class="cnode" cx="335.1" cy="474.6" r="5.6" fill="#8a97b8" data-kind="s" data-idx="13"></circle><text class="clab" x="326.8" y="487.7" text-anchor="end">Dr. Hughes</text><circle class="cnode" cx="373.5" cy="486.5" r="5.4" fill="#8a97b8" data-kind="s" data-idx="12"></circle><text class="clab" x="367.4" y="500.3" text-anchor="end">Dr. Delacroix</text><circle class="cnode" cx="466.0" cy="118.4" r="11.3" fill="#3ecfbc" data-kind="p" data-idx="0"></circle><text class="clab" x="473.2" y="110.9" text-anchor="start">Dr. A. Reyes</text><circle class="cnode" cx="535.7" cy="157.5" r="10.5" fill="#6861E0" data-kind="p" data-idx="1"></circle><text class="clab" x="547.0" y="152.3" text-anchor="start">Dr. M. Okafor</text><circle class="cnode" cx="583.2" cy="221.9" r="10.5" fill="#A78BFA" data-kind="p" data-idx="2"></circle><text class="clab" x="597.2" y="220.3" text-anchor="start">Dr. P. Nair</text><circle class="cnode" cx="600.0" cy="300.0" r="10.2" fill="#F6B32D" data-kind="p" data-idx="3"></circle><text class="clab" x="615.0" y="303.0" text-anchor="start">Dr. S. Halvorsen</text><circle class="cnode" cx="583.2" cy="378.1" r="9.3" fill="#68B684" data-kind="p" data-idx="4"></circle><text class="clab" x="597.2" y="385.7" text-anchor="start">Dr. L. Castellano</text><circle class="cnode" cx="535.7" cy="442.5" r="9.2" fill="#1A9E82" data-kind="p" data-idx="5"></circle><text class="clab" x="547.0" y="453.7" text-anchor="start">Dr. J. Whitfield</text><circle class="cnode" cx="466.0" cy="481.6" r="8.6" fill="#FF7A59" data-kind="p" data-idx="6"></circle><text class="clab" x="473.2" y="495.1" text-anchor="start">Dr. K. Bauer</text></svg></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="conv" class="dash-section">
+    <div class="sec-hdr">
+      <div class="sec-hdr-icon" style="background:rgba(77,168,218,.12);border:1px solid rgba(77,168,218,.25);color:#4DA8DA"><svg viewBox="0 0 24 24"><path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z"></path></svg></div>
+      <div class="sec-hdr-main">
+        <div class="sec-hdr-row"><span class="sec-hdr-title">Funnel, Leakage &amp; Appointment Status</span></div>
+        <div class="sec-hdr-note">Appointments split into completed, currently booked, and cancelled / no-show. Leakage attributed to the stage where it dropped off.</div>
+      </div>
+      <button class="sec-collapse-btn" onclick="toggleSection(&#39;conv&#39;,this)" title="Collapse section"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></button>
+    </div>
+    <div class="sec-body" id="sec-body-conv">
+      <div class="grid apptcards" id="apptcards">
+    <div class="acard">
+      <div class="acard-head"><div class="acard-ic" style="background:#68B6841f;color:#68B684"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line><path d="M9 16l2 2l4 -4"></path></svg></div><div class="al">Appointments completed</div></div>
+      <div class="av" style="color:#68B684">2,031</div>
+      <div class="ad"><span class="ktag" style="background:#68B6841f;color:#68B684">85% of scheduled</span> attended first visit</div>
+    </div>
+    <div class="acard">
+      <div class="acard-head"><div class="acard-ic" style="background:#F6B32D1f;color:#F6B32D"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line></svg></div><div class="al">Currently booked</div></div>
+      <div class="av" style="color:#F6B32D">118</div>
+      <div class="ad">upcoming first appointments on the books</div>
+    </div>
+    <div class="acard">
+      <div class="acard-head"><div class="acard-ic" style="background:#E8526E1f;color:#E8526E"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line><path d="M10 16l4 4M14 16l-4 4"></path></svg></div><div class="al">Cancelled / no-show</div></div>
+      <div class="av" style="color:#E8526E">238</div>
+      <div class="ad"><span class="ktag" style="background:#E8526E1f;color:#E8526E">10% of scheduled</span> first appointments</div>
+    </div></div>
+      <div class="grid two">
+        <div class="panel">
+          <div class="colhdr"><span>Intake funnel</span><span id="funnelconv">end-to-end 59%</span></div>
+          <div class="funnel" id="funnel"><div class="fbar-wrap">
+      <div class="stagename">Received</div>
+      <div class="fbar" style="width:100%;background:#FF6B6B">3,417</div>
+      <div class="fmeta"><b>100%</b></div>
+    </div><div class="fbar-wrap">
+      <div class="stagename">Registered</div>
+      <div class="fbar" style="width:79.7483172373427%;background:#F6B32D">2,725</div>
+      <div class="fmeta"><b>80%</b><span class="fleak">−692</span></div>
+    </div><div class="fbar-wrap">
+      <div class="stagename">Appt scheduled</div>
+      <div class="fbar" style="width:69.85659935616037%;background:#A78BFA">2,387</div>
+      <div class="fmeta"><b>70%</b><span class="fleak">−338</span></div>
+    </div><div class="fbar-wrap">
+      <div class="stagename">Appt completed</div>
+      <div class="fbar" style="width:59.43810359964882%;background:#68B684">2,031</div>
+      <div class="fmeta"><b>59%</b><span class="fleak">−356</span></div>
+    </div></div>
+        </div>
+        <div class="panel">
+          <div class="colhdr"><span>Where referrals leak</span><span id="leaktot">1,173 lost</span></div>
+          <div class="leakrows" id="leakrows">
+    <div class="leakrow">
+      <div class="nm">No registration on file</div>
+      <div class="ltrack"><div class="lfill" style="width:100%"></div></div>
+      <div class="pc">54%</div>
+    </div>
+    <div class="leakrow">
+      <div class="nm">Registered, never scheduled</div>
+      <div class="ltrack"><div class="lfill" style="width:47.24409448818898%"></div></div>
+      <div class="pc">26%</div>
+    </div>
+    <div class="leakrow">
+      <div class="nm">Scheduled, did not attend</div>
+      <div class="ltrack"><div class="lfill" style="width:37.480314960629926%"></div></div>
+      <div class="pc">20%</div>
+    </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mix" class="dash-section">
+    <div class="sec-hdr">
+      <div class="sec-hdr-icon" style="background:rgba(77,168,218,.12);border:1px solid rgba(77,168,218,.25);color:#4DA8DA"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path></svg></div>
+      <div class="sec-hdr-main">
+        <div class="sec-hdr-row"><span class="sec-hdr-title">Self-Referral vs External Referral</span></div>
+        <div class="sec-hdr-note">Any patient with no referring provider on record is counted as a self-referral.</div>
+      </div>
+      <button class="sec-collapse-btn" onclick="toggleSection(&#39;mix&#39;,this)" title="Collapse section"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></button>
+    </div>
+    <div class="sec-body" id="sec-body-mix">
+      <div class="grid bigsplit" id="bigsplit">
+    <div class="bs">
+      <div class="bs-head"><div class="bs-ic" style="background:#1A9E821f;color:#1A9E82"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path></svg></div><div class="bl">External referral</div></div>
+      <div class="bv" style="color:#1A9E82">2,473</div>
+      <div class="bd"><span class="ktag" style="background:#1A9E821f;color:#1A9E82">72%</span> of all 3,417 referrals</div>
+    </div>
+    <div class="bs">
+      <div class="bs-head"><div class="bs-ic" style="background:#4DA8DA1f;color:#4DA8DA"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path></svg></div><div class="bl">Self-referral</div></div>
+      <div class="bv" style="color:#4DA8DA">944</div>
+      <div class="bd"><span class="ktag" style="background:#4DA8DA1f;color:#4DA8DA">28%</span> of all 3,417 referrals</div>
+    </div></div>
+      <div class="splitbar" id="splitbar">
+    <div style="width:72.37342698273339%;background:#1A9E82">External 72%</div>
+    <div style="width:27.626573017266608%;background:#4DA8DA">Self 28%</div></div>
+      <div class="panel">
+        <div class="cmprows" id="cmprows">
+    <div class="cmprow">
+      <div class="ttl">Conversion rate</div>
+      <div class="cmpbar"><div class="lg">External</div><div class="cmptrack"><span style="width:60.85725839061868%;background:#FF7A59"></span></div><div class="vv">61%</div></div>
+      <div class="cmpbar"><div class="lg">Self</div><div class="cmptrack"><span style="width:55.720338983050844%;background:#FF7A59;opacity:.6"></span></div><div class="vv">56%</div></div>
+    </div>
+    <div class="cmprow">
+      <div class="ttl">Leakage rate</div>
+      <div class="cmpbar"><div class="lg">External</div><div class="cmptrack"><span style="width:32.71330367974121%;background:#E8526E"></span></div><div class="vv">33%</div></div>
+      <div class="cmpbar"><div class="lg">Self</div><div class="cmptrack"><span style="width:38.559322033898304%;background:#E8526E;opacity:.6"></span></div><div class="vv">39%</div></div>
+    </div>
+    <div class="cmprow">
+      <div class="ttl">First-appt completion (of scheduled)</div>
+      <div class="cmpbar"><div class="lg">External</div><div class="cmptrack"><span style="width:86.09839816933639%;background:#3ecfbc"></span></div><div class="vv">86%</div></div>
+      <div class="cmpbar"><div class="lg">Self</div><div class="cmptrack"><span style="width:82.31611893583725%;background:#3ecfbc;opacity:.6"></span></div><div class="vv">82%</div></div>
+    </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="geo" class="dash-section">
+    <div class="sec-hdr">
+      <div class="sec-hdr-icon" style="background:rgba(246,179,45,.12);border:1px solid rgba(246,179,45,.25);color:#F6B32D"><svg viewBox="0 0 24 24"><circle cx="12" cy="11" r="3"></circle><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg></div>
+      <div class="sec-hdr-main">
+        <div class="sec-hdr-row"><span class="sec-hdr-title">Geography — Patient Catchment &amp; Referrer Location</span>
+          <div class="seg sec-hdr-seg" id="scseg">
+            <button data-m="all" class="on">All</button>
+            <button data-m="external">External</button>
+            <button data-m="self">Self</button>
+          </div>
+        </div>
+        <div class="sec-hdr-note">Patient volume and referrer volume by area across the Raleigh–Durham (Triangle) metro. Bubble size = volume; hover for the split.</div>
+      </div>
+      <button class="sec-collapse-btn" onclick="toggleSection(&#39;geo&#39;,this)" title="Collapse section"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></button>
+    </div>
+    <div class="sec-body" id="sec-body-geo">
+      <div class="grid geo2">
+        <div class="panel">
+          <div class="colhdr"><span>Patient catchment — bubble size = patients by area</span><span id="catchtot">3,417 patients</span></div>
+          <div class="scatter-head">
+            <div class="legend">
+              <span><i style="background:var(--teal)"></i>bubble = patients</span>
+              <span><i style="background:var(--amber)"></i>Clinic</span>
+            </div>
+          </div>
+          <div id="scatter"><svg viewBox="0 0 560 470" height="470" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block"><path d="M247.2,234.8L246.3,242.9L230.0,297.2L223.8,318.4L245.3,327.2L230.4,347.2L191.2,312.6L130.5,348.3L130.1,348.4L76.4,349.3L79.9,242.8L138.7,242.5L156.9,231.9L218.1,236.3L247.2,234.8Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M354.9,135.1L374.3,138.7L404.7,105.6L450.4,112.0L483.6,126.2L440.1,206.1L418.4,251.1L404.6,225.5L341.7,184.9L342.2,165.8L354.9,135.1Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M286.0,16.2L292.4,16.2L309.2,16.2L311.0,16.2L345.3,16.5L346.1,16.5L361.6,16.1L361.6,16.1L365.2,16.0L351.0,52.2L351.1,91.5L351.0,105.2L351.2,113.9L351.7,132.5L354.9,135.1L342.2,165.8L341.7,184.9L288.5,168.9L273.8,162.2L274.5,115.5L276.4,21.1L276.0,16.3L284.2,16.3L286.0,16.2Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M174.3,416.8L150.6,401.7L130.5,348.3L191.2,312.6L230.4,347.2L174.3,416.8Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M154.3,147.4L154.9,112.9L182.1,113.4L235.4,114.4L218.1,236.3L156.9,231.9L154.3,147.4Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M418.4,251.1L360.8,288.8L336.4,312.3L299.1,348.0L245.3,327.2L223.8,318.4L230.0,297.2L246.3,242.9L247.2,234.8L266.7,235.0L301.9,188.0L288.5,168.9L341.7,184.9L404.6,225.5L418.4,251.1Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M218.1,236.3L235.4,114.4L235.8,114.3L274.5,115.5L273.8,162.2L288.5,168.9L301.9,188.0L266.7,235.0L247.2,234.8L218.1,236.3Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M323.1,436.6L268.3,432.2L237.8,445.2L197.2,454.0L163.9,429.4L174.3,416.8L230.4,347.2L245.3,327.2L299.1,348.0L311.7,355.4L346.0,408.1L343.1,414.1L323.1,436.6Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M382.6,431.2L356.2,430.9L343.1,414.1L346.0,408.1L311.7,355.4L299.1,348.0L336.4,312.3L360.8,288.8L418.4,251.1L434.9,279.4L452.3,320.7L468.4,326.5L444.6,380.9L445.1,402.4L405.3,423.5L397.9,425.7L382.6,431.2Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><text x="186.1" y="287.6" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">CHATHAM</text><text x="397.2" y="162.4" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">FRANKLIN</text><text x="322.2" y="68.5" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">GRANVILLE</text><text x="175.2" y="373.9" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">LEE</text><text x="179.4" y="157.7" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">ORANGE</text><text x="308.6" y="258.3" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">WAKE</text><text x="256.0" y="180.6" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">DURHAM</text><text x="266.4" y="403.9" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">HARNETT</text><text x="387.4" y="366.5" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">JOHNSTON</text><g class="bub" data-z="4" style="cursor:default"><circle cx="317.1" cy="263.3" r="34.0" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="317.1" y="266.3" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">816</text><text x="317.1" y="308.3" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Raleigh</text></g><g class="bub" data-z="1" style="cursor:default"><circle cx="351.3" cy="198.5" r="26.6" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="351.3" y="201.5" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">463</text><text x="351.3" y="236.1" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Wake Forest</text></g><g class="bub" data-z="5" style="cursor:default"><circle cx="380.2" cy="260.1" r="25.2" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="380.2" y="263.1" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">408</text><text x="380.2" y="296.3" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Knightdale</text></g><g class="bub" data-z="7" style="cursor:default"><circle cx="322.4" cy="337.9" r="25.0" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="322.4" y="340.9" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">398</text><text x="322.4" y="373.9" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Fuquay-Varina</text></g><g class="bub" data-z="3" style="cursor:default"><circle cx="280.3" cy="260.1" r="24.8" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="280.3" y="263.1" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">393</text><text x="280.3" y="295.9" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Cary</text></g><g class="bub" data-z="2" style="cursor:default"><circle cx="380.2" cy="214.7" r="21.0" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="380.2" y="217.7" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">262</text><text x="380.2" y="246.7" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Rolesville</text></g><g class="bub" data-z="8" style="cursor:default"><circle cx="364.4" cy="302.3" r="20.8" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="364.4" y="305.3" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">257</text><text x="364.4" y="334.1" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Garner</text></g><g class="bub" data-z="0" style="cursor:default"><circle cx="259.3" cy="208.2" r="19.6" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="259.3" y="211.2" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">222</text><text x="259.3" y="238.8" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Durham</text></g><g class="bub" data-z="6" style="cursor:default"><circle cx="264.6" cy="292.5" r="18.8" fill="#3ecfbc" fill-opacity="0.42" stroke="#3ecfbc" stroke-width="1.4"></circle><text x="264.6" y="295.5" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">198</text><text x="264.6" y="322.3" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Apex</text></g><circle cx="317.1" cy="263.3" r="5" fill="#0D0E12" stroke="#F6B32D" stroke-width="1.5"></circle><text x="317.1" y="263.8" text-anchor="middle" dominant-baseline="middle" font-size="7.5" fill="#F6B32D">★</text></svg></div>
+        </div>
+        <div class="panel">
+          <div class="colhdr"><span>Referrer location — bubble size = referral volume</span><span id="reftot">2,473 external</span></div>
+          <div id="refmap"><svg viewBox="0 0 560 470" height="470" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block"><path d="M247.2,234.8L246.3,242.9L230.0,297.2L223.8,318.4L245.3,327.2L230.4,347.2L191.2,312.6L130.5,348.3L130.1,348.4L76.4,349.3L79.9,242.8L138.7,242.5L156.9,231.9L218.1,236.3L247.2,234.8Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M354.9,135.1L374.3,138.7L404.7,105.6L450.4,112.0L483.6,126.2L440.1,206.1L418.4,251.1L404.6,225.5L341.7,184.9L342.2,165.8L354.9,135.1Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M286.0,16.2L292.4,16.2L309.2,16.2L311.0,16.2L345.3,16.5L346.1,16.5L361.6,16.1L361.6,16.1L365.2,16.0L351.0,52.2L351.1,91.5L351.0,105.2L351.2,113.9L351.7,132.5L354.9,135.1L342.2,165.8L341.7,184.9L288.5,168.9L273.8,162.2L274.5,115.5L276.4,21.1L276.0,16.3L284.2,16.3L286.0,16.2Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M174.3,416.8L150.6,401.7L130.5,348.3L191.2,312.6L230.4,347.2L174.3,416.8Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M154.3,147.4L154.9,112.9L182.1,113.4L235.4,114.4L218.1,236.3L156.9,231.9L154.3,147.4Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M418.4,251.1L360.8,288.8L336.4,312.3L299.1,348.0L245.3,327.2L223.8,318.4L230.0,297.2L246.3,242.9L247.2,234.8L266.7,235.0L301.9,188.0L288.5,168.9L341.7,184.9L404.6,225.5L418.4,251.1Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M218.1,236.3L235.4,114.4L235.8,114.3L274.5,115.5L273.8,162.2L288.5,168.9L301.9,188.0L266.7,235.0L247.2,234.8L218.1,236.3Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M323.1,436.6L268.3,432.2L237.8,445.2L197.2,454.0L163.9,429.4L174.3,416.8L230.4,347.2L245.3,327.2L299.1,348.0L311.7,355.4L346.0,408.1L343.1,414.1L323.1,436.6Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><path d="M382.6,431.2L356.2,430.9L343.1,414.1L346.0,408.1L311.7,355.4L299.1,348.0L336.4,312.3L360.8,288.8L418.4,251.1L434.9,279.4L452.3,320.7L468.4,326.5L444.6,380.9L445.1,402.4L405.3,423.5L397.9,425.7L382.6,431.2Z" fill="#1C1E24" fill-opacity="0.5" stroke="#2E323C" stroke-width="1"></path><text x="186.1" y="287.6" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">CHATHAM</text><text x="397.2" y="162.4" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">FRANKLIN</text><text x="322.2" y="68.5" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">GRANVILLE</text><text x="175.2" y="373.9" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">LEE</text><text x="179.4" y="157.7" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">ORANGE</text><text x="308.6" y="258.3" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">WAKE</text><text x="256.0" y="180.6" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">DURHAM</text><text x="266.4" y="403.9" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">HARNETT</text><text x="387.4" y="366.5" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#6B7591" letter-spacing="0.5">JOHNSTON</text><g class="bub" data-z="4" style="cursor:default"><circle cx="317.1" cy="263.3" r="34.0" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="317.1" y="266.3" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">527</text><text x="317.1" y="308.3" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Raleigh</text></g><g class="bub" data-z="1" style="cursor:default"><circle cx="351.3" cy="198.5" r="30.9" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="351.3" y="201.5" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">425</text><text x="351.3" y="240.4" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Wake Forest</text></g><g class="bub" data-z="5" style="cursor:default"><circle cx="380.2" cy="260.1" r="28.1" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="380.2" y="263.1" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">341</text><text x="380.2" y="299.2" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Knightdale</text></g><g class="bub" data-z="7" style="cursor:default"><circle cx="322.4" cy="337.9" r="27.2" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="322.4" y="340.9" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">314</text><text x="322.4" y="376.1" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Fuquay-Varina</text></g><g class="bub" data-z="3" style="cursor:default"><circle cx="280.3" cy="260.1" r="25.8" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="280.3" y="263.1" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">278</text><text x="280.3" y="296.9" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Cary</text></g><g class="bub" data-z="2" style="cursor:default"><circle cx="380.2" cy="214.7" r="21.4" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="380.2" y="217.7" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">178</text><text x="380.2" y="247.1" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Rolesville</text></g><g class="bub" data-z="8" style="cursor:default"><circle cx="364.4" cy="302.3" r="20.3" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="364.4" y="305.3" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">155</text><text x="364.4" y="333.5" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Garner</text></g><g class="bub" data-z="0" style="cursor:default"><circle cx="259.3" cy="208.2" r="19.6" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="259.3" y="211.2" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">142</text><text x="259.3" y="238.8" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Durham</text></g><g class="bub" data-z="6" style="cursor:default"><circle cx="264.6" cy="292.5" r="17.9" fill="#F6B32D" fill-opacity="0.42" stroke="#F6B32D" stroke-width="1.4"></circle><text x="264.6" y="295.5" text-anchor="middle" font-family="Inter" font-size="11" fill="#CDD2E0" pointer-events="none">113</text><text x="264.6" y="321.4" text-anchor="middle" font-family="Inter" font-size="9" fill="#8A95AF" pointer-events="none">Apex</text></g><circle cx="317.1" cy="263.3" r="5" fill="#0D0E12" stroke="#F6B32D" stroke-width="1.5"></circle><text x="317.1" y="263.8" text-anchor="middle" dominant-baseline="middle" font-size="7.5" fill="#F6B32D">★</text></svg></div>
+          <div class="concord">
+            <div class="cv" id="concordv">60%</div>
+            <div class="cl">of externally-referred patients live in the same area as their referring provider</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sources" class="dash-section">
+    <div class="sec-hdr">
+      <div class="sec-hdr-icon" style="background:rgba(104,182,132,.12);border:1px solid rgba(104,182,132,.25);color:#68B684"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 11l2 2l4 -4"></path></svg></div>
+      <div class="sec-hdr-main">
+        <div class="sec-hdr-row"><span class="sec-hdr-title">Top Referral Providers &amp; Provider Load</span></div>
+        <div class="sec-hdr-note">External referrers ranked by inbound volume. Provider load includes self-referrals.</div>
+      </div>
+      <button class="sec-collapse-btn" onclick="toggleSection(&#39;sources&#39;,this)" title="Collapse section"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></button>
+    </div>
+    <div class="sec-body" id="sec-body-sources">
+      <div class="grid two">
+        <div class="panel" id="src-panel">
+          <div class="rank-scroll" id="rank-scroll" style="max-height: 320px;">
+            <table class="rank">
+              <thead><tr>
+                <th>Referring provider</th><th class="r">Referrals</th><th>Mix</th>
+                <th class="r">Conv.</th><th class="r">Leak</th>
+              </tr></thead>
+              <tbody id="srcbody"><tr>
+      <td><div class="src"><span class="rk">01</span>Dr. Patel</div></td>
+      <td class="r numm">423</td>
+      <td><div class="stk"><span style="width:65.01182033096927%;background:#68B684"></span><span style="width:26.713947990543733%;background:#E8526E"></span><span style="width:8.274231678486997%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">65%</td>
+      <td class="r numm neg">27%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">02</span>Dr. Nguyen</div></td>
+      <td class="r numm">355</td>
+      <td><div class="stk"><span style="width:63.098591549295776%;background:#68B684"></span><span style="width:30.140845070422532%;background:#E8526E"></span><span style="width:6.760563380281689%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">63%</td>
+      <td class="r numm neg">30%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">03</span>Dr. Alvarez</div></td>
+      <td class="r numm">273</td>
+      <td><div class="stk"><span style="width:68.4981684981685%;background:#68B684"></span><span style="width:27.106227106227106%;background:#E8526E"></span><span style="width:4.395604395604396%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">68%</td>
+      <td class="r numm neg">27%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">04</span>Dr. Brooks</div></td>
+      <td class="r numm">248</td>
+      <td><div class="stk"><span style="width:57.66129032258065%;background:#68B684"></span><span style="width:36.693548387096776%;background:#E8526E"></span><span style="width:5.64516129032258%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">58%</td>
+      <td class="r numm neg">37%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">05</span>Dr. Schaefer</div></td>
+      <td class="r numm">221</td>
+      <td><div class="stk"><span style="width:64.70588235294117%;background:#68B684"></span><span style="width:30.316742081447963%;background:#E8526E"></span><span style="width:4.97737556561086%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">65%</td>
+      <td class="r numm neg">30%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">06</span>Dr. Okeke</div></td>
+      <td class="r numm">178</td>
+      <td><div class="stk"><span style="width:56.74157303370787%;background:#68B684"></span><span style="width:36.51685393258427%;background:#E8526E"></span><span style="width:6.741573033707865%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">57%</td>
+      <td class="r numm neg">37%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">07</span>Dr. Romano</div></td>
+      <td class="r numm">155</td>
+      <td><div class="stk"><span style="width:47.74193548387097%;background:#68B684"></span><span style="width:43.225806451612904%;background:#E8526E"></span><span style="width:9.032258064516128%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">48%</td>
+      <td class="r numm neg">43%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">08</span>Dr. Friedman</div></td>
+      <td class="r numm">142</td>
+      <td><div class="stk"><span style="width:67.6056338028169%;background:#68B684"></span><span style="width:25.352112676056336%;background:#E8526E"></span><span style="width:7.042253521126761%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">68%</td>
+      <td class="r numm neg">25%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">09</span>Dr. Castillo</div></td>
+      <td class="r numm">113</td>
+      <td><div class="stk"><span style="width:53.98230088495575%;background:#68B684"></span><span style="width:38.93805309734513%;background:#E8526E"></span><span style="width:7.079646017699115%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">54%</td>
+      <td class="r numm neg">39%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">10</span>Dr. Maxwell</div></td>
+      <td class="r numm">104</td>
+      <td><div class="stk"><span style="width:56.730769230769226%;background:#68B684"></span><span style="width:37.5%;background:#E8526E"></span><span style="width:5.769230769230769%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">57%</td>
+      <td class="r numm neg">38%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">11</span>Dr. Sato</div></td>
+      <td class="r numm">70</td>
+      <td><div class="stk"><span style="width:62.857142857142854%;background:#68B684"></span><span style="width:32.857142857142854%;background:#E8526E"></span><span style="width:4.285714285714286%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">63%</td>
+      <td class="r numm neg">33%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">12</span>Dr. Mercer</div></td>
+      <td class="r numm">68</td>
+      <td><div class="stk"><span style="width:55.88235294117647%;background:#68B684"></span><span style="width:36.76470588235294%;background:#E8526E"></span><span style="width:7.352941176470589%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">56%</td>
+      <td class="r numm neg">37%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">13</span>Dr. Hughes</div></td>
+      <td class="r numm">66</td>
+      <td><div class="stk"><span style="width:48.484848484848484%;background:#68B684"></span><span style="width:43.93939393939394%;background:#E8526E"></span><span style="width:7.575757575757576%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">48%</td>
+      <td class="r numm neg">44%</td>
+    </tr><tr>
+      <td><div class="src"><span class="rk">14</span>Dr. Delacroix</div></td>
+      <td class="r numm">57</td>
+      <td><div class="stk"><span style="width:49.122807017543856%;background:#68B684"></span><span style="width:50.877192982456144%;background:#E8526E"></span><span style="width:0%;background:#6B7591"></span></div></td>
+      <td class="r numm pos">49%</td>
+      <td class="r numm neg">51%</td>
+    </tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel" id="load-panel">
+          <div class="colhdr"><span>Referred-to provider load</span><span>Patients received</span></div>
+          <div class="loadlist" id="loadlist">
+    <div class="loadrow">
+      <div class="top"><span class="pname">Dr. A. Reyes <span class="psub">General Neurology</span></span></div>
+      <div class="pn">747</div>
+      <div class="ltrk"><div class="lf" style="width:100%"></div></div>
+    </div>
+    <div class="loadrow">
+      <div class="top"><span class="pname">Dr. P. Nair <span class="psub">Headache</span></span></div>
+      <div class="pn">571</div>
+      <div class="ltrk"><div class="lf" style="width:76.43908969210173%"></div></div>
+    </div>
+    <div class="loadrow">
+      <div class="top"><span class="pname">Dr. M. Okafor <span class="psub">Epilepsy</span></span></div>
+      <div class="pn">566</div>
+      <div class="ltrk"><div class="lf" style="width:75.76974564926373%"></div></div>
+    </div>
+    <div class="loadrow">
+      <div class="top"><span class="pname">Dr. S. Halvorsen <span class="psub">Movement Disorders</span></span></div>
+      <div class="pn">502</div>
+      <div class="ltrk"><div class="lf" style="width:67.20214190093708%"></div></div>
+    </div>
+    <div class="loadrow">
+      <div class="top"><span class="pname">Dr. J. Whitfield <span class="psub">MS / Neuroimmun.</span></span></div>
+      <div class="pn">377</div>
+      <div class="ltrk"><div class="lf" style="width:50.46854082998661%"></div></div>
+    </div>
+    <div class="loadrow">
+      <div class="top"><span class="pname">Dr. L. Castellano <span class="psub">Neuromuscular</span></span></div>
+      <div class="pn">365</div>
+      <div class="ltrk"><div class="lf" style="width:48.86211512717537%"></div></div>
+    </div>
+    <div class="loadrow">
+      <div class="top"><span class="pname">Dr. K. Bauer <span class="psub">Cognitive / Memory</span></span></div>
+      <div class="pn">289</div>
+      <div class="ltrk"><div class="lf" style="width:38.68808567603748%"></div></div>
+    </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cycle" class="dash-section">
+    <div class="sec-hdr">
+      <div class="sec-hdr-icon" style="background:rgba(77,168,218,.12);border:1px solid rgba(77,168,218,.25);color:#4DA8DA"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg></div>
+      <div class="sec-hdr-main">
+        <div class="sec-hdr-row"><span class="sec-hdr-title">Cycle Time — Referral → Registration → First Appointment</span></div>
+        <div class="sec-hdr-note">How quickly referrals move to a first appointment. Hover the curve to read the share reaching each milestone by any day.</div>
+      </div>
+      <button class="sec-collapse-btn" onclick="toggleSection(&#39;cycle&#39;,this)" title="Collapse section"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></button>
+    </div>
+    <div class="sec-body" id="sec-body-cycle">
+      <div class="cyclechips" id="cyclechips">
+    <div class="cchip">
+      <div class="cchip-head"><div class="cchip-ic" style="background:#3ecfbc1f;color:#3ecfbc"><svg viewBox="0 0 24 24"><path d="M9 4h6a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2z"></path><path d="M9 8h6M9 12h6M9 16h3"></path></svg></div><div class="cl">Referral → Registration</div></div>
+      <div class="cv" style="color:#3ecfbc">5<small> d median</small></div>
+      <div class="cd">mean 6 d <span class="ktag" style="background:#3ecfbc1f;color:#3ecfbc">IQR 2–8</span></div>
+    </div>
+    <div class="cchip">
+      <div class="cchip-head"><div class="cchip-ic" style="background:#F6B32D1f;color:#F6B32D"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line></svg></div><div class="cl">Registration → First appt</div></div>
+      <div class="cv" style="color:#F6B32D">16<small> d median</small></div>
+      <div class="cd">mean 21 d <span class="ktag" style="background:#F6B32D1f;color:#F6B32D">IQR 10–28</span></div>
+    </div>
+    <div class="cchip">
+      <div class="cchip-head"><div class="cchip-ic" style="background:#6861E01f;color:#6861E0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg></div><div class="cl">Referral → First appt (total)</div></div>
+      <div class="cv" style="color:#6861E0">23<small> d median</small></div>
+      <div class="cd">mean 27 d <span class="ktag" style="background:#6861E01f;color:#6861E0">IQR 15–35</span></div>
+    </div></div>
+      <div class="panel">
+        <div class="ct-head">
+          <div class="ct-title">Cumulative share reaching each milestone, by days since referral</div>
+          <div class="legend" style="margin-left:auto">
+            <span><i style="background:var(--teal)"></i>Registered</span>
+            <span><i style="background:var(--amber)"></i>First appointment</span>
+          </div>
+        </div>
+        <div id="cdf"><svg viewBox="0 0 1000 300" height="300" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block"><line class="cdfgrid" x1="42" y1="270.0" x2="984" y2="270.0"></line><text class="cdfax" x="36" y="273.0" text-anchor="end">0%</text><line class="cdfgrid" x1="42" y1="207.0" x2="984" y2="207.0"></line><text class="cdfax" x="36" y="210.0" text-anchor="end">25%</text><line class="cdfgrid" x1="42" y1="144.0" x2="984" y2="144.0"></line><text class="cdfax" x="36" y="147.0" text-anchor="end">50%</text><line class="cdfgrid" x1="42" y1="81.0" x2="984" y2="81.0"></line><text class="cdfax" x="36" y="84.0" text-anchor="end">75%</text><line class="cdfgrid" x1="42" y1="18.0" x2="984" y2="18.0"></line><text class="cdfax" x="36" y="21.0" text-anchor="end">100%</text><text class="cdfax" x="42.0" y="288" text-anchor="middle">0d</text><text class="cdfax" x="151.9" y="288" text-anchor="middle">7d</text><text class="cdfax" x="261.8" y="288" text-anchor="middle">14d</text><text class="cdfax" x="371.7" y="288" text-anchor="middle">21d</text><text class="cdfax" x="513.0" y="288" text-anchor="middle">30d</text><text class="cdfax" x="748.5" y="288" text-anchor="middle">45d</text><text class="cdfax" x="984.0" y="288" text-anchor="middle">60d</text><path d="M42,266.3 L57.7,241.3 L73.4,206.6 L89.1,171.4 L104.8,144.7 L120.5,120.9 L136.2,102.7 L151.9,88.6 L167.6,77.3 L183.3,66.4 L199.0,58.7 L214.7,51.7 L230.4,47.0 L246.1,42.1 L261.8,36.7 L277.5,34.3 L293.2,31.4 L308.9,29.0 L324.6,27.1 L340.3,25.7 L356.0,24.5 L371.7,23.6 L387.4,22.8 L403.1,21.8 L418.8,21.1 L434.5,20.5 L450.2,20.1 L465.9,19.9 L481.6,19.4 L497.3,19.0 L513.0,18.7 L528.7,18.5 L544.4,18.5 L560.1,18.5 L575.8,18.4 L591.5,18.4 L607.2,18.2 L622.9,18.2 L638.6,18.1 L654.3,18.1 L670.0,18.0 L685.7,18.0 L701.4,18.0 L717.1,18.0 L732.8,18.0 L748.5,18.0 L764.2,18.0 L779.9,18.0 L795.6,18.0 L811.3,18.0 L827.0,18.0 L842.7,18.0 L858.4,18.0 L874.1,18.0 L889.8,18.0 L905.5,18.0 L921.2,18.0 L936.9,18.0 L952.6,18.0 L968.3,18.0 L984.0,18.0 L984.0,270 L42,270 Z" fill="#3ecfbc" fill-opacity="0.08"></path><path d="M42,270.0 L57.7,270.0 L73.4,269.9 L89.1,268.8 L104.8,267.8 L120.5,266.2 L136.2,263.3 L151.9,259.6 L167.6,255.2 L183.3,248.9 L199.0,243.6 L214.7,235.9 L230.4,225.8 L246.1,218.6 L261.8,210.1 L277.5,200.5 L293.2,192.8 L308.9,183.6 L324.6,175.3 L340.3,167.0 L356.0,158.8 L371.7,152.6 L387.4,145.2 L403.1,138.6 L418.8,130.9 L434.5,126.1 L450.2,120.9 L465.9,116.1 L481.6,111.3 L497.3,106.8 L513.0,100.6 L528.7,96.0 L544.4,91.0 L560.1,87.5 L575.8,82.4 L591.5,78.1 L607.2,75.2 L622.9,72.3 L638.6,67.6 L654.3,63.8 L670.0,61.2 L685.7,58.7 L701.4,56.3 L717.1,53.7 L732.8,52.0 L748.5,50.5 L764.2,49.3 L779.9,48.0 L795.6,45.9 L811.3,44.6 L827.0,43.1 L842.7,41.9 L858.4,40.6 L874.1,39.1 L889.8,36.9 L905.5,35.9 L921.2,34.9 L936.9,33.6 L952.6,32.6 L968.3,31.4 L984.0,30.7 L984.0,270 L42,270 Z" fill="#F6B32D" fill-opacity="0.08"></path><path d="M42,266.3 L57.7,241.3 L73.4,206.6 L89.1,171.4 L104.8,144.7 L120.5,120.9 L136.2,102.7 L151.9,88.6 L167.6,77.3 L183.3,66.4 L199.0,58.7 L214.7,51.7 L230.4,47.0 L246.1,42.1 L261.8,36.7 L277.5,34.3 L293.2,31.4 L308.9,29.0 L324.6,27.1 L340.3,25.7 L356.0,24.5 L371.7,23.6 L387.4,22.8 L403.1,21.8 L418.8,21.1 L434.5,20.5 L450.2,20.1 L465.9,19.9 L481.6,19.4 L497.3,19.0 L513.0,18.7 L528.7,18.5 L544.4,18.5 L560.1,18.5 L575.8,18.4 L591.5,18.4 L607.2,18.2 L622.9,18.2 L638.6,18.1 L654.3,18.1 L670.0,18.0 L685.7,18.0 L701.4,18.0 L717.1,18.0 L732.8,18.0 L748.5,18.0 L764.2,18.0 L779.9,18.0 L795.6,18.0 L811.3,18.0 L827.0,18.0 L842.7,18.0 L858.4,18.0 L874.1,18.0 L889.8,18.0 L905.5,18.0 L921.2,18.0 L936.9,18.0 L952.6,18.0 L968.3,18.0 L984.0,18.0" fill="none" stroke="#3ecfbc" stroke-width="2"></path><path d="M42,270.0 L57.7,270.0 L73.4,269.9 L89.1,268.8 L104.8,267.8 L120.5,266.2 L136.2,263.3 L151.9,259.6 L167.6,255.2 L183.3,248.9 L199.0,243.6 L214.7,235.9 L230.4,225.8 L246.1,218.6 L261.8,210.1 L277.5,200.5 L293.2,192.8 L308.9,183.6 L324.6,175.3 L340.3,167.0 L356.0,158.8 L371.7,152.6 L387.4,145.2 L403.1,138.6 L418.8,130.9 L434.5,126.1 L450.2,120.9 L465.9,116.1 L481.6,111.3 L497.3,106.8 L513.0,100.6 L528.7,96.0 L544.4,91.0 L560.1,87.5 L575.8,82.4 L591.5,78.1 L607.2,75.2 L622.9,72.3 L638.6,67.6 L654.3,63.8 L670.0,61.2 L685.7,58.7 L701.4,56.3 L717.1,53.7 L732.8,52.0 L748.5,50.5 L764.2,49.3 L779.9,48.0 L795.6,45.9 L811.3,44.6 L827.0,43.1 L842.7,41.9 L858.4,40.6 L874.1,39.1 L889.8,36.9 L905.5,35.9 L921.2,34.9 L936.9,33.6 L952.6,32.6 L968.3,31.4 L984.0,30.7" fill="none" stroke="#F6B32D" stroke-width="2"></path><line class="cdfref" x1="261.8" y1="18" x2="261.8" y2="270.0"></line><text class="cdfax" x="261.8" y="13" text-anchor="middle" fill="#F6B32D">24% seen by 14d</text><line class="cdfref" x1="513.0" y1="18" x2="513.0" y2="270.0"></line><text class="cdfax" x="513.0" y="13" text-anchor="middle" fill="#F6B32D">67% seen by 30d</text><line id="cdfcur" class="cdfcur" y1="18" y2="270.0"></line><circle id="curReg" r="3.5" fill="#3ecfbc" opacity="0"></circle><circle id="curAppt" r="3.5" fill="#F6B32D" opacity="0"></circle><rect id="cdfhit" x="42" y="18" width="942" height="252" fill="transparent"></rect></svg></div>
+        <div class="ct-box-title">Distribution by interval — box = p25–median–p75, whiskers p10–p90, dot = mean</div>
+        <div id="boxes"><svg viewBox="0 0 1000 168" height="168" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block"><line class="cdfgrid" x1="160.0" y1="8" x2="160.0" y2="138.0"></line><text class="cdfax" x="160.0" y="158" text-anchor="middle">0d</text><line class="cdfgrid" x1="251.2" y1="8" x2="251.2" y2="138.0"></line><text class="cdfax" x="251.2" y="158" text-anchor="middle">7d</text><line class="cdfgrid" x1="342.5" y1="8" x2="342.5" y2="138.0"></line><text class="cdfax" x="342.5" y="158" text-anchor="middle">14d</text><line class="cdfgrid" x1="433.7" y1="8" x2="433.7" y2="138.0"></line><text class="cdfax" x="433.7" y="158" text-anchor="middle">21d</text><line class="cdfgrid" x1="551.0" y1="8" x2="551.0" y2="138.0"></line><text class="cdfax" x="551.0" y="158" text-anchor="middle">30d</text><line class="cdfgrid" x1="746.5" y1="8" x2="746.5" y2="138.0"></line><text class="cdfax" x="746.5" y="158" text-anchor="middle">45d</text><line class="cdfgrid" x1="942.0" y1="8" x2="942.0" y2="138.0"></line><text class="cdfax" x="942.0" y="158" text-anchor="middle">60d</text><g class="boxrow"><rect class="boxhit" x="160" y="10.0" width="782" height="39.3" fill="transparent" data-i="0"></rect><text class="cdfax" x="150" y="32.7" text-anchor="end">Referral → Registration</text><line x1="173.0" y1="29.666666666666668" x2="329.4" y2="29.666666666666668" stroke="#3ecfbc" stroke-width="1.5" stroke-opacity="0.55"></line><line x1="173.0" y1="24.666666666666668" x2="173.0" y2="34.66666666666667" stroke="#3ecfbc" stroke-width="1.5" stroke-opacity="0.55"></line><line x1="329.4" y1="24.666666666666668" x2="329.4" y2="34.66666666666667" stroke="#3ecfbc" stroke-width="1.5" stroke-opacity="0.55"></line><rect x="186.1" y="22.2" width="78.2" height="15" rx="3" fill="#3ecfbc" fill-opacity="0.28" stroke="#3ecfbc" stroke-width="1.2"></rect><line x1="225.2" y1="22.2" x2="225.2" y2="37.2" stroke="#3ecfbc" stroke-width="2.5"></line><circle cx="238.2" cy="29.666666666666668" r="2.6" fill="#CDD2E0"></circle><text class="cdfax" x="337.4" y="32.7" fill="#CDD2E0">5d</text></g><g class="boxrow"><rect class="boxhit" x="160" y="53.3" width="782" height="39.3" fill="transparent" data-i="1"></rect><text class="cdfax" x="150" y="76.0" text-anchor="end">Registration → First appt</text><line x1="238.2" y1="73" x2="707.4" y2="73" stroke="#F6B32D" stroke-width="1.5" stroke-opacity="0.55"></line><line x1="238.2" y1="68" x2="238.2" y2="78" stroke="#F6B32D" stroke-width="1.5" stroke-opacity="0.55"></line><line x1="707.4" y1="68" x2="707.4" y2="78" stroke="#F6B32D" stroke-width="1.5" stroke-opacity="0.55"></line><rect x="290.3" y="65.5" width="234.6" height="15" rx="3" fill="#F6B32D" fill-opacity="0.28" stroke="#F6B32D" stroke-width="1.2"></rect><line x1="368.5" y1="65.5" x2="368.5" y2="80.5" stroke="#F6B32D" stroke-width="2.5"></line><circle cx="433.7" cy="73" r="2.6" fill="#CDD2E0"></circle><text class="cdfax" x="715.4" y="76.0" fill="#CDD2E0">16d</text></g><g class="boxrow"><rect class="boxhit" x="160" y="96.7" width="782" height="39.3" fill="transparent" data-i="2"></rect><text class="cdfax" x="150" y="119.3" text-anchor="end">Referral → First appt</text><line x1="290.3" y1="116.33333333333334" x2="811.7" y2="116.33333333333334" stroke="#6861E0" stroke-width="1.5" stroke-opacity="0.55"></line><line x1="290.3" y1="111.33333333333334" x2="290.3" y2="121.33333333333334" stroke="#6861E0" stroke-width="1.5" stroke-opacity="0.55"></line><line x1="811.7" y1="111.33333333333334" x2="811.7" y2="121.33333333333334" stroke="#6861E0" stroke-width="1.5" stroke-opacity="0.55"></line><rect x="355.5" y="108.8" width="260.7" height="15" rx="3" fill="#6861E0" fill-opacity="0.28" stroke="#6861E0" stroke-width="1.2"></rect><line x1="459.8" y1="108.8" x2="459.8" y2="123.8" stroke="#6861E0" stroke-width="2.5"></line><circle cx="511.9" cy="116.33333333333334" r="2.6" fill="#CDD2E0"></circle><text class="cdfax" x="819.7" y="119.3" fill="#CDD2E0">23d</text></g></svg></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="active" class="dash-section">
+    <div class="sec-hdr">
+      <div class="sec-hdr-icon" style="background:rgba(255,122,89,.12);border:1px solid rgba(255,122,89,.25);color:#FF7A59"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8l4 -16l3 8h4"></path></svg></div>
+      <div class="sec-hdr-main">
+        <div class="sec-hdr-row"><span class="sec-hdr-title">Active Referred Patients</span></div>
+        <div class="sec-hdr-note">Referred patients with a visit in the trailing window, as of the report date.</div>
+      </div>
+      <button class="sec-collapse-btn" onclick="toggleSection(&#39;active&#39;,this)" title="Collapse section"><svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg></button>
+    </div>
+    <div class="sec-body" id="sec-body-active">
+      <div class="grid cohorts" id="cohorts">
+    <div class="coh">
+      <div class="coh-head"><div class="coh-ic" style="background:#3ecfbc1f;color:#3ecfbc"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8l4 -16l3 8h4"></path></svg></div><div class="win">Active · Last 12 months</div></div>
+      <div class="big" style="color:#3ecfbc">1,491</div>
+      <div class="rate"><span class="ktag" style="background:#3ecfbc1f;color:#3ecfbc">73%</span> of 2,031 converted patients</div>
+      <div class="meter"><span style="width:73.41211225997046%;background:#3ecfbc"></span></div>
+      <div class="rate"><span class="ktag" style="background:#6B75911f;color:#6B7591">44%</span> of all 3,417 referrals</div>
+    </div>
+    <div class="coh">
+      <div class="coh-head"><div class="coh-ic" style="background:#6861E01f;color:#6861E0"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8l4 -16l3 8h4"></path></svg></div><div class="win">Active · Last 18 months</div></div>
+      <div class="big" style="color:#6861E0">1,857</div>
+      <div class="rate"><span class="ktag" style="background:#6861E01f;color:#6861E0">91%</span> of 2,031 converted patients</div>
+      <div class="meter"><span style="width:91.4327917282127%;background:#6861E0"></span></div>
+      <div class="rate"><span class="ktag" style="background:#6B75911f;color:#6B7591">54%</span> of all 3,417 referrals</div>
+    </div></div>
+    </div>
+  </section>
+</main>
+
+<!-- ═══════════ FILTER PANEL ═══════════ -->
+<div id="filter-panel" class="closed">
+  <div class="fp-section-flat" id="fp-header" style="padding-top:14px">
+    <div class="fp-section-label" style="cursor:default"><svg viewBox="0 0 24 24"><circle cx="14" cy="6" r="2"></circle><line x1="4" y1="6" x2="12" y2="6"></line><line x1="16" y1="6" x2="20" y2="6"></line><circle cx="8" cy="12" r="2"></circle><line x1="4" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="20" y2="12"></line><circle cx="17" cy="18" r="2"></circle><line x1="4" y1="18" x2="15" y2="18"></line><line x1="19" y1="18" x2="20" y2="18"></line></svg>Filters<button class="fp-collapse-all" onclick="toggleFpAll()" title="Collapse / expand all filters" id="fp-collapse-all-lbl">Collapse all</button><button class="fp-close" onclick="toggleFilters()" title="Close filters"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>
+  </div>
+  <div class="fp-divider" id="fp-header-divider"></div>
+
+  <div class="fp-section-flat">
+    <div class="fp-section-label" onclick="toggleFp(this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 12l2 2l4 -4"></path></svg>Referral Status<span class="fp-chev"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span></div>
+    <div class="fp-sec-body">
+      <div class="fp-pill-row" id="fp-status">
+        <button class="fp-pill" data-v="converted">Converted</button>
+        <button class="fp-pill" data-v="leaked">Leaked</button>
+        <button class="fp-pill" data-v="pending">Pending</button>
+      </div>
+    </div>
+  </div>
+  <div class="fp-divider"></div>
+
+  <div class="fp-section-flat">
+    <div class="fp-section-label" onclick="toggleFp(this)"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"></circle><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path></svg>Source Type<span class="fp-chev"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span></div>
+    <div class="fp-sec-body">
+      <div class="fp-pill-row" id="fp-source">
+        <button class="fp-pill active" data-v="all">All</button>
+        <button class="fp-pill" data-v="external">External</button>
+        <button class="fp-pill" data-v="self">Self</button>
+      </div>
+    </div>
+  </div>
+  <div class="fp-divider"></div>
+
+  <div class="fp-section-flat">
+    <div class="fp-section-label" onclick="toggleFp(this)"><svg viewBox="0 0 24 24"><path d="M9 4h6a2 2 0 0 1 2 2v14l-5 -3l-5 3v-14a2 2 0 0 1 2 -2z"></path></svg>Referring Provider<span class="fp-chev"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span></div>
+    <div class="fp-sec-body">
+      <input class="fp-search" id="fp-ref-search" placeholder="Search referrers…" oninput="renderRefList()">
+      <div class="fp-scroll-list" id="fp-ref-list">
+    <label class="fp-check-row"><input type="checkbox" data-i="0" onchange="toggleRef(0,this.checked)">Dr. Patel<span class="cnt" id="refcnt-0">423</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="1" onchange="toggleRef(1,this.checked)">Dr. Nguyen<span class="cnt" id="refcnt-1">355</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="2" onchange="toggleRef(2,this.checked)">Dr. Alvarez<span class="cnt" id="refcnt-2">273</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="3" onchange="toggleRef(3,this.checked)">Dr. Brooks<span class="cnt" id="refcnt-3">248</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="4" onchange="toggleRef(4,this.checked)">Dr. Schaefer<span class="cnt" id="refcnt-4">221</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="5" onchange="toggleRef(5,this.checked)">Dr. Okeke<span class="cnt" id="refcnt-5">178</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="6" onchange="toggleRef(6,this.checked)">Dr. Romano<span class="cnt" id="refcnt-6">155</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="7" onchange="toggleRef(7,this.checked)">Dr. Friedman<span class="cnt" id="refcnt-7">142</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="8" onchange="toggleRef(8,this.checked)">Dr. Castillo<span class="cnt" id="refcnt-8">113</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="9" onchange="toggleRef(9,this.checked)">Dr. Maxwell<span class="cnt" id="refcnt-9">104</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="10" onchange="toggleRef(10,this.checked)">Dr. Sato<span class="cnt" id="refcnt-10">70</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="11" onchange="toggleRef(11,this.checked)">Dr. Mercer<span class="cnt" id="refcnt-11">68</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="12" onchange="toggleRef(12,this.checked)">Dr. Delacroix<span class="cnt" id="refcnt-12">57</span></label>
+    <label class="fp-check-row"><input type="checkbox" data-i="13" onchange="toggleRef(13,this.checked)">Dr. Hughes<span class="cnt" id="refcnt-13">66</span></label></div>
+    </div>
+  </div>
+  <div class="fp-divider"></div>
+
+  <div class="fp-section-flat">
+    <div class="fp-section-label" onclick="toggleFp(this)"><svg viewBox="0 0 24 24"><path d="M6 4h-1a2 2 0 0 0 -2 2v3.5h0a5.5 5.5 0 0 0 11 0v-3.5a2 2 0 0 0 -2 -2h-1"></path><path d="M8 15a6 6 0 1 0 12 0v-3"></path><path d="M11 3v2"></path><path d="M6 3v2"></path><circle cx="20" cy="10" r="2"></circle></svg>Referred-to Provider<span class="fp-chev"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span></div>
+    <div class="fp-sec-body">
+      <div id="fp-prov-list">
+    <button class="fp-prov-btn " onclick="toggleProv(0)">
+      <span class="fp-prov-dot" style="background:var(--teal)"></span>
+      <span class="fp-prov-name">Dr. A. Reyes · General Neurology</span>
+      <span class="fp-prov-count" id="provcnt-0">747</span>
+    </button>
+    <button class="fp-prov-btn " onclick="toggleProv(1)">
+      <span class="fp-prov-dot" style="background:var(--blue)"></span>
+      <span class="fp-prov-name">Dr. M. Okafor · Epilepsy</span>
+      <span class="fp-prov-count" id="provcnt-1">566</span>
+    </button>
+    <button class="fp-prov-btn " onclick="toggleProv(2)">
+      <span class="fp-prov-dot" style="background:var(--purple)"></span>
+      <span class="fp-prov-name">Dr. P. Nair · Headache</span>
+      <span class="fp-prov-count" id="provcnt-2">571</span>
+    </button>
+    <button class="fp-prov-btn " onclick="toggleProv(3)">
+      <span class="fp-prov-dot" style="background:var(--amber)"></span>
+      <span class="fp-prov-name">Dr. S. Halvorsen · Movement Disorders</span>
+      <span class="fp-prov-count" id="provcnt-3">502</span>
+    </button>
+    <button class="fp-prov-btn " onclick="toggleProv(4)">
+      <span class="fp-prov-dot" style="background:var(--green)"></span>
+      <span class="fp-prov-name">Dr. L. Castellano · Neuromuscular</span>
+      <span class="fp-prov-count" id="provcnt-4">365</span>
+    </button>
+    <button class="fp-prov-btn " onclick="toggleProv(5)">
+      <span class="fp-prov-dot" style="background:var(--pink)"></span>
+      <span class="fp-prov-name">Dr. J. Whitfield · MS / Neuroimmun.</span>
+      <span class="fp-prov-count" id="provcnt-5">377</span>
+    </button>
+    <button class="fp-prov-btn " onclick="toggleProv(6)">
+      <span class="fp-prov-dot" style="background:var(--orange)"></span>
+      <span class="fp-prov-name">Dr. K. Bauer · Cognitive / Memory</span>
+      <span class="fp-prov-count" id="provcnt-6">289</span>
+    </button></div>
+    </div>
+  </div>
+  <div class="fp-divider"></div>
+
+  <div class="fp-section-flat">
+    <div class="fp-section-label" onclick="toggleFp(this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="11" r="3"></circle><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z"></path></svg>Patient Area<span class="fp-chev"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span></div>
+    <div class="fp-sec-body">
+      <div class="fp-scroll-list" id="fp-zone-list">
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(0,this.checked)">Durham area<span class="cnt" id="zonecnt-0">222</span></label>
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(1,this.checked)">Wake Forest<span class="cnt" id="zonecnt-1">463</span></label>
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(2,this.checked)">Rolesville / NE<span class="cnt" id="zonecnt-2">262</span></label>
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(3,this.checked)">Cary<span class="cnt" id="zonecnt-3">393</span></label>
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(4,this.checked)">Raleigh (Central)<span class="cnt" id="zonecnt-4">816</span></label>
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(5,this.checked)">Knightdale / E<span class="cnt" id="zonecnt-5">408</span></label>
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(6,this.checked)">Apex–Holly Springs<span class="cnt" id="zonecnt-6">198</span></label>
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(7,this.checked)">Fuquay-Varina<span class="cnt" id="zonecnt-7">398</span></label>
+    <label class="fp-check-row"><input type="checkbox" onchange="toggleZone(8,this.checked)">Garner / Clayton<span class="cnt" id="zonecnt-8">257</span></label></div>
+    </div>
+  </div>
+  <div class="fp-divider"></div>
+
+  <div class="fp-section-flat">
+    <div class="fp-section-label" onclick="toggleFp(this)"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line></svg>Appointment Status<span class="fp-chev"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span></div>
+    <div class="fp-sec-body">
+      <div class="fp-pill-row" id="fp-appt">
+        <button class="fp-pill" data-v="completed">Completed</button>
+        <button class="fp-pill" data-v="booked">Booked</button>
+        <button class="fp-pill" data-v="cancelled">Cancelled</button>
+      </div>
+    </div>
+  </div>
+  <div class="fp-divider"></div>
+
+  <div class="fp-section-flat">
+    <div class="fp-section-label" onclick="toggleFp(this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>Referral Date<span class="fp-chev"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span></div>
+    <div class="fp-sec-body">
+      <select class="fp-select" id="fp-months" onchange="setMonths(this.value)">
+        <option value="24">All — last 24 months</option>
+        <option value="12">Last 12 months</option>
+        <option value="6">Last 6 months</option>
+        <option value="3">Last 3 months</option>
+      </select>
+    </div>
+  </div>
+  <div class="fp-divider"></div>
+
+  <div class="fp-section-flat" style="padding-bottom:24px">
+    <button class="fp-reset-btn" onclick="resetFilters()">Reset All Filters</button>
+  </div>
+</div>
+</div>
+
+<div id="tip"></div>
+<div id="toast"></div>
+
+<div id="sv-modal">
+  <div class="sv-modal-box">
+    <h3>Save Current View</h3>
+    <input id="sv-name" placeholder="View name, e.g. Leaked · External · 6M" onkeydown="if(event.key===&#39;Enter&#39;)saveView()">
+    <div class="sv-modal-acts">
+      <button class="sv-cancel" onclick="closeSaveViewModal()">Cancel</button>
+      <button class="sv-save" onclick="saveView()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- deterministic PRNG ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rng=mulberry32(73219);
+const randn=(mean,sd)=>{let u=0,v=0;while(!u)u=rng();while(!v)v=rng();return mean+sd*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+const exp=(mean)=>-Math.log(1-rng())*mean;
+
+const ASOF=new Date('2026-06-25T00:00:00');
+const DAY=86400000;
+document.getElementById('asof').textContent='As of '+ASOF.toISOString().slice(0,10)+' \u00b7 24-mo window';
+
+/* ---------- dimensions ---------- */
+const SOURCES=[
+  {name:'Dr. Patel',     w:100, conv:.72, z:4},
+  {name:'Dr. Nguyen',    w:86,  conv:.68, z:1},
+  {name:'Dr. Alvarez',   w:74,  conv:.70, z:5},
+  {name:'Dr. Brooks',    w:64,  conv:.60, z:7},
+  {name:'Dr. Schaefer',  w:55,  conv:.66, z:3},
+  {name:'Dr. Okeke',     w:47,  conv:.57, z:2},
+  {name:'Dr. Romano',    w:41,  conv:.63, z:8},
+  {name:'Dr. Friedman',  w:35,  conv:.69, z:0},
+  {name:'Dr. Castillo',  w:30,  conv:.54, z:6},
+  {name:'Dr. Maxwell',   w:26,  conv:.62, z:4},
+  {name:'Dr. Sato',      w:22,  conv:.67, z:1},
+  {name:'Dr. Mercer',    w:19,  conv:.52, z:5},
+  {name:'Dr. Delacroix', w:16,  conv:.59, z:3},
+  {name:'Dr. Hughes',    w:14,  conv:.64, z:7},
+];
+const PROVIDERS=[
+  {name:'A. Reyes',      sub:'General Neurology', w:.22},
+  {name:'M. Okafor',     sub:'Epilepsy',          w:.16},
+  {name:'P. Nair',       sub:'Headache',          w:.16},
+  {name:'S. Halvorsen',  sub:'Movement Disorders',w:.14},
+  {name:'L. Castellano', sub:'Neuromuscular',     w:.12},
+  {name:'J. Whitfield',  sub:'MS / Neuroimmun.',  w:.11},
+  {name:'K. Bauer',      sub:'Cognitive / Memory',w:.09},
+];
+const ZONES=['Durham area','Wake Forest','Rolesville / NE','Cary','Raleigh (Central)','Knightdale / E','Apex–Holly Springs','Fuquay-Varina','Garner / Clayton'];
+const ZW=[.085,.12,.09,.11,.20,.12,.075,.11,.08];
+const LEAK_STAGES=['No registration on file','Registered, never scheduled','Scheduled, did not attend'];
+
+/* ---------- generate referral records ---------- */
+const N=3417, SELF_SHARE=0.28, SELF_CONV=0.58;
+const sw=SOURCES.map(s=>s.w), pw=PROVIDERS.map(p=>p.w);
+const SWT=sw.reduce((a,b)=>a+b,0);
+const affinity=SOURCES.map((_,i)=>{const a=pw.slice();a[(i*3+1)%pw.length]*=2.0;a[(i*5+2)%pw.length]*=1.6;return a;});
+const selfZoneW=ZW.map((w,i)=> i===4 ? w*2.2 : ([1,3,5,7].includes(i)? w*1.3 : w));
+function drawZone(W){let t=W.reduce((a,b)=>a+b,0),r=rng()*t,a=0;for(let k=0;k<W.length;k++){a+=W[k];if(r<=a)return k}return W.length-1}
+
+const recs=[];
+for(let i=0;i<N;i++){
+  const isSelf=rng()<SELF_SHARE;
+  let si=null, referrerZone=null, patientZone, convP;
+  if(isSelf){
+    convP=SELF_CONV;
+    patientZone=drawZone(selfZoneW);
+  } else {
+    si=(()=>{let r=rng()*SWT,a=0;for(let k=0;k<SOURCES.length;k++){a+=SOURCES[k].w;if(r<=a)return k}return SOURCES.length-1})();
+    convP=SOURCES[si].conv; referrerZone=SOURCES[si].z;
+    patientZone = rng()<0.55 ? referrerZone : drawZone(ZW);
+  }
+  const pwLocal = isSelf ? pw : affinity[si];
+  const pi=(()=>{let tot=pwLocal.reduce((a,b)=>a+b,0),r=rng()*tot,a=0;for(let k=0;k<pwLocal.length;k++){a+=pwLocal[k];if(r<=a)return k}return pwLocal.length-1})();
+
+  const daysAgo=Math.floor(Math.pow(rng(),1.15)*730);
+  const refDate=new Date(ASOF-daysAgo*DAY);
+  const recent=daysAgo<58;
+
+  let status, leakStage=null, scheduled=false, regDate=null, apptDate=null, apptStatus=null, lastVisit=null;
+  if(recent && rng()<0.6){
+    status='pending';
+    if(rng()<0.72){
+      regDate=new Date(+refDate+Math.max(1,Math.round(exp(5)))*DAY);
+      if(rng()<0.8){ apptStatus='booked'; scheduled=true; apptDate=new Date(+ASOF+Math.round(3+exp(20))*DAY); }
+    }
+  } else if(rng()<convP){
+    status='converted'; scheduled=true; apptStatus='completed';
+    const r2r=Math.max(0,Math.round(exp(5.2)+rng()*2));
+    regDate=new Date(+refDate+r2r*DAY);
+    const r2a=Math.max(2,Math.round(exp(16)+5+randn(0,4)));
+    apptDate=new Date(+regDate+r2a*DAY);
+    const monthsAvail=(ASOF-apptDate)/(30.4*DAY);
+    let engMonths; const u=rng();
+    if(u<0.42) engMonths=rng()*1.2;
+    else if(u<0.76) engMonths=2+exp(4);
+    else engMonths=8+exp(16);
+    let lvTime;
+    if(engMonths>=monthsAvail){ lvTime=+ASOF-Math.round(exp(50))*DAY; if(lvTime<+apptDate)lvTime=+apptDate; }
+    else { lvTime=+apptDate+Math.round(engMonths*30.4)*DAY; }
+    lastVisit=new Date(Math.min(Math.max(lvTime,+apptDate),+ASOF));
+  } else {
+    status='leaked';
+    const lr=rng();
+    if(lr<0.56){ leakStage=LEAK_STAGES[0]; }
+    else if(lr<0.80){ leakStage=LEAK_STAGES[1]; regDate=new Date(+refDate+Math.max(1,Math.round(exp(5)))*DAY); }
+    else { leakStage=LEAK_STAGES[2]; scheduled=true; apptStatus='cancelled'; regDate=new Date(+refDate+Math.max(1,Math.round(exp(5)))*DAY); }
+  }
+  recs.push({isSelf,si,pi,referrerZone,patientZone,refDate,regDate,apptDate,status,leakStage,scheduled,apptStatus,lastVisit});
+}
+
+/* ---------- helpers ---------- */
+const days=(a,b)=>Math.round((b-a)/DAY);
+const median=a=>{if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y);const m=Math.floor(s.length/2);return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2)};
+const quantile=(a,q)=>{if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y);return s[Math.floor(q*(s.length-1))]};
+const mean=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):0;
+const P=(a,p)=>quantile(a,p);
+const cssVar=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ---------- tooltip ---------- */
+const tip=document.getElementById('tip');
+function showTip(html,e){tip.innerHTML=html;tip.style.opacity=1;moveTip(e)}
+function moveTip(e){const pad=14;let x=e.clientX+pad,y=e.clientY+pad;const w=tip.offsetWidth,h=tip.offsetHeight;if(x+w>innerWidth)x=e.clientX-w-pad;if(y+h>innerHeight)y=e.clientY-h-pad;tip.style.left=x+'px';tip.style.top=y+'px'}
+function hideTip(){tip.style.opacity=0}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ══════════════════ FILTER STATE ══════════════════ */
+const F={status:new Set(),source:'all',refs:new Set(),provs:new Set(),zones:new Set(),appt:new Set(),months:24};
+
+function applyF(){
+  const cut=+ASOF-F.months*30.4*DAY;
+  return recs.filter(r=>{
+    if(F.status.size && !F.status.has(r.status))return false;
+    if(F.source==='self' && !r.isSelf)return false;
+    if(F.source==='external' && r.isSelf)return false;
+    if(F.refs.size && (r.si==null || !F.refs.has(r.si)))return false;
+    if(F.provs.size && !F.provs.has(r.pi))return false;
+    if(F.zones.size && !F.zones.has(r.patientZone))return false;
+    if(F.appt.size && !F.appt.has(r.apptStatus))return false;
+    if(F.months<24 && +r.refDate<cut)return false;
+    return true;
+  });
+}
+function filtersActive(){return F.status.size||F.source!=='all'||F.refs.size||F.provs.size||F.zones.size||F.appt.size||F.months<24}
+
+/* ══════════════════ RENDER ALL ══════════════════ */
+let flowMode='all', scMode='all';
+const CAP=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+function renderAll(){
+  const R=applyF();
+  const V={teal:cssVar('--teal'),blue:cssVar('--blue'),amber:cssVar('--amber'),green:cssVar('--green'),red:cssVar('--red'),purple:cssVar('--purple'),cyan:cssVar('--cyan'),orange:cssVar('--orange'),pink:cssVar('--pink'),coral:cssVar('--coral'),t1:cssVar('--t1'),t2:cssVar('--t2'),t3:cssVar('--t3'),land:cssVar('--map-land'),line:cssVar('--map-line'),mlab:cssVar('--map-lab'),bg:cssVar('--bg')};
+  const PCOL=[V.teal,V.blue,V.purple,V.amber,V.green,V.pink,V.orange];
+  const EXTCOL='#8a97b8';
+
+  const total=R.length||0, T=Math.max(1,total);
+  const ext=R.filter(r=>!r.isSelf), selfR=R.filter(r=>r.isSelf);
+  const conv=R.filter(r=>r.status==='converted');
+  const leaked=R.filter(r=>r.status==='leaked');
+  const registered=R.filter(r=>r.regDate);
+  const completed=R.filter(r=>r.apptStatus==='completed');
+  const booked=R.filter(r=>r.apptStatus==='booked');
+  const cancelled=R.filter(r=>r.apptStatus==='cancelled');
+  const scheduledAll=R.filter(r=>r.scheduled);
+  const convRate=conv.length/T, leakRate=leaked.length/T;
+  const r2reg=conv.map(r=>days(r.refDate,r.regDate)).filter(d=>d>=0);
+  const reg2appt=conv.map(r=>days(r.regDate,r.apptDate)).filter(d=>d>=0);
+  const ref2appt=completed.map(r=>days(r.refDate,r.apptDate)).filter(d=>d>=0);
+  const within=d=>r=>r.lastVisit && (ASOF-r.lastVisit)<=d*DAY;
+  const act12=conv.filter(within(365)).length;
+  const act18=conv.filter(within(548)).length;
+
+  /* KPIs */
+  const IC={
+    userSelf:'<svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></svg>',
+    users:'<svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg>',
+    check:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2l4 -4"/></svg>',
+    leak:'<svg viewBox="0 0 24 24"><path d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></svg>',
+    calCheck:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="4" y1="11" x2="20" y2="11"/><path d="M9 16l2 2l4 -4"/></svg>',
+    clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>',
+    calX:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="4" y1="11" x2="20" y2="11"/><path d="M10 16l4 4M14 16l-4 4"/></svg>',
+    cal:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="4" y1="11" x2="20" y2="11"/></svg>',
+    pulse:'<svg viewBox="0 0 24 24"><path d="M3 12h4l3 8l4 -16l3 8h4"/></svg>',
+    reg:'<svg viewBox="0 0 24 24"><path d="M9 4h6a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>',
+  };
+  const tag=(txt,c)=>`<span class="ktag" style="background:${c}1f;color:${c}">${txt}</span>`;
+  const kpiData=[
+    {ic:IC.userSelf,col:V.cyan,lab:'Self-referrals', val:selfR.length.toLocaleString()+' <small>('+(selfR.length/T*100).toFixed(0)+'%)</small>', delta:'no referring provider on record'},
+    {ic:IC.users,col:V.blue,lab:'External referrals', val:ext.length.toLocaleString()+' <small>('+(ext.length/T*100).toFixed(0)+'%)</small>', delta:'of '+total.toLocaleString()+' total referrals'},
+    {ic:IC.check,col:V.teal,lab:'Conversion rate', val:(convRate*100).toFixed(1)+'<small>%</small>', delta:tag(conv.length.toLocaleString(),V.green)+' referrals converted'},
+    {ic:IC.leak,col:V.red,lab:'Leakage', val:(leakRate*100).toFixed(1)+'<small>%</small>', delta:tag(leaked.length.toLocaleString(),V.red)+' referrals lost'},
+    {ic:IC.calCheck,col:V.green,lab:'Appointments completed', val:completed.length.toLocaleString(), delta:tag(booked.length+' booked',V.amber)+tag(cancelled.length+' cancelled',V.red)},
+    {ic:IC.clock,col:V.amber,lab:'Avg referral \u2192 appointment', val:mean(ref2appt)+'<small> d</small>', delta:'ref\u2192reg '+tag(mean(r2reg)+' d',V.teal)+' reg\u2192appt '+tag(mean(reg2appt)+' d',V.blue)},
+  ];
+  document.getElementById('kpis').innerHTML=kpiData.map(k=>`
+    <div class="kpi">
+      <div class="kpi-head"><div class="kpi-ic" style="background:${k.col}1f;color:${k.col}">${k.ic}</div><div class="lab">${k.lab}</div></div>
+      <div class="val" style="color:${k.col}">${k.val}</div>
+      <div class="delta">${k.delta}</div>
+    </div>`).join('');
+
+  /* ---------- REFERRAL FLOW network ---------- */
+  function flowMatrix(mode){
+    const m=SOURCES.map(()=>PROVIDERS.map(()=>0));
+    R.forEach(r=>{
+      if(r.si==null) return;
+      if(mode==='converted'&&r.status!=='converted')return;
+      if(mode==='leaked'&&r.status!=='leaked')return;
+      m[r.si][r.pi]++;
+    });
+    return m;
+  }
+  const sblegend=document.getElementById('sblegend');
+  const netEl=document.getElementById('network');
+  const NCX=410, NCY=300, NR=190;
+  const NP=(deg,r)=>{const a=deg*Math.PI/180;return [NCX+r*Math.cos(a), NCY-r*Math.sin(a)];};
+  function drawNetwork(mode){
+    const m=flowMatrix(mode);
+    const srcTot=SOURCES.map((_,i)=>m[i].reduce((a,b)=>a+b,0));
+    const provTot=PROVIDERS.map((_,j)=>SOURCES.reduce((a,_,i)=>a+m[i][j],0));
+    const sOrder=[...SOURCES.keys()].sort((a,b)=>srcTot[b]-srcTot[a]);
+    const pOrder=[...PROVIDERS.keys()].sort((a,b)=>provTot[b]-provTot[a]);
+    const maxV=Math.max(1,...m.flat());
+    sblegend.innerHTML=`<span><i style="background:${EXTCOL}"></i>Referring provider (external)</span>`+pOrder.map(j=>`<span><i style="background:${PCOL[j]}"></i>Dr. ${PROVIDERS[j].name} \u00b7 ${PROVIDERS[j].sub}</span>`).join('');
+    const refA={}, neuA={};
+    sOrder.forEach((i,k)=>refA[i]=95+(k+0.5)/sOrder.length*170);
+    pOrder.forEach((j,k)=>neuA[j]=85-(k+0.5)/pOrder.length*170);
+    let s=`<svg viewBox="0 0 820 600" height="600" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
+    sOrder.forEach(i=>{ pOrder.forEach(j=>{ const v=m[i][j]; if(v<=0)return;
+      const [x1,y1]=NP(refA[i],NR),[x2,y2]=NP(neuA[j],NR);
+      const mx=(x1+x2)/2,my=(y1+y2)/2, cxp=mx+(NCX-mx)*0.55, cyp=my+(NCY-my)*0.55;
+      const w=(0.4+v/maxV*6).toFixed(2);
+      s+=`<path class="cedge" d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${cxp.toFixed(1)},${cyp.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="${PCOL[j]}" stroke-width="${w}" stroke-opacity="0.3" stroke-linecap="round" data-i="${i}" data-j="${j}" data-v="${v}"/>`;
+    });});
+    sOrder.forEach(i=>{ if(srcTot[i]<=0 && filtersActive())return; const [x,y]=NP(refA[i],NR), r=(3+Math.sqrt(srcTot[i])*0.32).toFixed(1);
+      s+=`<circle class="cnode" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${EXTCOL}" data-kind="s" data-idx="${i}"/>`;
+      const [lx,ly]=NP(refA[i],NR+11);
+      s+=`<text class="clab" x="${(lx-4).toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="end">${SOURCES[i].name}</text>`;
+    });
+    pOrder.forEach(j=>{ const [x,y]=NP(neuA[j],NR), r=(4+Math.sqrt(provTot[j])*0.32).toFixed(1);
+      s+=`<circle class="cnode" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${PCOL[j]}" data-kind="p" data-idx="${j}"/>`;
+      const [lx,ly]=NP(neuA[j],NR+11);
+      s+=`<text class="clab" x="${(lx+4).toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="start">Dr. ${PROVIDERS[j].name}</text>`;
+    });
+    s+=`</svg>`;
+    netEl.innerHTML=s;
+    const edges=[...netEl.querySelectorAll('.cedge')];
+    edges.forEach(e=>{
+      e.addEventListener('mouseenter',ev=>{e.setAttribute('stroke-opacity','0.95');
+        const i=+e.dataset.i,j=+e.dataset.j,v=+e.dataset.v;
+        showTip(`<div class="tt">${SOURCES[i].name} \u2192 Dr. ${PROVIDERS[j].name}</div><div class="tr"><span>Referrals</span><b>${v}</b></div><div class="tr"><span>of referrer's volume</span>${srcTot[i]?(v/srcTot[i]*100).toFixed(0):0}%</div>`,ev);});
+      e.addEventListener('mousemove',moveTip);
+      e.addEventListener('mouseleave',()=>{e.setAttribute('stroke-opacity','0.3');hideTip();});
+    });
+    netEl.querySelectorAll('.cnode').forEach(n=>{
+      n.addEventListener('mouseenter',ev=>{const kind=n.dataset.kind, idx=+n.dataset.idx;
+        edges.forEach(e=>{const on=kind==='s'?+e.dataset.i===idx:+e.dataset.j===idx;e.setAttribute('stroke-opacity',on?'0.9':'0.04');});
+        if(kind==='s') showTip(`<div class="tt">${SOURCES[idx].name}</div><div class="tr"><span>Referrals sent</span><b>${srcTot[idx]}</b></div>`,ev);
+        else showTip(`<div class="tt">Dr. ${PROVIDERS[idx].name} \u00b7 ${PROVIDERS[idx].sub}</div><div class="tr"><span>Referrals received</span><b>${provTot[idx]}</b></div>`,ev);
+      });
+      n.addEventListener('mousemove',moveTip);
+      n.addEventListener('mouseleave',()=>{edges.forEach(e=>e.setAttribute('stroke-opacity','0.3'));hideTip();});
+    });
+  }
+  drawNetwork(flowMode);
+  renderAll._drawNetwork=drawNetwork;
+
+  /* ---------- APPOINTMENT CARDS ---------- */
+  const apptTot=Math.max(1,completed.length+booked.length+cancelled.length);
+  document.getElementById('apptcards').innerHTML=`
+    <div class="acard">
+      <div class="acard-head"><div class="acard-ic" style="background:${V.green}1f;color:${V.green}">${IC.calCheck}</div><div class="al">Appointments completed</div></div>
+      <div class="av" style="color:${V.green}">${completed.length.toLocaleString()}</div>
+      <div class="ad">${tag((completed.length/apptTot*100).toFixed(0)+'% of scheduled',V.green)} attended first visit</div>
+    </div>
+    <div class="acard">
+      <div class="acard-head"><div class="acard-ic" style="background:${V.amber}1f;color:${V.amber}">${IC.cal}</div><div class="al">Currently booked</div></div>
+      <div class="av" style="color:${V.amber}">${booked.length.toLocaleString()}</div>
+      <div class="ad">upcoming first appointments on the books</div>
+    </div>
+    <div class="acard">
+      <div class="acard-head"><div class="acard-ic" style="background:${V.red}1f;color:${V.red}">${IC.calX}</div><div class="al">Cancelled / no-show</div></div>
+      <div class="av" style="color:${V.red}">${cancelled.length.toLocaleString()}</div>
+      <div class="ad">${tag((cancelled.length/apptTot*100).toFixed(0)+'% of scheduled',V.red)} first appointments</div>
+    </div>`;
+
+  /* ---------- FUNNEL ---------- */
+  const stages=[
+    {n:'Received',       c:total,               col:V.coral},
+    {n:'Registered',     c:registered.length,   col:V.amber},
+    {n:'Appt scheduled', c:scheduledAll.length, col:V.purple},
+    {n:'Appt completed', c:completed.length,    col:V.green},
+  ];
+  document.getElementById('funnelconv').textContent='end-to-end '+(completed.length/T*100).toFixed(0)+'%';
+  document.getElementById('funnel').innerHTML=stages.map((s,i)=>{
+    const pct=s.c/T, lost=i>0?stages[i-1].c-s.c:0;
+    return `<div class="fbar-wrap">
+      <div class="stagename">${s.n}</div>
+      <div class="fbar" style="width:${Math.max(12,pct*100)}%;background:${s.col}">${s.c.toLocaleString()}</div>
+      <div class="fmeta"><b>${(pct*100).toFixed(0)}%</b>${lost>0?`<span class="fleak">\u2212${lost.toLocaleString()}</span>`:''}</div>
+    </div>`;
+  }).join('');
+
+  /* ---------- LEAKAGE BY STAGE ---------- */
+  const stageCounts=LEAK_STAGES.map(s=>leaked.filter(r=>r.leakStage===s).length);
+  const stageMax=Math.max(1,...stageCounts);
+  const leakedT=Math.max(1,leaked.length);
+  document.getElementById('leaktot').textContent=leaked.length.toLocaleString()+' lost';
+  document.getElementById('leakrows').innerHTML=LEAK_STAGES.map((nm,i)=>`
+    <div class="leakrow">
+      <div class="nm">${nm}</div>
+      <div class="ltrack"><div class="lfill" style="width:${stageCounts[i]/stageMax*100}%"></div></div>
+      <div class="pc">${(stageCounts[i]/leakedT*100).toFixed(0)}%</div>
+    </div>`).join('');
+
+  /* ---------- SELF vs EXTERNAL ---------- */
+  function grp(g){const n=Math.max(1,g.length);const c=g.filter(r=>r.status==='converted').length;const l=g.filter(r=>r.status==='leaked').length;const sc=g.filter(r=>r.scheduled).length;const cm=g.filter(r=>r.apptStatus==='completed').length;return{n:g.length,conv:c/n*100,leak:l/n*100,comp:sc?cm/sc*100:0}}
+  const E=grp(ext), S=grp(selfR);
+  document.getElementById('bigsplit').innerHTML=`
+    <div class="bs">
+      <div class="bs-head"><div class="bs-ic" style="background:${V.pink}1f;color:${V.pink}">${IC.users}</div><div class="bl">External referral</div></div>
+      <div class="bv" style="color:${V.pink}">${E.n.toLocaleString()}</div>
+      <div class="bd">${tag((E.n/T*100).toFixed(0)+'%',V.pink)} of all ${total.toLocaleString()} referrals</div>
+    </div>
+    <div class="bs">
+      <div class="bs-head"><div class="bs-ic" style="background:${V.cyan}1f;color:${V.cyan}">${IC.userSelf}</div><div class="bl">Self-referral</div></div>
+      <div class="bv" style="color:${V.cyan}">${S.n.toLocaleString()}</div>
+      <div class="bd">${tag((S.n/T*100).toFixed(0)+'%',V.cyan)} of all ${total.toLocaleString()} referrals</div>
+    </div>`;
+  document.getElementById('splitbar').innerHTML=`
+    <div style="width:${E.n/T*100}%;background:${V.pink}">External ${(E.n/T*100).toFixed(0)}%</div>
+    <div style="width:${S.n/T*100}%;background:${V.cyan}">Self ${(S.n/T*100).toFixed(0)}%</div>`;
+  const cmpMetrics=[
+    {t:'Conversion rate', e:E.conv, s:S.conv, col:V.orange},
+    {t:'Leakage rate',    e:E.leak, s:S.leak, col:V.red},
+    {t:'First-appt completion (of scheduled)', e:E.comp, s:S.comp, col:V.teal},
+  ];
+  document.getElementById('cmprows').innerHTML=cmpMetrics.map(m=>`
+    <div class="cmprow">
+      <div class="ttl">${m.t}</div>
+      <div class="cmpbar"><div class="lg">External</div><div class="cmptrack"><span style="width:${m.e}%;background:${m.col}"></span></div><div class="vv">${m.e.toFixed(0)}%</div></div>
+      <div class="cmpbar"><div class="lg">Self</div><div class="cmptrack"><span style="width:${m.s}%;background:${m.col};opacity:.6"></span></div><div class="vv">${m.s.toFixed(0)}%</div></div>
+    </div>`).join('');
+
+  /* ---------- GEOGRAPHY ---------- */
+  document.getElementById('catchtot').textContent=total.toLocaleString()+' patients';
+  const zoneStats=ZONES.map((_,i)=>{const z=R.filter(r=>r.patientZone===i);return {n:z.length,self:z.filter(r=>r.isSelf).length};});
+  const zoneRef=ZONES.map((_,i)=>ext.filter(r=>r.referrerZone===i).length);
+
+  function basemap(){
+    let s='';
+    COUNTIES.forEach(c=>c.rings.forEach(rg=>{
+      const d='M'+rg.map(p=>{const [x,y]=proj(p[0],p[1]);return x.toFixed(1)+','+y.toFixed(1)}).join('L')+'Z';
+      s+=`<path d="${d}" fill="${V.land}" fill-opacity="0.5" stroke="${V.line}" stroke-width="1"/>`;
+    }));
+    COUNTIES.forEach(c=>{const xs=c.rings[0].map(p=>p[0]),ys=c.rings[0].map(p=>p[1]);
+      const [cx,cy]=proj(xs.reduce((a,b)=>a+b,0)/xs.length,ys.reduce((a,b)=>a+b,0)/ys.length);
+      s+=`<text x="${cx.toFixed(1)}" y="${cy.toFixed(1)}" text-anchor="middle" font-family="Inter" font-size="8.5" fill="${V.mlab}" letter-spacing="0.5">${c.name.toUpperCase()}</text>`;});
+    return s;
+  }
+  function clinicMarker(){
+    const [x,y]=proj(ZONE_LL[4][0],ZONE_LL[4][1]);
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="${V.bg}" stroke="${V.amber}" stroke-width="1.5"/><text x="${x.toFixed(1)}" y="${(y+0.5).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="7.5" fill="${V.amber}">&#9733;</text>`;
+  }
+  function bubbleLayer(counts,fill){
+    const maxC=Math.max(1,...counts);
+    const rOf=c=>4+Math.sqrt(c)*(30/Math.sqrt(maxC));
+    const order=[...counts.keys()].sort((a,b)=>counts[b]-counts[a]);
+    let s='';
+    order.forEach(i=>{
+      if(counts[i]<=0)return;
+      const [x,y]=proj(ZONE_LL[i][0],ZONE_LL[i][1]); const r=rOf(counts[i]);
+      s+=`<g class="bub" data-z="${i}" style="cursor:default">`;
+      s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${fill}" fill-opacity="0.42" stroke="${fill}" stroke-width="1.4"/>`;
+      if(r>=15) s+=`<text x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="middle" font-family="Inter" font-size="11" fill="${V.t1}" pointer-events="none">${counts[i].toLocaleString()}</text>`;
+      s+=`<text x="${x.toFixed(1)}" y="${(y+r+11).toFixed(1)}" text-anchor="middle" font-family="Inter" font-size="9" fill="${V.t2}" pointer-events="none">${AREA_LABEL[i]}</text>`;
+      s+=`</g>`;
+    });
+    return s;
+  }
+
+  const scatter=document.getElementById('scatter');
+  function drawPatientMap(mode){
+    const counts=zoneStats.map(z=> mode==='external'? z.n-z.self : mode==='self'? z.self : z.n);
+    const fill = mode==='external'? V.blue : mode==='self'? V.cyan : V.teal;
+    let s=`<svg viewBox="0 0 ${MW} ${MH}" height="${MH}" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
+    s+=basemap()+bubbleLayer(counts,fill)+clinicMarker()+`</svg>`;
+    scatter.innerHTML=s;
+    scatter.querySelectorAll('.bub').forEach(g=>{const i=+g.dataset.z;
+      g.addEventListener('mouseenter',ev=>showTip(`<div class="tt">${AREA_LABEL[i]} \u00b7 ${ZONES[i]}</div><div class="tr"><span>Patients</span><b>${zoneStats[i].n.toLocaleString()}</b></div><div class="tr"><span>External</span>${(zoneStats[i].n-zoneStats[i].self).toLocaleString()}</div><div class="tr"><span>Self-referred</span>${zoneStats[i].self.toLocaleString()}</div>`,ev));
+      g.addEventListener('mousemove',moveTip); g.addEventListener('mouseleave',hideTip);
+    });
+  }
+  drawPatientMap(scMode);
+  renderAll._drawPatientMap=drawPatientMap;
+
+  document.getElementById('reftot').textContent=ext.length.toLocaleString()+' external';
+  const refmap=document.getElementById('refmap');
+  (function drawReferrerMap(){
+    let s=`<svg viewBox="0 0 ${MW} ${MH}" height="${MH}" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
+    s+=basemap()+bubbleLayer(zoneRef,V.amber)+clinicMarker()+`</svg>`;
+    refmap.innerHTML=s;
+    refmap.querySelectorAll('.bub').forEach(g=>{const i=+g.dataset.z;
+      const refCount=SOURCES.filter(sc=>sc.z===i).length;
+      g.addEventListener('mouseenter',ev=>showTip(`<div class="tt">${AREA_LABEL[i]} \u00b7 ${ZONES[i]}</div><div class="tr"><span>Referrals from here</span><b>${zoneRef[i].toLocaleString()}</b></div><div class="tr"><span>Referring providers</span>${refCount}</div>`,ev));
+      g.addEventListener('mousemove',moveTip); g.addEventListener('mouseleave',hideTip);
+    });
+  })();
+
+  const concord=ext.length?ext.filter(r=>r.patientZone===r.referrerZone).length/ext.length*100:0;
+  document.getElementById('concordv').textContent=concord.toFixed(0)+'%';
+
+  /* ---------- TOP REFERRERS TABLE ---------- */
+  const srcStats=SOURCES.map((s,i)=>{
+    const rows=R.filter(r=>r.si===i);
+    return {name:s.name,tot:rows.length,
+      c:rows.filter(r=>r.status==='converted').length,
+      l:rows.filter(r=>r.status==='leaked').length,
+      p:rows.filter(r=>r.status==='pending').length};
+  }).filter(s=>!filtersActive()||s.tot>0).sort((a,b)=>b.tot-a.tot);
+  document.getElementById('srcbody').innerHTML=srcStats.map((s,i)=>{
+    const tt=Math.max(1,s.tot);
+    const cp=s.c/tt*100,lp=s.l/tt*100,pp=s.p/tt*100;
+    return `<tr>
+      <td><div class="src"><span class="rk">${String(i+1).padStart(2,'0')}</span>${s.name}</div></td>
+      <td class="r numm">${s.tot.toLocaleString()}</td>
+      <td><div class="stk"><span style="width:${cp}%;background:${V.green}"></span><span style="width:${lp}%;background:${V.red}"></span><span style="width:${pp}%;background:${V.t3}"></span></div></td>
+      <td class="r numm pos">${cp.toFixed(0)}%</td>
+      <td class="r numm neg">${lp.toFixed(0)}%</td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="5" style="color:var(--t3);font-family:var(--mono);font-size:11px;padding:14px 8px">No referrals match the current filters.</td></tr>`;
+
+  /* ---------- PROVIDER LOAD ---------- */
+  const provStats=PROVIDERS.map((p,j)=>({...p,j,tot:R.filter(r=>r.pi===j).length})).sort((a,b)=>b.tot-a.tot);
+  const provMax=Math.max(1,provStats[0].tot);
+  document.getElementById('loadlist').innerHTML=provStats.map(p=>`
+    <div class="loadrow">
+      <div class="top"><span class="pname">Dr. ${p.name} <span class="psub">${p.sub}</span></span></div>
+      <div class="pn">${p.tot.toLocaleString()}</div>
+      <div class="ltrk"><div class="lf" style="width:${p.tot/provMax*100}%"></div></div>
+    </div>`).join('');
+
+  /* ---------- CYCLE TIME ---------- */
+  const totDays=ref2appt;
+  document.getElementById('cyclechips').innerHTML=`
+    <div class="cchip">
+      <div class="cchip-head"><div class="cchip-ic" style="background:${V.teal}1f;color:${V.teal}">${IC.reg}</div><div class="cl">Referral \u2192 Registration</div></div>
+      <div class="cv" style="color:${V.teal}">${median(r2reg)}<small> d median</small></div>
+      <div class="cd">mean ${mean(r2reg)} d ${tag('IQR '+P(r2reg,.25)+'\u2013'+P(r2reg,.75),V.teal)}</div>
+    </div>
+    <div class="cchip">
+      <div class="cchip-head"><div class="cchip-ic" style="background:${V.amber}1f;color:${V.amber}">${IC.cal}</div><div class="cl">Registration \u2192 First appt</div></div>
+      <div class="cv" style="color:${V.amber}">${median(reg2appt)}<small> d median</small></div>
+      <div class="cd">mean ${mean(reg2appt)} d ${tag('IQR '+P(reg2appt,.25)+'\u2013'+P(reg2appt,.75),V.amber)}</div>
+    </div>
+    <div class="cchip">
+      <div class="cchip-head"><div class="cchip-ic" style="background:${V.blue}1f;color:${V.blue}">${IC.clock}</div><div class="cl">Referral \u2192 First appt (total)</div></div>
+      <div class="cv" style="color:${V.blue}">${median(totDays)}<small> d median</small></div>
+      <div class="cd">mean ${mean(totDays)} d ${tag('IQR '+P(totDays,.25)+'\u2013'+P(totDays,.75),V.blue)}</div>
+    </div>`;
+
+  const maxDay=60, xticks=[0,7,14,21,30,45,60], yticks=[0,25,50,75,100];
+  const Wc=1000,Hc=300,mL=42,mR=16,mT=18,mB=30, cpw=Wc-mL-mR, cph=Hc-mT-mB;
+  const cX=d=>mL+Math.min(d,maxDay)/maxDay*cpw;
+  const cY=p=>mT+(1-p/100)*cph;
+  function cdfArr(arr){const n=Math.max(1,arr.length);const out=[];for(let d=0;d<=maxDay;d++)out.push(arr.filter(v=>v<=d).length/n*100);return out;}
+  const cReg=cdfArr(r2reg), cAppt=cdfArr(totDays);
+  function curvePath(c,area){let p='M'+cX(0)+','+cY(c[0]).toFixed(1);for(let d=1;d<=maxDay;d++)p+=' L'+cX(d).toFixed(1)+','+cY(c[d]).toFixed(1);if(area)p+=' L'+cX(maxDay).toFixed(1)+','+cY(0)+' L'+cX(0)+','+cY(0)+' Z';return p;}
+  (function renderCDF(){
+    let s=`<svg viewBox="0 0 ${Wc} ${Hc}" height="${Hc}" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
+    yticks.forEach(p=>{s+=`<line class="cdfgrid" x1="${mL}" y1="${cY(p).toFixed(1)}" x2="${Wc-mR}" y2="${cY(p).toFixed(1)}"/><text class="cdfax" x="${mL-6}" y="${(cY(p)+3).toFixed(1)}" text-anchor="end">${p}%</text>`;});
+    xticks.forEach(d=>{s+=`<text class="cdfax" x="${cX(d).toFixed(1)}" y="${Hc-12}" text-anchor="middle">${d}d</text>`;});
+    s+=`<path d="${curvePath(cReg,true)}" fill="${V.teal}" fill-opacity="0.08"/>`;
+    s+=`<path d="${curvePath(cAppt,true)}" fill="${V.amber}" fill-opacity="0.08"/>`;
+    s+=`<path d="${curvePath(cReg,false)}" fill="none" stroke="${V.teal}" stroke-width="2"/>`;
+    s+=`<path d="${curvePath(cAppt,false)}" fill="none" stroke="${V.amber}" stroke-width="2"/>`;
+    [14,30].forEach(d=>{s+=`<line class="cdfref" x1="${cX(d).toFixed(1)}" y1="${mT}" x2="${cX(d).toFixed(1)}" y2="${(mT+cph).toFixed(1)}"/><text class="cdfax" x="${cX(d).toFixed(1)}" y="${mT-5}" text-anchor="middle" fill="${V.amber}">${Math.round(cAppt[d])}% seen by ${d}d</text>`;});
+    s+=`<line id="cdfcur" class="cdfcur" y1="${mT}" y2="${(mT+cph).toFixed(1)}"/>`;
+    s+=`<circle id="curReg" r="3.5" fill="${V.teal}" opacity="0"/><circle id="curAppt" r="3.5" fill="${V.amber}" opacity="0"/>`;
+    s+=`<rect id="cdfhit" x="${mL}" y="${mT}" width="${cpw}" height="${cph}" fill="transparent"/>`;
+    s+=`</svg>`;
+    const el=document.getElementById('cdf'); el.innerHTML=s;
+    const svg=el.querySelector('svg'),cur=el.querySelector('#cdfcur'),dR=el.querySelector('#curReg'),dA=el.querySelector('#curAppt'),hit=el.querySelector('#cdfhit');
+    hit.addEventListener('mousemove',ev=>{
+      const r=svg.getBoundingClientRect(); const vx=(ev.clientX-r.left)/r.width*Wc;
+      let day=Math.round((vx-mL)/cpw*maxDay); day=Math.max(0,Math.min(maxDay,day));
+      const x=cX(day);
+      cur.setAttribute('x1',x);cur.setAttribute('x2',x);cur.style.opacity=1;
+      dR.setAttribute('cx',x);dR.setAttribute('cy',cY(cReg[day]));dR.style.opacity=1;
+      dA.setAttribute('cx',x);dA.setAttribute('cy',cY(cAppt[day]));dA.style.opacity=1;
+      showTip(`<div class="tt">Within ${day} days of referral</div><div class="tr"><span>Registered</span><b>${Math.round(cReg[day])}%</b></div><div class="tr"><span>First appointment</span><b>${Math.round(cAppt[day])}%</b></div>`,ev);
+    });
+    hit.addEventListener('mouseleave',()=>{cur.style.opacity=0;dR.style.opacity=0;dA.style.opacity=0;hideTip();});
+  })();
+
+  const Wb=1000,Hb=168,bL=160,bR=58,bT=8,bB=30, bpw=Wb-bL-bR, rowH=(Hb-bT-bB)/3;
+  const bX=d=>bL+Math.min(d,maxDay)/maxDay*bpw;
+  const intervals=[
+    {n:'Referral \u2192 Registration', a:r2reg, col:V.teal},
+    {n:'Registration \u2192 First appt', a:reg2appt, col:V.amber},
+    {n:'Referral \u2192 First appt', a:totDays, col:V.blue},
+  ];
+  (function renderBoxes(){
+    let s=`<svg viewBox="0 0 ${Wb} ${Hb}" height="${Hb}" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
+    xticks.forEach(d=>{s+=`<line class="cdfgrid" x1="${bX(d).toFixed(1)}" y1="${bT}" x2="${bX(d).toFixed(1)}" y2="${(bT+rowH*3).toFixed(1)}"/><text class="cdfax" x="${bX(d).toFixed(1)}" y="${Hb-10}" text-anchor="middle">${d}d</text>`;});
+    intervals.forEach((iv,i)=>{
+      const yc=bT+rowH*i+rowH/2;
+      const p10=P(iv.a,.1),p25=P(iv.a,.25),md=median(iv.a),p75=P(iv.a,.75),p90=P(iv.a,.9),mn=mean(iv.a),bh=15;
+      s+=`<g class="boxrow">`;
+      s+=`<rect class="boxhit" x="${bL}" y="${(yc-rowH/2+2).toFixed(1)}" width="${bpw}" height="${(rowH-4).toFixed(1)}" fill="transparent" data-i="${i}"/>`;
+      s+=`<text class="cdfax" x="${bL-10}" y="${(yc+3).toFixed(1)}" text-anchor="end">${iv.n}</text>`;
+      s+=`<line x1="${bX(p10).toFixed(1)}" y1="${yc}" x2="${bX(p90).toFixed(1)}" y2="${yc}" stroke="${iv.col}" stroke-width="1.5" stroke-opacity="0.55"/>`;
+      s+=`<line x1="${bX(p10).toFixed(1)}" y1="${yc-5}" x2="${bX(p10).toFixed(1)}" y2="${yc+5}" stroke="${iv.col}" stroke-width="1.5" stroke-opacity="0.55"/>`;
+      s+=`<line x1="${bX(p90).toFixed(1)}" y1="${yc-5}" x2="${bX(p90).toFixed(1)}" y2="${yc+5}" stroke="${iv.col}" stroke-width="1.5" stroke-opacity="0.55"/>`;
+      s+=`<rect x="${bX(p25).toFixed(1)}" y="${(yc-bh/2).toFixed(1)}" width="${Math.max(1,bX(p75)-bX(p25)).toFixed(1)}" height="${bh}" rx="3" fill="${iv.col}" fill-opacity="0.28" stroke="${iv.col}" stroke-width="1.2"/>`;
+      s+=`<line x1="${bX(md).toFixed(1)}" y1="${(yc-bh/2).toFixed(1)}" x2="${bX(md).toFixed(1)}" y2="${(yc+bh/2).toFixed(1)}" stroke="${iv.col}" stroke-width="2.5"/>`;
+      s+=`<circle cx="${bX(mn).toFixed(1)}" cy="${yc}" r="2.6" fill="${V.t1}"/>`;
+      s+=`<text class="cdfax" x="${(bX(p90)+8).toFixed(1)}" y="${(yc+3).toFixed(1)}" fill="${V.t1}">${md}d</text>`;
+      s+=`</g>`;
+    });
+    s+=`</svg>`;
+    const el=document.getElementById('boxes'); el.innerHTML=s;
+    el.querySelectorAll('.boxhit').forEach(h=>{
+      const iv=intervals[+h.dataset.i],a=iv.a;
+      h.addEventListener('mouseenter',ev=>showTip(`<div class="tt">${iv.n}</div><div class="tr"><span>p10 / p90</span>${P(a,.1)} / ${P(a,.9)} d</div><div class="tr"><span>p25 / p75</span>${P(a,.25)} / ${P(a,.75)} d</div><div class="tr"><span>median</span><b>${median(a)} d</b></div><div class="tr"><span>mean</span>${mean(a)} d</div>`,ev));
+      h.addEventListener('mousemove',moveTip); h.addEventListener('mouseleave',hideTip);
+    });
+  })();
+
+  /* ---------- ACTIVE COHORTS ---------- */
+  const cohData=[
+    {win:'Last 12 months', c:act12, col:V.teal},
+    {win:'Last 18 months', c:act18, col:V.blue},
+  ];
+  const cohBase=Math.max(1,conv.length);
+  document.getElementById('cohorts').innerHTML=cohData.map(d=>`
+    <div class="coh">
+      <div class="coh-head"><div class="coh-ic" style="background:${d.col}1f;color:${d.col}">${IC.pulse}</div><div class="win">Active \u00b7 ${d.win}</div></div>
+      <div class="big" style="color:${d.col}">${d.c.toLocaleString()}</div>
+      <div class="rate">${tag((d.c/cohBase*100).toFixed(0)+'%',d.col)} of ${conv.length.toLocaleString()} converted patients</div>
+      <div class="meter"><span style="width:${d.c/cohBase*100}%;background:${d.col}"></span></div>
+      <div class="rate">${tag((d.c/T*100).toFixed(0)+'%',V.t3)} of all ${total.toLocaleString()} referrals</div>
+    </div>`).join('');
+
+  renderChips(R);
+  renderPanelCounts();
+  requestAnimationFrame(equalizeSrc);
+}
+
+/* make the referrers table scroll to match the right panel height (~7-8 rows) */
+function equalizeSrc(){
+  const sp=document.getElementById('src-panel'), lp=document.getElementById('load-panel'), rs=document.getElementById('rank-scroll');
+  if(!sp||!lp||!rs)return;
+  const ll=document.getElementById('loadlist'), colhdr=lp.querySelector('.colhdr');
+  const lcs=getComputedStyle(lp);
+  const rightNatural=parseFloat(lcs.paddingTop)+parseFloat(lcs.paddingBottom)+(colhdr?colhdr.offsetHeight:0)+(ll?ll.scrollHeight:0)+8;
+  const scs=getComputedStyle(sp);
+  const thead=sp.querySelector('thead');
+  const avail=rightNatural-parseFloat(scs.paddingTop)-parseFloat(scs.paddingBottom);
+  rs.style.maxHeight=Math.max(200,avail)+'px';
+}
+window.addEventListener('resize',()=>requestAnimationFrame(equalizeSrc));
+
+/* county geometry + projection (static) */
+const COUNTIES=[{"name":"Chatham","rings":[[[-78.9062,35.8679],[-78.9094,35.8429],[-78.9713,35.6756],[-78.9951,35.6102],[-78.9133,35.5831],[-78.9698,35.5214],[-79.119,35.6282],[-79.35,35.518],[-79.3514,35.5178],[-79.5559,35.5151],[-79.5425,35.8434],[-79.3188,35.8441],[-79.2495,35.8768],[-79.0167,35.8632],[-78.9062,35.8679]]]},{"name":"Franklin","rings":[[[-78.4965,36.1752],[-78.4224,36.1642],[-78.307,36.2662],[-78.1329,36.2464],[-78.0066,36.2027],[-78.1722,35.9563],[-78.2549,35.8177],[-78.3073,35.8966],[-78.5465,36.0218],[-78.5448,36.0807],[-78.4965,36.1752]]]},{"name":"Granville","rings":[[[-78.7584,36.5419],[-78.7341,36.5419],[-78.6701,36.542],[-78.6633,36.542],[-78.533,36.541],[-78.5297,36.541],[-78.471,36.5423],[-78.4708,36.5423],[-78.457,36.5425],[-78.5113,36.4308],[-78.5107,36.3097],[-78.5113,36.2675],[-78.5103,36.2408],[-78.5086,36.1832],[-78.4965,36.1752],[-78.5448,36.0807],[-78.5465,36.0218],[-78.749,36.0712],[-78.805,36.0919],[-78.802,36.2359],[-78.7948,36.5267],[-78.7963,36.5417],[-78.7654,36.5417],[-78.7584,36.5419]]]},{"name":"Lee","rings":[[[-79.1833,35.307],[-79.2736,35.3534],[-79.35,35.518],[-79.119,35.6282],[-78.9698,35.5214],[-79.1833,35.307]]]},{"name":"Orange","rings":[[[-79.2595,36.1373],[-79.257,36.2439],[-79.1537,36.2421],[-78.9508,36.2392],[-79.0167,35.8632],[-79.2495,35.8768],[-79.2595,36.1373]]]},{"name":"Wake","rings":[[[-78.2549,35.8177],[-78.4737,35.7016],[-78.5666,35.629],[-78.7086,35.5191],[-78.9133,35.5831],[-78.9951,35.6102],[-78.9713,35.6756],[-78.9094,35.8429],[-78.9062,35.8679],[-78.8318,35.8673],[-78.6979,36.0123],[-78.749,36.0712],[-78.5465,36.0218],[-78.3073,35.8966],[-78.2549,35.8177]]]},{"name":"Durham","rings":[[[-79.0167,35.8632],[-78.9508,36.2392],[-78.9493,36.2394],[-78.802,36.2359],[-78.805,36.0919],[-78.749,36.0712],[-78.6979,36.0123],[-78.8318,35.8673],[-78.9062,35.8679],[-79.0167,35.8632]]]},{"name":"Harnett","rings":[[[-78.6171,35.2457],[-78.8258,35.2593],[-78.9419,35.2192],[-79.0961,35.1922],[-79.2231,35.2681],[-79.1833,35.307],[-78.9698,35.5214],[-78.9133,35.5831],[-78.7086,35.5191],[-78.6606,35.4962],[-78.5303,35.3338],[-78.5413,35.3151],[-78.6171,35.2457]]]},{"name":"Johnston","rings":[[[-78.3911,35.2626],[-78.4914,35.2634],[-78.5413,35.3151],[-78.5303,35.3338],[-78.6606,35.4962],[-78.7086,35.5191],[-78.5666,35.629],[-78.4737,35.7016],[-78.2549,35.8177],[-78.1921,35.7304],[-78.1256,35.6031],[-78.0646,35.5854],[-78.1549,35.4176],[-78.1532,35.3514],[-78.3047,35.2861],[-78.3326,35.2794],[-78.3911,35.2626]]]}];
+const ZONE_LL=[
+  [-78.86,35.95],[-78.51,35.98],[-78.40,35.93],[-78.78,35.79],[-78.64,35.78],
+  [-78.40,35.79],[-78.84,35.69],[-78.62,35.55],[-78.46,35.66],
+];
+const AREA_LABEL=['Durham','Wake Forest','Rolesville','Cary','Raleigh','Knightdale','Apex','Fuquay-Varina','Garner'];
+const allLng=[], allLat=[];
+COUNTIES.forEach(c=>c.rings.forEach(r=>r.forEach(p=>{allLng.push(p[0]);allLat.push(p[1])})));
+const minLng=Math.min(...allLng),maxLng=Math.max(...allLng),minLat=Math.min(...allLat),maxLat=Math.max(...allLat);
+const midLat=(minLat+maxLat)/2, kx=Math.cos(midLat*Math.PI/180);
+const MW=560, MH=470, mpad=16;
+const wDeg=(maxLng-minLng)*kx, hDeg=(maxLat-minLat);
+const msc=Math.min((MW-2*mpad)/wDeg,(MH-2*mpad)/hDeg);
+const moffX=(MW-wDeg*msc)/2, moffY=(MH-hDeg*msc)/2;
+const proj=(lng,lat)=>[ (moffX+(lng-minLng)*kx*msc), (moffY+(maxLat-lat)*msc) ];
+
+/* ══════════════════ FILTER PANEL UI ══════════════════ */
+function bindPillGroup(id,mode){ /* mode: 'multi' Set on F[key], or 'single' */
+  const el=document.getElementById(id);
+  el.addEventListener('click',e=>{
+    const b=e.target.closest('.fp-pill'); if(!b)return;
+    if(id==='fp-status'){ toggleSetPill(F.status,b.dataset.v,b); }
+    else if(id==='fp-appt'){ toggleSetPill(F.appt,b.dataset.v,b); }
+    else if(id==='fp-source'){
+      F.source=b.dataset.v;
+      [...el.children].forEach(x=>x.classList.toggle('active',x===b));
+    }
+    renderAll();
+  });
+}
+function toggleSetPill(set,v,b){ if(set.has(v)){set.delete(v);b.classList.remove('active');} else {set.add(v);b.classList.add('active');} }
+bindPillGroup('fp-status'); bindPillGroup('fp-appt'); bindPillGroup('fp-source');
+
+function renderRefList(){
+  const q=(document.getElementById('fp-ref-search').value||'').toLowerCase();
+  const wrap=document.getElementById('fp-ref-list');
+  wrap.innerHTML=SOURCES.map((s,i)=>({s,i})).filter(o=>o.s.name.toLowerCase().includes(q)).map(o=>`
+    <label class="fp-check-row"><input type="checkbox" data-i="${o.i}" ${F.refs.has(o.i)?'checked':''} onchange="toggleRef(${o.i},this.checked)">${o.s.name}<span class="cnt" id="refcnt-${o.i}"></span></label>`).join('');
+  renderPanelCounts();
+}
+function toggleRef(i,on){ if(on)F.refs.add(i); else F.refs.delete(i); renderAll(); }
+
+function renderProvList(){
+  const V=['--teal','--blue','--purple','--amber','--green','--pink','--orange'];
+  document.getElementById('fp-prov-list').innerHTML=PROVIDERS.map((p,j)=>`
+    <button class="fp-prov-btn ${F.provs.has(j)?'active':''}" onclick="toggleProv(${j})">
+      <span class="fp-prov-dot" style="background:var(${V[j]})"></span>
+      <span class="fp-prov-name">Dr. ${p.name} · ${p.sub}</span>
+      <span class="fp-prov-count" id="provcnt-${j}"></span>
+    </button>`).join('');
+}
+function toggleProv(j){ if(F.provs.has(j))F.provs.delete(j); else F.provs.add(j); renderProvList(); renderAll(); }
+
+function renderZoneList(){
+  document.getElementById('fp-zone-list').innerHTML=ZONES.map((z,i)=>`
+    <label class="fp-check-row"><input type="checkbox" ${F.zones.has(i)?'checked':''} onchange="toggleZone(${i},this.checked)">${z}<span class="cnt" id="zonecnt-${i}"></span></label>`).join('');
+}
+function toggleZone(i,on){ if(on)F.zones.add(i); else F.zones.delete(i); renderAll(); }
+
+function setMonths(v){ F.months=+v; renderAll(); }
+
+function renderPanelCounts(){
+  const R=applyF();
+  SOURCES.forEach((_,i)=>{const el=document.getElementById('refcnt-'+i); if(el)el.textContent=R.filter(r=>r.si===i).length;});
+  PROVIDERS.forEach((_,j)=>{const el=document.getElementById('provcnt-'+j); if(el)el.textContent=R.filter(r=>r.pi===j).length;});
+  ZONES.forEach((_,i)=>{const el=document.getElementById('zonecnt-'+i); if(el)el.textContent=R.filter(r=>r.patientZone===i).length;});
+}
+
+function resetFilters(){
+  F.status.clear();F.appt.clear();F.refs.clear();F.provs.clear();F.zones.clear();F.source='all';F.months=24;
+  document.querySelectorAll('#fp-status .fp-pill,#fp-appt .fp-pill').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#fp-source .fp-pill').forEach(b=>b.classList.toggle('active',b.dataset.v==='all'));
+  document.getElementById('fp-months').value='24';
+  document.getElementById('fp-ref-search').value='';
+  renderRefList(); renderProvList(); renderZoneList();
+  renderAll();
+}
+
+/* applied filters chip bar */
+function renderChips(R){
+  const bar=document.getElementById('applied-filters-bar');
+  const chips=[];
+  const chip=(label,val,fn)=>chips.push(`<span class="filter-chip"><span class="filter-chip-label">${label}</span>${val}<button class="filter-chip-x" onclick="${fn}">✕</button></span>`);
+  F.status.forEach(v=>chip('Status',CAP(v),`removeSetChip('status','${v}')`));
+  if(F.source!=='all')chip('Source',CAP(F.source),`setSourceAll()`);
+  F.refs.forEach(i=>chip('Referrer',SOURCES[i].name,`toggleRef(${i},false);renderRefList()`));
+  F.provs.forEach(j=>chip('Provider','Dr. '+PROVIDERS[j].name,`toggleProv(${j})`));
+  F.zones.forEach(i=>chip('Area',ZONES[i],`toggleZone(${i},false);renderZoneList()`));
+  F.appt.forEach(v=>chip('Appt',CAP(v),`removeSetChip('appt','${v}')`));
+  if(F.months<24)chip('Date','Last '+F.months+'M',`setMonthsUI(24)`);
+  if(!chips.length){
+    bar.style.display='none';
+    bar.innerHTML='';
+  } else {
+    bar.style.display='flex';
+    bar.innerHTML=chips.join('')+`<span class="af-count">${R.length.toLocaleString()} / ${recs.length.toLocaleString()} referrals</span><button class="af-clear-btn" onclick="resetFilters()">✕ Clear all</button>`;
+  }
+}
+function removeSetChip(key,v){
+  F[key].delete(v);
+  const grp=key==='status'?'fp-status':'fp-appt';
+  document.querySelectorAll('#'+grp+' .fp-pill').forEach(b=>{if(b.dataset.v===v)b.classList.remove('active')});
+  renderAll();
+}
+function setSourceAll(){ F.source='all'; document.querySelectorAll('#fp-source .fp-pill').forEach(b=>b.classList.toggle('active',b.dataset.v==='all')); renderAll(); }
+function setMonthsUI(v){ F.months=v; document.getElementById('fp-months').value=String(v); renderAll(); }
+
+/* segmented controls (persist mode across re-renders) */
+document.getElementById('flowseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');flowMode=b.dataset.m;renderAll._drawNetwork(flowMode)});
+document.getElementById('scseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');scMode=b.dataset.m;renderAll._drawPatientMap(scMode)});
+
+/* ══════════════════ TOPBAR BEHAVIOUR ══════════════════ */
+function setTopbarH(){
+  const h=document.getElementById('topbar').offsetHeight;
+  document.documentElement.style.setProperty('--topbar-h',h+'px');
+  document.getElementById('main-scroll').style.paddingTop=(h+8)+'px';
+}
+window.addEventListener('resize',setTopbarH);
+
+/* theme: moon <-> sun icon toggle */
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  setTheme(cur==='dark'?'light':'dark');
+}
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('ico-moon').style.display=t==='dark'?'block':'none';
+  document.getElementById('ico-sun').style.display=t==='light'?'block':'none';
+  try{localStorage.setItem('ref-theme',t)}catch(e){}
+  renderAll();
+}
+
+/* font size */
+function setFs(v,btn){
+  document.documentElement.setAttribute('data-fs',v);
+  document.querySelectorAll('.fs-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  try{localStorage.setItem('ref-fs',v)}catch(e){}
+  setTimeout(setTopbarH,50);
+}
+
+/* collapse */
+function toggleSection(id,btn){
+  const sec=document.getElementById(id);
+  const body=document.getElementById('sec-body-'+id);
+  const collapsed=body.classList.toggle('collapsed');
+  sec.classList.toggle('sec-collapsed',collapsed);
+  btn.classList.toggle('collapsed',collapsed);
+  updateCollapseLbl();
+}
+function toggleCollapseAll(){
+  const bodies=[...document.querySelectorAll('.sec-body')];
+  const anyOpen=bodies.some(b=>!b.classList.contains('collapsed'));
+  bodies.forEach(b=>{
+    const id=b.id.replace('sec-body-','');
+    const sec=document.getElementById(id);
+    const btn=sec.querySelector('.sec-collapse-btn');
+    b.classList.toggle('collapsed',anyOpen);
+    sec.classList.toggle('sec-collapsed',anyOpen);
+    btn.classList.toggle('collapsed',anyOpen);
+  });
+  updateCollapseLbl();
+}
+function updateCollapseLbl(){
+  const anyOpen=[...document.querySelectorAll('.sec-body')].some(b=>!b.classList.contains('collapsed'));
+  document.getElementById('collapse-toggle-lbl').textContent=anyOpen?'Collapse All':'Expand All';
+}
+
+/* filter panel toggle */
+let panelOpen=false;
+function toggleFilters(){
+  panelOpen=!panelOpen;
+  document.getElementById('filter-panel').classList.toggle('closed',!panelOpen);
+  document.getElementById('main-scroll').classList.toggle('panel-open',panelOpen);
+  document.getElementById('filter-toggle').classList.toggle('hide',panelOpen);
+}
+/* collapse individual filter section */
+function toggleFp(label){
+  label.classList.toggle('collapsed');
+  const body=label.nextElementSibling;
+  if(body)body.classList.toggle('collapsed');
+  updateFpAllLbl();
+}
+function toggleFpAll(){
+  const labels=[...document.querySelectorAll('#filter-panel .fp-section-label[onclick]')];
+  const anyOpen=labels.some(l=>{const b=l.nextElementSibling;return b&&!b.classList.contains('collapsed');});
+  labels.forEach(l=>{
+    const b=l.nextElementSibling;
+    if(b)b.classList.toggle('collapsed',anyOpen);
+    l.classList.toggle('collapsed',anyOpen);
+  });
+  updateFpAllLbl();
+}
+function updateFpAllLbl(){
+  const labels=[...document.querySelectorAll('#filter-panel .fp-section-label[onclick]')];
+  const anyOpen=labels.some(l=>{const b=l.nextElementSibling;return b&&!b.classList.contains('collapsed');});
+  document.getElementById('fp-collapse-all-lbl').textContent=anyOpen?'Collapse all':'Expand all';
+}
+
+/* nav: scroll + scrollspy */
+function scrollToSec(id){
+  const el=document.getElementById(id);
+  const y=el.getBoundingClientRect().top+window.scrollY-(document.getElementById("topbar").offsetHeight+58);
+  window.scrollTo({top:y,behavior:'smooth'});
+  setActiveNav(id);
+}
+function setActiveNav(id){
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const b=document.getElementById('bnav-'+id); if(b)b.classList.add('active');
+}
+const SEC_IDS=['overview','flow','conv','mix','geo','sources','cycle','active'];
+window.addEventListener('scroll',()=>{
+  const off=document.getElementById('topbar').offsetHeight+120;
+  let cur=SEC_IDS[0];
+  SEC_IDS.forEach(id=>{const el=document.getElementById(id);if(el.getBoundingClientRect().top<=off)cur=id;});
+  setActiveNav(cur);
+},{passive:true});
+
+/* dropdowns */
+function closeDDs(){document.querySelectorAll('.hdr-dd').forEach(d=>d.classList.remove('show'))}
+function toggleSvDropdown(e){e.stopPropagation();const d=document.getElementById('sv-dd');const was=d.classList.contains('show');closeDDs();if(!was){renderSvList();d.classList.add('show');}}
+function toggleExportDropdown(e){e.stopPropagation();const d=document.getElementById('export-dd');const was=d.classList.contains('show');closeDDs();if(!was)d.classList.add('show');}
+document.addEventListener('click',e=>{if(!e.target.closest('.hdr-dd')&&!e.target.closest('#hdr-sv-wrap')&&!e.target.closest('#hdr-export-wrap'))closeDDs()});
+
+/* saved views */
+function getViews(){try{return JSON.parse(localStorage.getItem('ref-views')||'[]')}catch(e){return[]}}
+function setViews(v){try{localStorage.setItem('ref-views',JSON.stringify(v))}catch(e){}}
+function openSaveViewModal(){document.getElementById('sv-modal').classList.add('show');document.getElementById('sv-name').value='';setTimeout(()=>document.getElementById('sv-name').focus(),50)}
+function closeSaveViewModal(){document.getElementById('sv-modal').classList.remove('show')}
+document.getElementById('sv-modal').addEventListener('click',e=>{if(e.target.id==='sv-modal')closeSaveViewModal()});
+function saveView(){
+  const name=document.getElementById('sv-name').value.trim()||'View '+new Date().toLocaleTimeString();
+  const v=getViews();
+  v.unshift({name,ts:Date.now(),f:{status:[...F.status],source:F.source,refs:[...F.refs],provs:[...F.provs],zones:[...F.zones],appt:[...F.appt],months:F.months}});
+  setViews(v); closeSaveViewModal(); toast('View saved: '+name);
+}
+function renderSvList(){
+  const v=getViews();
+  document.getElementById('sv-count').textContent=v.length;
+  document.getElementById('sv-list').innerHTML=v.length?v.map((x,i)=>`
+    <div class="sv-card" onclick="applyView(${i})">
+      <div style="flex:1"><div class="sv-nm">${x.name}</div><div class="sv-meta">${new Date(x.ts).toLocaleDateString()} ${new Date(x.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>
+      <button class="sv-del" onclick="event.stopPropagation();delView(${i})" title="Delete"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>`).join(''):`<div style="padding:20px 12px;text-align:center;font-size:11px;color:var(--t3)">No saved views yet.<br>Save your current filter configuration<br>using the Save View button.</div>`;
+}
+function applyView(i){
+  const x=getViews()[i]; if(!x)return;
+  F.status=new Set(x.f.status);F.appt=new Set(x.f.appt);F.refs=new Set(x.f.refs);F.provs=new Set(x.f.provs);F.zones=new Set(x.f.zones);F.source=x.f.source;F.months=x.f.months;
+  document.querySelectorAll('#fp-status .fp-pill').forEach(b=>b.classList.toggle('active',F.status.has(b.dataset.v)));
+  document.querySelectorAll('#fp-appt .fp-pill').forEach(b=>b.classList.toggle('active',F.appt.has(b.dataset.v)));
+  document.querySelectorAll('#fp-source .fp-pill').forEach(b=>b.classList.toggle('active',b.dataset.v===F.source));
+  document.getElementById('fp-months').value=String(F.months);
+  renderRefList();renderProvList();renderZoneList();
+  closeDDs(); renderAll(); toast('View applied: '+x.name);
+}
+function delView(i){const v=getViews();v.splice(i,1);setViews(v);renderSvList();}
+
+/* export */
+function exportCSV(){
+  closeDDs();
+  const R=applyF();
+  const esc=s=>s==null?'':('"'+String(s).replace(/"/g,'""')+'"');
+  const d=x=>x?x.toISOString().slice(0,10):'';
+  const rows=[['referral_type','referring_provider','referrer_area','referred_to_provider','specialty','patient_area','referral_date','registration_date','first_appt_date','status','leak_stage','appt_status','last_visit'].join(',')];
+  R.forEach(r=>rows.push([
+    r.isSelf?'self':'external', esc(r.si!=null?SOURCES[r.si].name:''), esc(r.referrerZone!=null?ZONES[r.referrerZone]:''),
+    esc('Dr. '+PROVIDERS[r.pi].name), esc(PROVIDERS[r.pi].sub), esc(ZONES[r.patientZone]),
+    d(r.refDate), d(r.regDate), d(r.apptDate), r.status, esc(r.leakStage||''), r.apptStatus||'', d(r.lastVisit)
+  ].join(',')));
+  const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='referral_analytics_filtered.csv';a.click();URL.revokeObjectURL(a.href);
+  toast('Exported '+R.length.toLocaleString()+' records to CSV');
+}
+function exportPDF(){ closeDDs(); toast('Opening print dialog — choose "Save as PDF"'); setTimeout(()=>window.print(),400); }
+
+/* ---------- init ---------- */
+(function init(){
+  try{
+    const t=localStorage.getItem('ref-theme'); if(t==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('ico-moon').style.display='none';document.getElementById('ico-sun').style.display='block';}
+    const fs=localStorage.getItem('ref-fs'); if(fs&&fs!=='md'){document.documentElement.setAttribute('data-fs',fs);document.querySelectorAll('.fs-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===({sm:'s',md:'m',lg:'l',xl:'xl'})[fs]));}
+  }catch(e){}
+  renderRefList(); renderProvList(); renderZoneList();
+  setTopbarH();
+  renderAll();
+  setTimeout(setTopbarH,300);
+})();
+</script>
+
+
+</body></html>
