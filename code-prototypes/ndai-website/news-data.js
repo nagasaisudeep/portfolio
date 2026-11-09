@@ -1,0 +1,9 @@
+const NEWS=[
+['news0.jpg','NeuroDiscovery AI Launches NeuroTerminal to Transform Life Sciences Workflows in Neurology','The new Neurology-First Platform to Accelerate Clinical Trial Recruitment, Real-World Evidence, and Therapy Adoption','May 19, 2026'],
+['news1.jpg','NDAI joins the global NVIDIA Inception program — scaling GPU compute for NeuroLLM™ and NeuroVision training','“We finally see our own patient population the way research teams see it — validated, longitudinal, and ready to act on.”','June 19, 2026'],
+['news2.jpg','Selected as one of 40 promising agentic AI startups, leveraging frontier models from Anthropic and AWS infrastructure','Selected as one of 40 promising agentic AI startups, leveraging frontier models from Anthropic and AWS infrastructure.','June 22, 2026'],
+['news3.jpg','This startup is using AI to help diagnose and treat neurological conditions','Named one of India’s top 30 promising startups, NeuroDiscovery AI is backed by 97%+ provider investors.','November 06, 2025'],
+['news4.jpg','Artificial Intelligence in Clinical Neurology: Opportunities, Limitations, and the Path Forward','Practical Neurology reviews how deep learning tools like NeuroVision streamline stroke triage and measure brain volume.','March 10, 2026'],
+['news5.jpg','Why Neurology Clinical Trials Need Purpose-Built AI','Generic AI plateaus at ~70% accuracy when reading complex neuroimaging and unstructured notes.','May 20, 2026'],
+['news6.jpg','From Years to Weeks: How Purpose-Built AI Is Rescuing Neurology Clinical Trials','CEO Vamsi Chandra Kasivajjala details how multi-agent AI ecosystems eliminate hallucinations.','June 10, 2026']];
+const ncard=([img,t,d],i)=>`<a class="ncard reveal" href="news-detail.html?i=${i}"><div class="im">${img?`<img src="img/${img}" alt="">`:'Placeholder'}</div><div class="b"><h4>${t}</h4><p>${d}</p><span class="more">Read more</span></div></a>`;

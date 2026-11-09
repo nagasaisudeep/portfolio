@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NeuroDiscovery AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gut:clamp(46px,5.3vw,76px)}
+
+:root{--bg:#101720;--bg2:#040a11;--card:#0d131b;--blue:#3c8dad;--orange:#f5a962;--muted:#aaabb1;--dim:#6f717d;--line:rgba(111,113,125,.2)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:#fff;font-family:'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:calc(1440px + 2*var(--gut));margin:0 auto;padding:0 var(--gut)}
+/* header */
+header{position:fixed;inset:0 0 auto;z-index:50;height:58px;background:rgba(16,23,32,.7);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:.3s}
+header.scrolled{border-color:var(--line);background:rgba(16,23,32,.92)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:100%}
+.logo{display:flex;align-items:center;gap:12px}.logo{gap:8px}.logo img:first-child{height:24px}.logo img:last-child{height:19px}@media (max-width:600px){header .logo img:first-child{height:20px}header .logo img:last-child{height:16px}}
+nav{display:flex;align-items:center;gap:8px}
+.dd{position:relative}
+.dd>button{padding:13px 18px;font-weight:600;font-size:16px;border-radius:6px;display:flex;gap:6px;align-items:center}
+.dd>button:after{content:'';width:6px;height:6px;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(45deg) translateY(-2px);transition:.2s}
+.dd:hover>button:after,.dd.open>button:after{transform:rotate(-135deg)}
+.menu{position:absolute;top:47px;right:-40px;background:#222831;border-radius:0 0 6px 6px;padding:32px 36px;display:flex;gap:56px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:.25s;box-shadow:0 30px 60px rgba(0,0,0,.4)}
+.dd:hover .menu,.dd.open .menu{opacity:1;visibility:visible;transform:none}
+.menu h6{font-weight:400;color:var(--dim);text-transform:uppercase;font-size:14px;margin-bottom:16px;letter-spacing:.04em}
+.menu a{display:flex;align-items:center;gap:14px;white-space:nowrap;padding:8px 0;font-weight:500;color:#fff}
+.menu a i{width:36px;height:36px;border-radius:4px;background:rgba(111,113,125,.15);display:grid;place-items:center;transition:.2s}
+.menu a:hover i{background:var(--blue)}
+.cta{background:var(--blue);display:inline-flex;align-items:center;gap:8px;padding:10px 10px 10px 20px;border-radius:3px;font-weight:600;font-size:16px;transition:.2s;white-space:nowrap}
+.cta:hover{background:#4aa3c6}
+.cta b{width:24px;height:24px;border-radius:50%;background:#1e2432;display:grid;place-items:center;transition:.25s}
+.cta:hover b{transform:rotate(-45deg)}
+.burger{display:none;width:40px;height:40px}
+/* hero */
+.hero{position:relative;height:800px;overflow:hidden;background:#000}
+.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero .poster{z-index:0;transform:scale(.82);transform-origin:right center;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-composite:intersect}.hero{background:#000}.hero video{z-index:1;opacity:0;transition:opacity 1.2s;filter:brightness(.45)}
+.hero video.on{opacity:1}
+.hero:after{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,.4) 55%,transparent 100%),linear-gradient(0deg,var(--bg) 0,transparent 25%)}
+.hero .wrap{position:relative;z-index:3;padding-top:219px}
+.hero h1{font-weight:600;font-size:clamp(34px,3.5vw,58px);line-height:1.08;letter-spacing:-.01em;max-width:min(640px,56%)}
+.hero p{color:var(--muted);font-weight:500;line-height:22px;max-width:754px;margin:24px 0 50px}
+.hero form{display:flex;gap:6px;flex-wrap:wrap}
+.hero input{width:320px;height:44px;background:transparent;border:1px solid rgba(111,113,125,.5);border-radius:6px;padding:0 20px;color:#fff;font:500 18px 'Instrument Sans'}
+.hero input:focus{outline:none;border-color:var(--blue)}
+.vidtoggle{position:absolute;z-index:4;right:24px;bottom:40px;border:1px solid rgba(255,255,255,.3);border-radius:30px;padding:8px 16px;font-size:14px}
+/* sections */
+section{padding:100px 0}
+.h2{font-weight:400;font-size:56px;line-height:56px}
+.sub{color:var(--muted);margin-top:18px;line-height:22px}
+.reveal{opacity:0;transform:translateY(30px);transition:1s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+/* what we make possible */
+.wwmp{display:flex;margin-top:56px;border-radius:6px;overflow:hidden}
+.tabs{width:38%;min-width:300px;flex-shrink:0;display:flex;flex-direction:column}
+.tab{display:flex;align-items:center;gap:20px;padding:16px 24px;background:var(--card);border-bottom:1px solid var(--line);border-left:4px solid transparent;text-align:left;transition:.25s;position:relative;flex:1}
+.tab:hover{background:#121a24}
+.tab.active{background:rgba(60,141,173,.5);border-left-color:var(--blue)}
+.tab .ic{width:36px;height:36px;flex-shrink:0;border:1px solid var(--blue);border-radius:6px;display:grid;place-items:center}
+.tab.active .ic{border-color:#fff;background:rgba(60,141,173,.1)}
+.tab .ic img{width:15px;display:block}
+.tab .ic.fr{border:0;background:none}.tab .ic.fr img{width:36px;height:36px}
+.tab.active .ic.fr{outline:1px solid #fff;border-radius:6px}
+.tab h4{font:500 22px Geist;line-height:1.15;letter-spacing:-.005em}
+.tab div span{display:inline-block;margin-top:8px;font:400 13px Geist;color:var(--dim);border:1px solid #222831;padding:3px 10px;border-radius:3px}
+.tab.active div span{color:#fff;border-color:#fff}
+.tab .arr{margin-left:auto;opacity:0;transition:.25s}.tab.active .arr{opacity:1}
+.panel{flex:1;display:flex;flex-direction:column;min-height:654px;background:var(--bg2)}
+.panel .img{height:323px;overflow:hidden;position:relative}
+.panel .img img{width:100%;height:100%;object-fit:cover;transition:transform 6s}
+.panel:hover .img img{transform:scale(1.06)}
+.panel .body{padding:36px 36px 36px 40px;display:flex;flex-direction:column;gap:26px;flex:1;justify-content:center}
+.panel .tag{display:flex;align-items:center;gap:16px;color:var(--blue);font-size:18px}
+.panel .tag i{width:36px;height:36px;border:1px solid var(--blue);border-radius:8px;display:grid;place-items:center}
+.panel h3{font-weight:500;font-size:36px}
+.panel p{color:var(--muted);font-size:18px;line-height:24px}
+.panel .fade{animation:fade .5s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border:2px solid #565672;border-radius:50px;font-weight:500;transition:.2s;align-self:flex-start}
+.pill:hover{background:#fff;color:#101720;border-color:#fff}
+/* trusted */
+.trusted{background:var(--bg2)}
+.tgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6%;margin-top:56px}
+.tgrid h5{font-weight:600;font-size:24px;margin-bottom:30px}
+.logos{display:grid;grid-template-columns:repeat(12,1fr);gap:6px}
+.logos div{background:var(--card);border-radius:8px;display:grid;place-items:center;padding:16px;min-height:100px;transition:.25s}
+.logos div:hover{background:#16202c;transform:translateY(-3px)}
+.logos img{max-width:100%;max-height:60px;object-fit:contain}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.stat{padding:24px 0;border-bottom:1px solid var(--line)}
+.stat:nth-child(even){padding-left:24px}
+.stat b{display:block;font-weight:500;font-size:36px;color:var(--orange);margin-bottom:14px}
+.stat small{font-weight:600;font-size:14px;text-transform:uppercase;color:var(--muted)}
+/* testimonials */
+.stories{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:44px}
+.story{background:#091019;border-radius:6px;padding:40px;display:flex;flex-direction:column;min-height:401px}
+.story h3{font-weight:500;font-size:36px;line-height:40px}
+.story p{color:#d9d9d9;font-size:18px;line-height:24px;margin:30px 0}
+.story .pill{margin-top:auto}
+.thumb{position:relative;border-radius:6px;overflow:hidden;min-height:401px;cursor:pointer}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.thumb:hover img{transform:scale(1.04)}
+.play{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);display:grid;place-items:center;transition:.25s;border:1px solid rgba(255,255,255,.4)}
+.play:before{content:'';border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px}
+.thumb:hover .play{transform:scale(1.12);background:var(--blue)}
+/* news */
+.news{display:grid;grid-template-columns:minmax(0,1.63fr) minmax(0,1.38fr) minmax(0,1fr);gap:16px;margin-top:40px}
+.card{background:var(--card);border-radius:10px;padding:30px;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:.3s}
+.card:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.35)}
+.card .bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.card>*:not(.bgimg){position:relative;z-index:1}
+.chip{display:inline-block;align-self:flex-start;border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:3px 13px;font-size:13px;color:#ddd;margin-bottom:24px}
+.card h4{font-weight:500;font-size:24px;line-height:28px;margin-bottom:14px}
+.card p{color:var(--muted);line-height:22px;margin-bottom:24px}
+.card .row{display:flex;justify-content:space-between;align-items:center}
+.link{display:inline-flex;align-items:center;gap:8px;font-weight:500;margin-top:auto}
+.link:after{content:'→';transition:.2s}.link:hover:after{transform:translateX(4px)}
+.card .logo-s{height:24px;object-fit:contain}
+.n1{grid-row:span 2;padding:0}.n1 .top{height:239px;overflow:hidden}.n1 .top img{width:100%;height:100%;object-fit:cover}.n1 .inner{padding:30px;display:flex;flex-direction:column;flex:1}
+.n4{grid-row:span 2}
+.bottomnews{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+/* cta */
+.final{position:relative;padding:100px 0;overflow:hidden}
+.final img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.final .wrap{position:relative}
+.final h2{font-weight:400;font-size:56px;line-height:58px;max-width:1124px}
+.final p{color:var(--muted);max-width:838px;margin:24px 0 32px;line-height:22px}
+footer{background:var(--bg2);padding:120px 0 50px}
+.fgrid{display:grid;grid-template-columns:1fr 215px 215px 215px 257px;gap:0}
+footer h6{font-weight:400;color:var(--dim);text-transform:uppercase;font-size:14px;margin-bottom:22px}
+footer ul{list-style:none;line-height:32px;color:#d9d9d9}
+footer ul a:hover{color:var(--blue)}
+footer .about p{color:var(--muted);max-width:407px;margin-top:24px;line-height:22px}
+.addr b{display:block;font-weight:600;margin-bottom:8px}.addr p{color:var(--muted);font-size:14px;line-height:20px}.addr a{color:var(--blue);font-size:14px}
+.addr hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.fbot{display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:40px;padding-top:40px;color:var(--dim);font-size:14px}
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:none;place-items:center;padding:24px}
+.modal.on{display:grid;animation:fade .3s}
+.modal .box{width:min(1100px,100%);position:relative}
+.modal video{width:100%;border-radius:8px;display:block;background:#000}
+.modal .x{position:absolute;top:-48px;right:0;font-size:32px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translate(-50%,100px);background:var(--blue);padding:14px 24px;border-radius:6px;z-index:200;transition:.4s;font-weight:500}
+.toast.on{transform:translate(-50%,0)}
+/* subpages */
+.page{display:none}.page.on{display:block}
+.phero{padding:180px 0 80px;background:radial-gradient(800px 400px at 80% 0,rgba(60,141,173,.25),transparent),var(--bg)}
+.crumb{color:var(--dim);margin-bottom:24px;font-size:14px}.crumb a:hover{color:#fff}
+.phero h1{font-weight:600;font-size:64px;line-height:68px;max-width:900px}
+.phero p{color:var(--muted);font-size:20px;line-height:28px;max-width:760px;margin:24px 0 36px}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat div{background:var(--card);padding:36px;border-radius:10px;border-top:3px solid var(--blue)}
+.feat h4{font-size:22px;font-weight:500;margin-bottom:12px}.feat p{color:var(--muted);line-height:22px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.split img{width:100%;border-radius:10px}
+.split ul{list-style:none;margin-top:24px}.split li{padding:14px 0;border-bottom:1px solid var(--line);color:#d9d9d9}.split li:before{content:'✓';color:var(--orange);margin-right:12px}
+.cform{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:760px}
+.cform input,.cform select,.cform textarea{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px;color:#fff;font:16px 'Instrument Sans';width:100%}
+.cform textarea,.cform .full{grid-column:1/-1}
+.cform :focus{outline:none;border-color:var(--blue)}
+@media (max-width:1099px){.tgrid{grid-template-columns:1fr;gap:60px}.news{grid-template-columns:1fr 1fr}.n4{grid-row:auto}.fgrid{grid-template-columns:1fr 1fr 1fr}.fgrid .about{grid-column:1/-1;margin-bottom:40px}.addr{grid-column:1/-1;margin-top:40px}}
+@media (max-width:960px){nav{display:none;position:absolute;top:58px;left:0;right:0;background:#101720;flex-direction:column;align-items:stretch;padding:16px}nav.open{display:flex}.menu{position:static;display:none;opacity:1;visibility:visible;transform:none;flex-direction:column;gap:20px;padding:20px}.dd.open .menu{display:flex}.dd:hover .menu{display:none}.dd.open:hover .menu{display:flex}.burger{display:block}
+.hero h1{font-size:34px;line-height:38px;max-width:100%}.hero .wrap{padding-top:150px}.hero{height:auto;min-height:680px;padding-bottom:60px}.hero input{width:100%}
+.h2,.final h2{font-size:38px;line-height:42px}.wwmp{flex-direction:column}.tabs{width:100%}.panel{min-height:0}.stories,.news,.bottomnews,.split,.feat,.cform{grid-template-columns:1fr}.thumb{min-height:240px}.story{min-height:0;padding:28px}.story h3{font-size:26px;line-height:32px}.logos div{grid-column:span 6!important}.stats{grid-template-columns:1fr}.stat:nth-child(even){padding-left:0}.fgrid{grid-template-columns:1fr 1fr}.fbot{flex-direction:column;gap:12px}.phero h1{font-size:40px;line-height:44px}section{padding:70px 0}}
+@media (max-width:960px){.tab{flex:none;padding:14px 18px}.tab h4{font-size:19px}}
+@media (min-width:901px) and (max-width:1099px){.menu{position:fixed;top:52px;left:var(--gut);right:var(--gut);justify-content:center;gap:40px}}
+@media (max-width:600px){footer .logo img:last-child{height:auto!important;width:calc(100% - 50px);max-width:240px}.h2,.final h2,.ctaband h2,.impact h2{font-size:30px;line-height:34px;overflow-wrap:break-word}}
+header .cta{padding:7px 8px 7px 16px;font-size:15px}.dd>button{padding:10px 16px}
+@media (min-width:901px) and (max-width:1099px){
+ .hero{height:41.667vw;min-height:500px}
+ .hero .poster{transform:none;-webkit-mask-image:none;mask-image:none;object-position:center top}
+ .hero:after{background:linear-gradient(0deg,var(--bg) 0,transparent 12%)}
+ .hero .wrap{padding-top:11.4vw}
+ .hero h1{font-size:3.75vw;line-height:3.96vw;max-width:39vw}
+ .hero p{font-size:max(13px,.833vw);line-height:max(18px,1.146vw);max-width:39.3vw;margin:1.25vw 0 2.6vw}
+ .hero form{gap:.31vw}
+ .hero input{width:16.67vw;height:max(36px,2.29vw);font-size:max(13px,.94vw);padding:0 1.04vw}
+ .hero form .cta{font-size:max(13px,.83vw);padding:max(7px,.52vw) max(7px,.52vw) max(7px,.52vw) max(14px,1.04vw)}
+}
+
+/* Figma-exact desktop (homepage) */
+.fz{--gut:240px}
+.fz header.top{height:72px}
+.fz .logo img:first-child{height:29px}.fz .logo img:last-child{height:24px}.fz .logo{gap:10px}
+.fz .dd>button{padding:13px 18px;font-size:16px}
+.fz header .cta{padding:10px 10px 10px 20px;font-size:16px}
+.fz .menu{top:58px}
+.fz .hero{height:800px}
+.fz .hero .poster{transform:none;-webkit-mask-image:none;mask-image:none;object-position:center top}
+.fz .hero:after{background:linear-gradient(0deg,var(--bg) 0,transparent 12%)}
+.fz .hero .wrap{padding-top:219px}
+.fz .hero h1{font-size:72px;line-height:76px;max-width:760px}
+.fz .hero p{font-size:16px;line-height:22px;max-width:754px;margin:24px 0 50px}
+.fz .hero input{width:320px;height:44px;font-size:18px}
+</style>
+<script>(function(){var d=document.documentElement;function f(){var w=window.innerWidth;if(w>=1100){d.classList.add("fz");d.style.zoom=w<1920?String(w/1920):""}else{d.classList.remove("fz");d.style.zoom=""}}f();addEventListener("resize",f)})()</script></head>
+<body>
+
+<header id="hdr"><div class="wrap">
+  <a href="#/" class="logo"><img src="assets/imgGroup7.svg" alt=""><img src="assets/imgGroup6.svg" alt="NeuroDiscovery AI"></a>
+  <nav id="nav">
+    <div class="dd"><button>Who We Serve</button>
+      <div class="menu">
+        <div><h6>Life Sciences</h6><a href="clinical-trials.html"><i><img src="assets/imgGroup3506.svg" width="36"></i>Clinical Trial Recruitment</a><a href="real-world-data.html"><i><img src="assets/imgGroup.svg" width="16"></i>Real World Data</a><a href="real-world-evidence.html"><i><img src="assets/imgGroup3507.svg" width="36"></i>Real World Evidence</a></div>
+        <div><h6>Providers</h6><a href="provider-platform.html"><i><img src="assets/imgGroup3508.svg" width="36"></i>Provider Platform</a><a href="data-collaboration.html"><i><img src="assets/imgGroup3505.svg" width="36"></i>Data Collaboration</a></div>
+        <div><h6>Patients</h6><a href="patient-engagement.html"><i><img src="assets/imgGroup3509.svg" width="36"></i>Patient Engagement</a></div>
+      </div></div>
+    <div class="dd"><button>Who We Are</button>
+      <div class="menu"><div><h6>Company</h6><a href="about.html"><i><img src="assets/imgGroup3506.svg" width="36"></i>About Us</a><a href="careers.html"><i><img src="assets/imgGroup.svg" width="16"></i>Careers</a></div>
+      <div><h6>News</h6><a href="news.html"><i><img src="assets/imgGroup3508.svg" width="36"></i>Announcements</a></div></div></div>
+    <div class="dd"><button>Resources</button>
+      <div class="menu"><div><h6>Learn</h6><a href="news.html"><i><img src="assets/imgGroup3506.svg" width="36"></i>Blogs</a><a href="news.html"><i><img src="assets/imgGroup3507.svg" width="36"></i>White Papers</a></div>
+      <div><h6>Proof</h6><a href="#/" data-scroll="stories"><i><img src="assets/imgGroup3505.svg" width="36"></i>Customer Stories</a><a href="news.html"><i><img src="assets/imgGroup3508.svg" width="36"></i>Publications</a></div></div></div>
+    <a href="contact.html" class="cta" style="margin-left:16px">Contact us <b>↗</b></a>
+  </nav>
+  <button class="burger" id="burger" aria-label="Menu">☰</button>
+</div></header>
+
+<!-- ============ HOME ============ -->
+<main class="page" id="p-home">
+  <div class="hero">
+    <img class="poster" src="assets/imgImage65.png" alt="">
+    <div class="wrap">
+      <h1 class="reveal">Neurology<br>Intelligence Platform for US Healthcare</h1>
+      <p class="reveal">Accelerate neurology breakthroughs with the complete AI stack for life sciences, providers, and patients. From trial enrollment to evidence generation—powered by the most comprehensive 6M+ longitudinal neurology dataset in the US.</p>
+      <form class="reveal" onsubmit="return emailSubmit(this)"><input type="email" required placeholder="Enter your work email"><button class="cta">Contact us <b>↗</b></button></form>
+    </div>
+  </div>
+
+  <section><div class="wrap">
+    <h2 class="h2 reveal">What we make possible</h2>
+    <p class="sub reveal">Built for the full neurology ecosystem.</p>
+    <div class="wwmp reveal">
+      <div class="tabs" id="tabs"></div>
+      <div class="panel" id="panel"></div>
+    </div>
+  </div></section>
+
+  <section class="trusted"><div class="wrap">
+    <h2 class="h2 reveal" style="max-width:1141px">Trusted by leading neurology providers and life sciences organizations</h2>
+    <p class="sub reveal">The largest unified neurology dataset in the US. Built on NeuroLLM™-powered foundation that unlocks insights no other dataset can deliver.</p>
+    <div class="tgrid">
+      <div class="reveal"><h5>Partners &amp; Collaborators</h5><div class="logos" id="logos"></div></div>
+      <div class="reveal"><h5>Network Scale &amp; Depth</h5><div class="stats" id="stats"></div></div>
+    </div>
+  </div></section>
+
+  <section id="stories"><div class="wrap">
+    <h2 class="h2 reveal">Client Success Stories</h2>
+    <div class="stories">
+      <div class="thumb reveal" data-video="videos/lifesciense-vid_v1.mp4"><img src="assets/imgImage103.png" alt=""><span class="play"></span></div>
+      <div class="story reveal"><h3>Michigan Institute for Neurological Disorders: Founding Partner in National Neurology Alliance</h3><p>Michigan Institute for Neurological Disorders (MIND)</p><a class="pill" href="testimonials.html#stories">Learn more</a></div>
+      <div class="story reveal"><h3>Dent Neurologic Institute Partners with NeuroDiscovery AI to Advance Data-Driven Neurology Care</h3><p>Dr. Laszlo Mechtler, Professor of Neurology and Oncology, Dent Neurologic Institute, Buffalo, New York</p><a class="pill" href="testimonials.html#stories">Learn more</a></div>
+      <div class="thumb reveal" data-video="videos/lifesciense-vid_v1.mp4"><img src="assets/imgImage107.png" alt=""><span class="play"></span></div>
+    </div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="wrap">
+    <h2 class="h2 reveal" style="font-size:44px">News &amp; Announcements</h2>
+    <div class="news">
+      <div class="card n1 reveal"><div class="top"><img src="assets/imgImage58.png" alt=""></div><div class="inner">
+        <div class="row"><span class="chip" style="margin:0">research</span><img class="logo-s" src="assets/imgLillyLogo962.png" style="height:30px"></div>
+        <h4 style="margin-top:28px">Real world evidence on early Alzheimer's detection</h4>
+        <p>Published real-world evidence study with Eli Lilly demonstrating patient diversity and treatment patterns in early Alzheimer's disease. Presented at ADPD 2026.</p>
+        <a class="link" href="news.html">Read research</a></div></div>
+      <div class="card reveal"><div class="row"><span class="chip" style="margin:0">research</span><img class="logo-s" src="assets/imgBiogenLogo2.png"></div>
+        <h4 style="margin-top:36px">Real-World Patterns in Multiple Sclerosis Treatment Transitions</h4>
+        <p>Peer-reviewed analysis of patient transitions from Anti-CD20s to Fumarates in MS populations using comprehensive EHR data with Biogen collaboration.</p>
+        <a class="link" href="news.html">Read research</a></div>
+      <div class="card n4 reveal"><img class="bgimg" src="assets/imgRectangle685.png" style="opacity:.15"><div class="row"><span class="chip" style="margin:0">recognition</span><img class="logo-s" src="assets/imgAnthropicLogoWs1.png" style="height:12px"></div>
+        <h4 style="margin-top:36px">Anthropic x AWS Agentic AI Accelerator 2026</h4>
+        <p>NeuroDiscovery AI recognized among top AI companies developing frontier agentic AI solutions for enterprise healthcare applications and patient outcomes.</p>
+        <a class="link" href="news.html">Read announcement</a></div>
+      <div class="card reveal"><img class="bgimg" src="assets/imgRectangle686.png" style="opacity:.4"><div class="row"><span class="chip" style="margin:0">recognition</span><img class="logo-s" src="assets/imgNvidia1.png" style="height:20px"></div>
+        <h4 style="margin-top:30px">NVIDIA Inception Program</h4>
+        <p>Access to NVIDIA's exclusive AI acceleration program for scale and cutting-edge GPU infrastructure to power neurology-specialized AI development.</p>
+        <a class="link" href="news.html">Read announcement</a></div>
+    </div>
+    <div class="bottomnews">
+      <div class="card reveal"><div class="row"><span class="chip" style="margin:0">partnership</span><img class="logo-s" src="assets/imgFirstChoiceWw1.png"></div>
+        <h4 style="margin-top:30px">First Choice Neurology partners with NeuroDiscovery AI nationwide</h4>
+        <p>The largest private neurology group in the US joins NeuroDiscovery AI, unified data, and accelerate research.</p><a class="link" href="news.html">Learn more</a></div>
+      <div class="card reveal"><div class="row"><span class="chip" style="margin:0">partnership</span><img class="logo-s" src="assets/imgDentw1.png" style="height:30px"></div>
+        <h4 style="margin-top:30px">DENT Neurology Institute partners with NeuroDiscovery AI</h4>
+        <p>DENT joins NeuroDiscovery AI provider network to bring world logic signal to neurology research.</p><a class="link" href="news.html">Learn more</a></div>
+    </div>
+  </div></section>
+</main>
+
+<!-- ============ SUBPAGES (rendered by router) ============ -->
+<main class="page" id="p-sub"></main>
+
+<div class="final"><img class="bg" src="assets/imgImage69.png" alt=""><div class="wrap">
+  <h2 class="reveal">Ready to transform neurology care with the most powerful neurology platform?</h2>
+  <p class="reveal">Discover how we're helping leading life sciences companies, healthcare providers, and researchers together to build the future of neurology.</p>
+  <a href="contact.html" class="cta reveal">Contact us <b>↗</b></a>
+</div></div>
+
+<footer><div class="wrap">
+  <div class="fgrid">
+    <div class="about"><a href="#/" class="logo"><img src="assets/imgGroup4.svg" style="height:39px"><img src="assets/imgGroup3.svg" style="height:32px"></a>
+      <p>The neurology intelligence platform powering real-world evidence, clinical insights, and patient care across US healthcare.</p></div>
+    <div><h6>Solutions</h6><ul><li><a href="real-world-data.html">Real-World Data</a></li><li><a href="real-world-evidence.html">Real-World Evidence</a></li><li><a href="clinical-trials.html">Clinical Trials</a></li><li><a href="data-collaboration.html">Data Collaboration</a></li><li><a href="provider-platform.html">Provider Platform</a></li><li><a href="patient-engagement.html">Patient Engagement</a></li></ul></div>
+    <div><h6>Who We Are</h6><ul><li><a href="about.html">About Us</a></li><li><a href="careers.html">Careers</a></li><li><a href="news.html">Announcements</a></li></ul></div>
+    <div><h6>Resources</h6><ul><li><a href="news.html">Blogs</a></li><li><a href="news.html">White Papers</a></li><li><a href="testimonials.html#stories">Customer Stories</a></li><li><a href="news.html">Publications</a></li><li><a href="news.html">Conferences</a></li></ul></div>
+    <div class="addr"><b>USA, HQ</b><p>4080 McGinnis Ferry Rd, Bld 1400 STE 1404, Alpharetta, GA</p><a href="mailto:usa@neurodiscovery.ai">usa@neurodiscovery.ai</a><hr>
+      <b>India, HQ</b><p>#677, 27th Main, 13th Cross, Sector 1, HSR Layout, Bangalore — 560102</p><a href="mailto:india@neurodiscovery.ai">india@neurodiscovery.ai</a></div>
+  </div>
+  <div class="fbot"><span>Copyright © 2026 Neuro Discovery AI. All rights reserved.</span><span><a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">Cookies</a></span></div>
+</div></footer>
+
+<div class="modal" id="modal"><div class="box"><button class="x" id="mx">×</button><video id="mv" controls playsinline></video></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SOL=[
+ {slug:'real-world-data',img:'img/wwmp-rwd.jpg',t:'Real-World Data',aud:'Life Sciences',ic:'imgGroup1.svg',d:'Comprehensive neurology data from 1000+ providers—multimodal, validated, and analysis-ready for research teams and payers.'},
+ {slug:'clinical-trials',img:'img/wwmp-ct.jpg',t:'Clinical Trials',aud:'Life Sciences',ic:'imgFrame3894.svg',d:'Identify and engage trial-eligible patients at scale. Speed up enrollment, improve diversity, and de-risk site engagement.'},
+ {slug:'real-world-evidence',img:'img/wwmp-rwe.jpg',t:'Real-World Evidence',aud:'Life Sciences',ic:'imgFrame3895.svg',d:'Regulatory-ready evidence for HTA approvals, payer submissions, and indication expansion—audit-ready from day one.'},
+ {slug:'data-collaboration',img:'img/wwmp-dc.jpg',t:'Data Collaboration',aud:'Providers',ic:'imgFrame3896.svg',d:'Turn your neurology data into competitive advantage. Collaborate with life sciences partners while maintaining control and compliance.'},
+ {slug:'provider-platform',img:'img/wwmp-pp.jpg',t:'Provider Platform',aud:'Providers',ic:'imgFrame3897.svg',d:'Access real-world insights about your patient populations. Benchmark outcomes, identify gaps in care, and improve clinical decision-making.'},
+ {slug:'patient-engagement',img:'img/wwmp-pe.jpg',t:'Patient Engagement',aud:'Patient',ic:'img01AlignCenter.svg',d:'NeuraCare connects patients with their care teams. Access your health records, manage medications, track symptoms, and stay engaged in your care journey.'}
+];
+const $=s=>document.querySelector(s);
+// tabs
+let cur=0,timer;
+function renderTabs(){
+ $('#tabs').innerHTML=SOL.map((s,i)=>`<button class="tab ${i===cur?'active':''}" data-i="${i}"><span class="ic${s.ic.startsWith('imgFrame')?' fr':''}"><img src="assets/${s.ic}" alt=""></span><div><h4>${s.t}</h4><span>${s.aud}</span></div><img class="arr" src="assets/imgArrow3.svg" width="16"></button>`).join('');
+ const s=SOL[cur];
+ $('#panel').innerHTML=`<div class="img"><img class="fade" src="${s.img}" alt="${s.t}"></div><div class="body fade"><div class="tag">${s.ic.startsWith('imgFrame')?`<img src="assets/${s.ic}" width="36" height="36" alt="">`:`<i><img src="assets/${s.ic}" width="14" alt=""></i>`}${s.aud}</div><h3>${s.t}</h3><p>${s.d}</p><a class="pill" href="${{"real-world-data":"real-world-data.html","clinical-trials":"clinical-trials.html","real-world-evidence":"real-world-evidence.html","data-collaboration":"data-collaboration.html","provider-platform":"provider-platform.html","patient-engagement":"patient-engagement.html"}[s.slug]}">Know more</a></div>`;
+}
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;cur=+b.dataset.i;renderTabs();clearInterval(timer)});
+renderTabs();timer=setInterval(()=>{cur=(cur+1)%SOL.length;renderTabs()},5000);
+// logos
+const L=[['BiogenLogo3',4],['Firstchoice2',4],['CenterforNeurosciences2',2],['JwmLogoBlue2',2],['LillyLogo98',4],['NeurologyCenter1',3],['RnLogo2',5],['Logo3',7],['TexasNeurology500W2',5],['LogoCl12',4],['OneFloridaClinicalnetwork2',4],['Atlanta2',4],['Dent4',3],['Northwest2',5],['AshevilleNeurologySpecialistsLogoPunchout2',4],['DcndLogoM002216867659395652',12]];
+$('#logos').innerHTML=L.map(([n,c])=>`<div style="grid-column:span ${c}"><img src="assets/img${n}.png" alt=""></div>`).join('');
+const ST=[['6M+','Unique Patient Records'],['3M+','Active Longitudinal Patients'],['60+','Key Opinion Leaders'],['100+','Active Trial Sites'],['1000+','Neurologists in Network'],['All','Neurology Conditions Covered'],['15+','Years of Longitudinal Neurology Data'],['FDA-grade','Real World Evidence']];
+$('#stats').innerHTML=ST.map(([v,l])=>`<div class="stat"><b data-v="${v}">${v}</b><small>${l}</small></div>`).join('');
+// counters
+function count(el){const m=el.dataset.v.match(/^(\d+)(.*)$/);if(!m)return;const n=+m[1],suf=m[2];let t0=null;const step=t=>{t0??=t;const p=Math.min((t-t0)/1400,1);el.textContent=Math.round(n*(1-Math.pow(1-p,3)))+suf;if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('[data-v]').forEach(count);io.unobserve(e.target)}}),{threshold:.12});
+function observe(){document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el))}
+// hero video
+// modal
+document.addEventListener('click',e=>{const t=e.target.closest('[data-video]');if(!t)return;$('#mv').src=t.dataset.video;$('#modal').classList.add('on');$('#mv').play()});
+function closeM(){$('#modal').classList.remove('on');$('#mv').pause()}
+$('#mx').onclick=closeM;$('#modal').onclick=e=>{if(e.target.id==='modal')closeM()};document.onkeydown=e=>{if(e.key==='Escape')closeM()};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3000)}
+function emailSubmit(f){const v=f.querySelector('input').value;location.hash='contact.html?email='+encodeURIComponent(v);return false}
+// header
+addEventListener('scroll',()=>$('#hdr').classList.toggle('scrolled',scrollY>20));
+$('#burger').onclick=()=>$('#nav').classList.toggle('open');
+document.querySelectorAll('.dd>button').forEach(b=>b.onclick=()=>{const o=b.parentElement.classList.contains('open');document.querySelectorAll('.dd').forEach(d=>d.classList.remove('open'));if(!o)b.parentElement.classList.add('open')});
+document.querySelectorAll('[data-scroll]').forEach(a=>a.addEventListener('click',()=>setTimeout(()=>document.getElementById(a.dataset.scroll).scrollIntoView(),80)));
+
+// ===== Router / screens =====
+const crumb=t=>`<div class="crumb"><a href="#/">Home</a> / ${t}</div>`;
+const FEATS={
+ 'real-world-data':['Multimodal records','EHR, imaging, labs and clinician notes harmonized into one longitudinal patient view.','Validated & curated','Neurologist-reviewed phenotypes and NeuroLLM™ abstraction with QA at every step.','Analysis-ready','Delivered as OMOP-aligned cohorts with tokenization for linkage.'],
+ 'clinical-trials':['Precision matching','Screen 6M+ records against protocol criteria in minutes, not months.','Diverse enrollment','Reach under-represented populations across 100+ active trial sites.','Site de-risking','Forecast site performance before activation with real-world feasibility.'],
+ 'real-world-evidence':['Regulatory-grade','FDA-grade study design with full provenance and audit trails.','HTA & payer ready','Evidence packages built for submissions and indication expansion.','Fast turnaround','Go from protocol to results in weeks with pre-curated cohorts.'],
+ 'data-collaboration':['Stay in control','Federated access keeps your data governed under your rules.','Monetize responsibly','Earn from compliant collaborations with leading life sciences partners.','Fully compliant','HIPAA-aligned de-identification and expert determination built in.'],
+ 'provider-platform':['Population insights','See your patient populations against national neurology benchmarks.','Care-gap detection','Identify patients who may benefit from new therapies or trials.','Clinical decision support','Bring real-world insights directly into everyday workflows.'],
+ 'patient-engagement':['Health records','Patients access their neurology records in one secure place.','Medication & symptoms','Track medications and symptoms and share trends with care teams.','Stay connected','NeuraCare keeps patients engaged across their care journey.']
+};
+function solutionPage(slug){const s=SOL.find(x=>x.slug===slug)||SOL[0];const f=FEATS[s.slug];return `
+ <div class="phero"><div class="wrap">${crumb(s.aud+' / '+s.t)}<h1 class="reveal">${s.t}</h1><p class="reveal">${s.d}</p><a href="contact.html" class="cta reveal">Talk to our team <b>↗</b></a></div></div>
+ <section style="padding-top:20px"><div class="wrap"><div class="feat">${[0,2,4].map(i=>`<div class="reveal"><h4>${f[i]}</h4><p>${f[i+1]}</p></div>`).join('')}</div></div></section>
+ <section style="padding-top:0"><div class="wrap split"><div class="reveal"><h2 class="h2" style="font-size:44px;line-height:48px">Why teams choose NeuroDiscovery AI</h2><ul><li>6M+ unique neurology patient records</li><li>1000+ neurologists in network</li><li>15+ years of longitudinal data</li><li>All neurology conditions covered</li></ul></div>
+ <div class="thumb reveal" data-video="videos/lifesciense-vid_v1.mp4" style="min-height:360px"><img src="assets/imgImage155.png"><span class="play"></span></div></div></section>
+ <section style="padding-top:0"><div class="wrap"><h2 class="h2 reveal" style="font-size:36px;margin-bottom:24px">Explore other solutions</h2><div class="feat">${SOL.filter(x=>x!==s).slice(0,3).map(x=>`<a href="#/solution/${x.slug}" class="reveal" style="display:block;background:var(--card);padding:30px;border-radius:10px"><span class="chip">${x.aud}</span><h4 style="font-size:22px;font-weight:500;margin-bottom:10px">${x.t}</h4><p style="color:var(--muted)">${x.d}</p></a>`).join('')}</div></div></section>`}
+function contactPage(q){const em=new URLSearchParams(q).get('email')||'';return `
+ <div class="phero"><div class="wrap">${crumb('Contact')}<h1 class="reveal">Let's talk neurology.</h1><p class="reveal">Tell us about your goals and our team will get back within one business day.</p>
+ <form class="cform reveal" onsubmit="location.hash='#/thanks';return false">
+  <input required placeholder="First name"><input required placeholder="Last name">
+  <input class="full" type="email" required placeholder="Work email" value="${em.replace(/"/g,'')}">
+  <input placeholder="Company"><select><option>I'm interested in…</option>${SOL.map(s=>`<option>${s.t}</option>`).join('')}</select>
+  <textarea rows="5" placeholder="How can we help?"></textarea>
+  <button class="cta full" style="justify-self:start">Send message <b>↗</b></button></form></div></div>`}
+const simple=(title,body)=>`<div class="phero"><div class="wrap">${crumb(title)}<h1 class="reveal">${title}</h1><p class="reveal">${body}</p><a href="contact.html" class="cta reveal">Contact us <b>↗</b></a></div></div>`;
+const STORIES={mind:['Michigan Institute for Neurological Disorders','Founding partner in the National Neurology Alliance, MIND contributes longitudinal neurology data to advance research while maintaining full control and compliance.','imgImage103.png'],dent:['Dent Neurologic Institute','Dent partners with NeuroDiscovery AI to advance data-driven neurology care. "Real-world data at this scale changes what we can learn for our patients." — Dr. Laszlo Mechtler','imgImage107.png']};
+function storyPage(k){const s=STORIES[k]||STORIES.mind;return `<div class="phero"><div class="wrap">${crumb('Customer Stories')}<h1 class="reveal">${s[0]}</h1><p class="reveal">${s[1]}</p></div></div>
+ <section style="padding-top:0"><div class="wrap"><div class="thumb reveal" data-video="videos/lifesciense-vid_v1.mp4" style="min-height:560px"><img src="assets/${s[2]}"><span class="play"></span></div></div></section>`}
+function route(){
+ const [path,q='']=(location.hash.slice(1)||'/').split('?');const parts=path.split('/').filter(Boolean);
+ const home=parts.length===0;$('#p-home').classList.toggle('on',home);$('#p-sub').classList.toggle('on',!home);
+ $('#nav').classList.remove('open');document.querySelectorAll('.dd').forEach(d=>d.classList.remove('open'));
+ if(!home){let h;
+  switch(parts[0]){
+   case 'solution':h=solutionPage(parts[1]);break;
+   case 'contact':h=contactPage(q);break;
+   case 'thanks':h=simple('Thank you!','Your message is on its way. A member of our team will reach out shortly.');break;
+   case 'story':h=storyPage(parts[1]);break;
+   case 'about':h=simple('About Us','NeuroDiscovery AI is building the neurology intelligence platform for US healthcare — uniting providers, life sciences, and patients around the largest longitudinal neurology dataset in the country.');break;
+   case 'careers':h=simple('Careers','Join a team of clinicians, data scientists and engineers working on the hardest problems in neurology. Offices in Alpharetta, GA and Bangalore.');break;
+   case 'news':h=simple('News & Announcements','Research, partnerships and recognition from across the NeuroDiscovery AI network.');break;
+   case 'legal':h=simple(parts[1][0].toUpperCase()+parts[1].slice(1),'This page outlines our '+parts[1]+' policy. Contact usa@neurodiscovery.ai with any questions.');break;
+   default:h=simple('Page not found','The page you are looking for does not exist.');}
+  $('#p-sub').innerHTML=h;}
+ scrollTo(0,0);observe();
+}
+addEventListener('hashchange',route);route();
+</script>
+</body>
+</html>

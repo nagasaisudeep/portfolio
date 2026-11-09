@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Contact · NeuroDiscovery AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="site.css"><script>(function(){var d=document.documentElement;function f(){var w=window.innerWidth;if(w>=1100){d.classList.add("fz");d.style.zoom=w<1920?String(w/1920):""}else{d.classList.remove("fz");d.style.zoom=""}}f();addEventListener("resize",f)})()</script></head>
+<body data-page="contact"><main id="page"></main><script src="site.js"></script><script>
+const em=(new URLSearchParams(location.search).get('email')||'').replace(/"/g,'');
+render([
+['raw',{html:`<div class="hero short rhero" style="background:#000 url(img/rwd-hero.jpg) center/cover;min-height:380px"><div class="wrap"><div class="eyebrow reveal">Contact us</div><h1 class="reveal">Let's talk neurology.</h1><p class="reveal">Tell us about your goals and our team will get back to you within one business day.</p></div></div>
+<section style="padding-top:20px"><div class="wrap"><form class="cform" id="cf"><input required placeholder="First name"><input required placeholder="Last name"><input class="full" type="email" required placeholder="Work email" value="${em}"><input placeholder="Organization"><select><option>I'm interested in…</option><option>Real-World Data</option><option>Real-World Evidence</option><option>Clinical Trials</option><option>Data Collaboration</option><option>Provider Platform</option><option>Patient Engagement</option></select><textarea rows="5" placeholder="How can we help?"></textarea><button class="cta full" style="justify-self:start">Send message <b>↗</b></button></form>
+<div class="ok" id="ok"><h3 style="font-size:28px;font-weight:500">Thank you!</h3><p class="sub">Your message is on its way. A member of our team will reach out shortly.</p></div></div></section>`}]
+]);
+document.getElementById('cf').onsubmit=e=>{e.preventDefault();e.target.style.display='none';document.getElementById('ok').style.display='block'};
+</script></body></html>

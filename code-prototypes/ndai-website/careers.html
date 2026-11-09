@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Careers · NeuroDiscovery AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="site.css"><script>(function(){var d=document.documentElement;function f(){var w=window.innerWidth;if(w>=1100){d.classList.add("fz");d.style.zoom=w<1920?String(w/1920):""}else{d.classList.remove("fz");d.style.zoom=""}}f();addEventListener("resize",f)})()</script></head>
+<body data-page="careers"><main id="page"></main><script src="site.js"></script><script>
+const ROLES=[['Data','Business Intelligence','Remote · USA','3–5 yrs',['SQL','Healthcare','Looker']],['Engineering','Frontend Developer','Bangalore / Remote','2–4 yrs',['React','TypeScript','Tailwind']],['Data','DevOps Advocate','Remote · USA','3–5 yrs',['SQL','Healthcare','Looker']],['Engineering','Technical Provider Liaison','Bangalore / Remote','2–4 yrs',['React','TypeScript','Tailwind']]];
+render([
+['raw',{html:`<div class="hero short chero" style="background:#0d131b url(img/careers-hero.jpg) center/cover"><div class="wrap"><h6 class="reveal">We’re not imagining the future of healthcare</h6><h1 class="reveal">we are building it.</h1><p class="reveal">We’re seeking changemakers ready to transform the world. Together, we have the power to redefine the future of healthcare.</p></div></div>
+<section style="padding-top:60px"><div class="wrap"><div class="rolebar"><h3>Find your role.</h3><input id="q" placeholder="⌕  Search roles.."><label>Depatment <select id="dep"><option>All</option><option>Data</option><option>Engineering</option></select></label><label>Location <select id="loc"><option>All</option><option>Remote · USA</option><option>Bangalore / Remote</option></select></label></div><div id="roles"></div></div></section>`}],
+['cta',{h:'Join the team building neurology\'s future',p:'We’re always looking for exceptional people who can help us reimagine neurology with AI and clinical data.'}]
+]);
+const draw=()=>{const q=document.getElementById('q').value.toLowerCase(),d=document.getElementById('dep').value,l=document.getElementById('loc').value;
+ const r=ROLES.filter(x=>(d=='All'||x[0]==d)&&(l=='All'||x[2]==l)&&(x[1]+x[4].join(' ')).toLowerCase().includes(q));
+ document.getElementById('roles').innerHTML=r.length?r.map(x=>`<div class="role"><div class="d"><em>${x[0]}</em><h4>${x[1]}</h4><small>${x[2]} &nbsp;•&nbsp; ${x[3]} &nbsp;•&nbsp; Full-time</small></div>${x[4].map(t=>`<span class="tag">${t}</span>`).join('')}<a class="apply" href="mailto:usa@neurodiscovery.ai?subject=${encodeURIComponent(x[1])}">Apply Now</a></div>`).join(''):'<p class="empty">No roles match your search.</p>'};
+['q','dep','loc'].forEach(id=>document.getElementById(id).addEventListener('input',draw));draw();
+</script></body></html>
