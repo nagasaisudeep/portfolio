@@ -4215,6 +4215,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
         <nav class="nd-tabs">
           <button class="nd-tab on" type="button" data-nd-home>Overview</button>
           <button class="nd-tab" type="button" data-nd-code>Code<span class="nd-long"> Prototype</span></button>
+          <button class="nd-tab" type="button" data-nd-opt hidden>Explorations</button>
           <button class="nd-tab" type="button" data-nd-open>Figma<span class="nd-long"> Prototype</span></button>
           <a class="nd-figma" href="#" target="_blank" rel="noopener"><svg class="fg" width="11" height="16" viewBox="0 0 38 57" aria-hidden="true"><path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/><path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z"/><path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z"/><path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/><path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg><span>Open in Figma</span></a>
           <button class="nd-x" type="button" aria-label="Close">×</button>
@@ -4289,10 +4290,10 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
     ], footer:{n:'Design System',
        u:'https://www.figma.com/proto/udlBkCCUz7HMjKjtZlqYEw/Nero-works?node-id=1045-11838&viewport=113%2C166%2C0.51&t=biKuRhjci5kVOSBY-1&scaling=scale-down-width&content-scaling=fixed&page-id=984%3A32389'}},
     {slug:'neurobrowser', card:findCard(/neurobrowser/i), caseDir:'neurobrowser', casePages:26, ver:'NeuroBrowser', single:true},
-    {slug:'website-redesign', card:findCard(/website redesign/i), caseDir:'website', casePages:1, ver:'Website Redesign', single:true, noCase:true, c:'code-prototypes/ndai-website/index.html'}
+    {slug:'website-redesign', card:findCard(/website redesign/i), caseDir:'website', casePages:1, ver:'Website Redesign', single:true, noCase:true, c:'code-prototypes/ndai-website/index.html', o:'code-prototypes/ndai-options/index.html'}
   ].filter(function(p){ return p.card; });
   PROJECTS.forEach(function(p){
-    if(p.single) p.items=[{n:p.ver, u:p.card.getAttribute('href'), e:p.card.getAttribute('data-embed'), c:p.c}];
+    if(p.single) p.items=[{n:p.ver, u:p.card.getAttribute('href'), e:p.card.getAttribute('data-embed'), c:p.c, o:p.o}];
     p.items.forEach(function(it){ it.e=it.e||embedUrl(it.u); });
     if(p.footer) p.footer.e=embedUrl(p.footer.u);
   });
@@ -4323,6 +4324,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
     veil.querySelectorAll('.nd-tab[data-nd-home]').forEach(function(b){ b.classList.toggle('on',mode==='case'); b.hidden=!!P.noCase; });
     veil.querySelectorAll('.nd-tab[data-nd-open]').forEach(function(b){ b.classList.toggle('on',mode==='figma'); });
     veil.querySelectorAll('.nd-tab[data-nd-code]').forEach(function(b){ b.classList.toggle('on',mode==='code'); b.hidden=P.single?!P.items[0].c:!!(cur&&!cur.c); });
+    veil.querySelectorAll('.nd-tab[data-nd-opt]').forEach(function(b){ b.classList.toggle('on',mode==='opt'); b.hidden=!(P.single&&P.items[0].o); });
   }
   var gptEl=document.getElementById('ndGpt'), gptI=document.getElementById('ndGptI'), gptC=document.getElementById('ndGptC'), gptR=document.getElementById('ndGptR');
   var gptRun=0;
@@ -4356,7 +4358,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   }
   function show(v,code){
     codeShown=!!code;
-    var src=code?v.c:v.e; cur=v; current=src; stage.classList.remove('ready');
+    var opt=code==='opt', src=opt?v.o:code?v.c:v.e; cur=v; current=src; stage.classList.remove('ready');
     Object.keys(frames).forEach(function(k){ frames[k].hidden=(k!==src); });
     var f=frames[src];
     if(!f){
@@ -4364,7 +4366,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
       f.addEventListener('load',function(){ f.loaded=true; if(current===src) stage.classList.add('ready'); });
       frames[src]=f; stage.appendChild(f);
     } else if(f.loaded) stage.classList.add('ready');
-    closeGpt(); main.classList.toggle('hasgpt',!!v.c); main.classList.remove('case'); main.classList.add('proto'); verTxt.textContent=P.single?P.ver:(P.ver.split(' ')[0]+' · '+v.n); setLinks(code?v.c:v.u,code); tabs(code?'code':'figma'); syncRoute();
+    closeGpt(); main.classList.toggle('hasgpt',!!v.c); main.classList.remove('case'); main.classList.add('proto'); verTxt.textContent=P.single?P.ver:(P.ver.split(' ')[0]+' · '+v.n); setLinks(opt?v.o:code?v.c:v.u,code); tabs(opt?'opt':code?'code':'figma'); syncRoute();
   }
   function list(code){ cur=null; wantCode=code; main.classList.remove('proto','case'); verTxt.textContent=P.ver; setLinks(P.items[0].u); tabs(code?'code':'figma'); syncRoute(); }
   function addThumb(n){
@@ -4395,7 +4397,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   }
   function back(){
     if(gptEl.classList.contains('open')){ closeGpt(); return; }
-    if(main.classList.contains('case')) close();
+    if(main.classList.contains('case')||P.noCase) close();
     else if(P.single||!main.classList.contains('proto')) overview();
     else list(wantCode);
   }
@@ -4459,6 +4461,7 @@ body.nav-open .nav-burger span:nth-child(3){transform:translateY(-5.5px) rotate(
   },true);
   veil.querySelectorAll('[data-nd-open]').forEach(function(b){ b.addEventListener('click',function(){ if(P.single) show(P.items[0]); else if(cur){ wantCode=false; show(cur); } else list(false); }); });
   veil.querySelectorAll('[data-nd-code]').forEach(function(b){ b.addEventListener('click',function(){ if(P.single&&P.items[0].c){ wantCode=true; show(P.items[0],true); } else if(cur&&cur.c){ wantCode=true; show(cur,true); } else list(true); }); });
+  veil.querySelectorAll('[data-nd-opt]').forEach(function(b){ b.addEventListener('click',function(){ if(P.single&&P.items[0].o) show(P.items[0],'opt'); }); });
   document.getElementById('ndBack').addEventListener('click',back);
   document.getElementById('ndNb').addEventListener('click',function(){
     gptI.value=''; resetGpt(); gptI.placeholder='Ask NeuroGPT about '+cur.n+'…';
